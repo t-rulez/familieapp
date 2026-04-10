@@ -78,7 +78,7 @@
     .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
     /* Feed */
-    .feed{flex:1;padding:8px 16px 100px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .feed{flex:1;padding:8px 16px calc(60px + env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch}
     .empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
     .empty-state .icon{font-size:40px;margin-bottom:12px}
     .empty-state p{font-size:16px}
@@ -109,13 +109,14 @@
     .swipe-hint-skip{background:var(--red-bg);color:var(--red)}
 
     /* Bottom nav */
-    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;padding-bottom:max(env(safe-area-inset-bottom,0px),4px);z-index:10}
-    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--font);font-size:10px;min-height:44px}
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 4px;background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--font);font-size:10px;}
+    .nav-icon{width:20px;height:20px}
     .nav-btn.active{color:var(--text)}
     .nav-icon{width:22px;height:22px}
 
     /* Views */
-    .view{display:none;padding:20px 16px 100px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+    .view{display:none;padding:20px 16px calc(60px + env(safe-area-inset-bottom,0px));overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
     .view.active{display:block}
     .view-title{font-size:26px;font-weight:500;letter-spacing:-0.5px;padding-top:max(env(safe-area-inset-top),16px);margin-bottom:20px}
 
