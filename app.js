@@ -475,7 +475,8 @@ async function initApp() {
   initPullToRefresh();
   const user = getUser();
   if (!user) { showLogin(); return; }
-  document.getElementById('user-display-name').textContent = user.display_name;
+  const nameEl = document.getElementById('user-display-name');
+  if (nameEl) nameEl.textContent = user.display_name;
   showApp();
   try {
     const data = await apiFetch('/messages');
