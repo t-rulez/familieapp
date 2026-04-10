@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Familie" />
+  <link rel="manifest" href="/manifest.json" />
+  <title>Familie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F5F4F0;
+      --surface: #FFFFFF;
+      --surface2: #EFEFEB;
+      --text: #1A1A18;
+      --text2: #6B6B65;
+      --text3: #A8A8A2;
+      --border: rgba(0,0,0,0.08);
+      --border2: rgba(0,0,0,0.14);
+      --green: #2D6A4F;
+      --green-bg: #D8F3DC;
+      --red: #A32D2D;
+      --red-bg: #FCEBEB;
+      --spond: #185FA5;
+      --spond-bg: #E6F1FB;
+      --skolemelding: #2D6A4F;
+      --skolemelding-bg: #D8F3DC;
+      --showbie: #BA7517;
+      --showbie-bg: #FAEEDA;
+      --whatsapp: #993556;
+      --whatsapp-bg: #FBEAF0;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font: 'DM Sans', sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111110;
+        --surface: #1C1C1A;
+        --surface2: #242422;
+        --text: #F0EFE8;
+        --text2: #9B9B94;
+        --text3: #5A5A55;
+        --border: rgba(255,255,255,0.07);
+        --border2: rgba(255,255,255,0.12);
+        --green-bg: #0F2D1A;
+        --red-bg: #2D0F0F;
+        --spond-bg: #0A1E35;
+        --skolemelding-bg: #0F2D1A;
+        --showbie-bg: #2D1A05;
+        --whatsapp-bg: #2D0F1C;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior: none;
+    }
+
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      padding: env(safe-area-inset-top, 16px) 20px 0;
+      padding-top: max(env(safe-area-inset-top), 16px);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+    }
+
+    .badge {
+      background: var(--text);
+      color: var(--bg);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Filter tabs */
+    .filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 14px;
+      scrollbar-width: none;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-family: var(--font);
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--text2);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .filter-btn.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    /* Feed */
+    .feed {
+      flex: 1;
+      padding: 8px 16px 100px;
+      overflow-y: auto;
+    }
+
+    /* Message card */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 10px;
+      transition: opacity 0.3s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      user-select: none;
+      touch-action: pan-y;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card.swiping { transition: none; }
+
+    .card.dismissed-right {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+
+    .card.dismissed-left {
+      transform: translateX(-110%);
+      opacity: 0;
+    }
+
+    .card.read {
+      opacity: 0.42;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .source-tag {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .source-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .source-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+    }
+
+    .card-time {
+      font-size: 11px;
+      color: var(--text3);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    /* TL;DR box */
+    .tldr {
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .tldr-label {
+      font-size: 10px;
+      font-weight: 500;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .tldr-text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* Full text (collapsed) */
+    .card-body {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      display: none;
+      margin-bottom: 10px;
+    }
+
+    .card-body.expanded { display: block; }
+
+    .expand-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0;
+      font-family: var(--font);
+      margin-bottom: 12px;
+    }
+
+    /* Action buttons */
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-ok {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .btn-skip {
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    /* Swipe hint overlay */
+    .swipe-hint {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 500;
+      border-radius: var(--radius);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s;
+      letter-spacing: -0.5px;
+    }
+
+    .swipe-hint-ok {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .swipe-hint-skip {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text3);
+    }
+
+    .empty-state .icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      z-index: 10;
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 12px 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text3);
+      font-family: var(--font);
+      font-size: 10px;
+      transition: color 0.15s;
+    }
+
+    .nav-btn.active { color: var(--text); }
+
+    .nav-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Settings view */
+    .view { display: none; padding: 20px 16px 100px; }
+    .view.active { display: block; }
+
+    .settings-section {
+      margin-bottom: 24px;
+    }
+
+    .settings-label {
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+
+    .settings-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-row:last-child { border-bottom: none; }
+
+    .settings-row-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-row-text { font-size: 14px; }
+    .settings-row-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    /* Toggle */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 26px;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--surface2);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid var(--border2);
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 2px;
+      top: 2px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle input:checked + .toggle-slider { background: var(--green); border-color: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    /* Stats view */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 300;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text2);
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- FEED VIEW -->
+  <div id="view-feed" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+    <div class="header">
+      <div class="header-top">
+        <span class="header-title">Familie</span>
+        <span class="badge" id="unread-count">6 nye</span>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="alle">Alle</button>
+        <button class="filter-btn" data-filter="skole">Skole</button>
+        <button class="filter-btn" data-filter="aks">AKS</button>
+        <button class="filter-btn" data-filter="idrett">Idrettslag</button>
+        <button class="filter-btn" data-filter="foreldre">Foreldre</button>
+      </div>
+    </div>
+
+    <div class="feed" id="feed">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+
+  <!-- STATS VIEW -->
+  <div class="view" id="view-stats">
+    <div style="padding-top: max(env(safe-area-inset-top), 16px); margin-bottom: 20px;">
+      <h1 style="font-size:26px; font-weight:500; letter-spacing:-0.5px;">Statistikk</h1>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Meldinger totalt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-read">0</div>
+        <div class="stat-label">Lest</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-skipped">0</div>
+        <div class="stat-label">Ikke relevant</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-unread">0</div>
+        <div class="stat-label">Ulest</div>
+      </div>
+    </div>
+    <div class="settings-label">Kildefordeling</div>
+    <div class="settings-card" id="source-stats"></div>
+  </div>
+
+  <!-- SETTINGS VIEW -->
+  <div class="view" id="view-settings">
+    <div style="padding-top: max(env(safe-area-inset-top), 16px); margin-bottom: 20px;">
+      <h1 style="font-size:26px; font-weight:500; letter-spacing:-0.5px;">Innstillinger</h1>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Kilder</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--spond);flex-shrink:0;"></div>
+            <div>
+              <div class="settings-row-text">Spond</div>
+              <div class="settings-row-sub">Idrettslag og aktiviteter</div>
+            </div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--skolemelding);flex-shrink:0;"></div>
+            <div>
+              <div class="settings-row-text">Skolemelding</div>
+              <div class="settings-row-sub">Beskjeder fra skolen</div>
+            </div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--showbie);flex-shrink:0;"></div>
+            <div>
+              <div class="settings-row-text">Showbie</div>
+              <div class="settings-row-sub">Lekser og skoleoppgaver</div>
+            </div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--whatsapp);flex-shrink:0;"></div>
+            <div>
+              <div class="settings-row-text">WhatsApp</div>
+              <div class="settings-row-sub">Foreldregrupper</div>
+            </div>
+          </div>
+          <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Filter-preferanser</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-text">Vis bare viktige meldinger</div>
+            <div class="settings-row-sub">AI filtrerer bort lavprioritert innhold</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-text">Lær av mine valg</div>
+            <div class="settings-row-sub">Husker hva du markerer som relevant</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Om appen</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-text">Versjon</div>
+          <span style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace;">0.1.0</span>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-text">Sist synkronisert</div>
+          <span style="font-size:13px;color:var(--text3);font-family:'DM Mono',monospace;" id="last-sync">–</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="feed">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+      </svg>
+      Feed
+    </button>
+    <button class="nav-btn" data-view="stats">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      Statistikk
+    </button>
+    <button class="nav-btn" data-view="settings">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Innstillinger
+    </button>
+  </nav>
+
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
