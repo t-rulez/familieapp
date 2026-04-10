@@ -391,8 +391,7 @@ async function loadSettings() {
     document.getElementById('set-e1-user').value      = s.email_1_username || '';
     document.getElementById('set-e1-from').value      = s.email_1_from_filter || '';
     document.getElementById('set-e1-subject').value   = s.email_1_subject_filter || '';
-    document.getElementById('set-e1-label').value     = s.email_1_source_label || 'Skolemelding';
-    document.getElementById('set-e1-cat').value       = s.email_1_category || 'skole';
+
     document.getElementById('set-e1-delete').checked  = !!s.email_1_delete_after;
     document.getElementById('set-e1-enabled').checked = !!s.email_1_enabled;
     document.getElementById('e1-pw-status').textContent = s.email_1_has_password ? '(passord lagret)' : '(ikke satt)';
@@ -401,15 +400,13 @@ async function loadSettings() {
     document.getElementById('set-e2-user').value      = s.email_2_username || '';
     document.getElementById('set-e2-from').value      = s.email_2_from_filter || '';
     document.getElementById('set-e2-subject').value   = s.email_2_subject_filter || '';
-    document.getElementById('set-e2-label').value     = s.email_2_source_label || 'Showbie';
-    document.getElementById('set-e2-cat').value       = s.email_2_category || 'skole';
+
     document.getElementById('set-e2-delete').checked  = !!s.email_2_delete_after;
     document.getElementById('set-e2-enabled').checked = !!s.email_2_enabled;
     document.getElementById('e2-pw-status').textContent = s.email_2_has_password ? '(passord lagret)' : '(ikke satt)';
     // WhatsApp
     document.getElementById('set-wa-filter').value   = s.wa_group_filter || '';
-    document.getElementById('set-wa-label').value    = s.wa_source_label || 'WhatsApp';
-    document.getElementById('set-wa-cat').value      = s.wa_category || 'foreldre';
+
     document.getElementById('set-wa-enabled').checked = !!s.wa_enabled;
     // Brukerinfo
     const user = getUser();
@@ -434,21 +431,18 @@ async function saveSettings() {
       email_1_username:       document.getElementById('set-e1-user').value.trim(),
       email_1_from_filter:    document.getElementById('set-e1-from').value.trim(),
       email_1_subject_filter: document.getElementById('set-e1-subject').value.trim(),
-      email_1_source_label:   document.getElementById('set-e1-label').value.trim(),
-      email_1_category:       document.getElementById('set-e1-cat').value,
+
       email_1_delete_after:   document.getElementById('set-e1-delete').checked,
       email_1_enabled:        document.getElementById('set-e1-enabled').checked,
       email_2_host:           document.getElementById('set-e2-host').value.trim(),
       email_2_username:       document.getElementById('set-e2-user').value.trim(),
       email_2_from_filter:    document.getElementById('set-e2-from').value.trim(),
       email_2_subject_filter: document.getElementById('set-e2-subject').value.trim(),
-      email_2_source_label:   document.getElementById('set-e2-label').value.trim(),
-      email_2_category:       document.getElementById('set-e2-cat').value,
+
       email_2_delete_after:   document.getElementById('set-e2-delete').checked,
       email_2_enabled:        document.getElementById('set-e2-enabled').checked,
       wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
-      wa_source_label:  document.getElementById('set-wa-label').value.trim(),
-      wa_category:      document.getElementById('set-wa-cat').value,
+
       wa_enabled:       document.getElementById('set-wa-enabled').checked,
     };
     // Passord – bare send hvis fylt inn
@@ -529,33 +523,38 @@ function updateBadge(key) {
 const WA_URL = localStorage.getItem('wa_url') || 'https://familieapp-whatsapp-service.up.railway.app';
 
 async function loadWaQr() {
-  const content = document.getElementById('wa-qr-content');
-  const statusEl = document.getElementById('wa-status-text');
+  const contentEl = document.getElementById('wa-qr-content');
+  const statusEl  = document.getElementById('wa-status-text');
   statusEl.textContent = 'Henter status...';
-  content.innerHTML = '';
+  contentEl.innerHTML  = '';
   try {
-    const res = await fetch(`${WA_URL}/`);
+    const res  = await fetch(`${WA_URL}/`, { signal: AbortSignal.timeout(8000) });
     const data = await res.json();
+
+    const btn = document.getElementById('btn-wa-qr');
     if (data.ready) {
       statusEl.textContent = '';
-      content.innerHTML = `<div class="qr-connected">✓ WhatsApp er tilkoblet</div>`;
+      contentEl.innerHTML  = '<div class="qr-connected">✓ WhatsApp er tilkoblet</div>';
+      if (btn) btn.textContent = 'Oppdater status';
     } else if (data.hasQr) {
       statusEl.textContent = 'Scan med WhatsApp for å koble til:';
-      const qrRes = await fetch(`${WA_URL}/qr`);
+      const qrRes = await fetch(`${WA_URL}/qr`, { signal: AbortSignal.timeout(8000) });
       const html  = await qrRes.text();
       const match = html.match(/src="(data:image\/png;base64,[^"]+)"/);
       if (match) {
-        content.innerHTML = `
+        contentEl.innerHTML = `
           <div class="qr-container">
-            <img src="${match[1]}" alt="QR-kode"/>
-            <p style="font-size:12px;color:var(--text3);margin-top:8px;">Innstillinger → Tilkoblede enheter → Koble til enhet</p>
+            <img src="${match[1]}" alt="QR-kode" style="max-width:220px;border-radius:12px;border:6px solid white;display:block;margin:0 auto"/>
+            <p style="font-size:12px;color:var(--text3);margin-top:8px;text-align:center;">WhatsApp → Innstillinger → Tilkoblede enheter → Koble til enhet</p>
           </div>`;
       }
+      if (btn) btn.textContent = 'Last inn QR på nytt';
     } else {
-      statusEl.textContent = 'WhatsApp-tjenesten starter opp...';
+      statusEl.textContent = 'WhatsApp-tjenesten starter opp, prøv igjen om litt...';
+      if (btn) btn.textContent = 'Prøv igjen';
     }
   } catch (e) {
-    statusEl.textContent = 'Kunne ikke nå WhatsApp-tjenesten';
+    statusEl.textContent = `Feil: ${e.message}`;
   }
 }
 
@@ -676,25 +675,49 @@ async function requestPushPermission() {
 
 // Legg til varsler-knapp i innstillinger (kalles fra loadSettings)
 async function initPushSettings() {
-  const container = document.getElementById('wa-qr-section');
-  if (!container) return;
-  if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+  // Fjern eventuell tidligere push-seksjon
+  const existing = document.getElementById('push-section');
+  if (existing) existing.remove();
 
-  // Sjekk om push-varsler allerede er aktivert
-  const perm = Notification.permission;
-  const pushSection = document.createElement('div');
-  pushSection.style.cssText = 'margin-top:16px;padding-top:16px;border-top:1px solid var(--border)';
-  pushSection.innerHTML = `
-    <div class="field-label" style="margin-bottom:10px;">Push-varsler</div>
-    <div style="font-size:14px;color:var(--text2);margin-bottom:12px;">
-      ${perm === 'granted' ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
-    </div>
-    ${perm !== 'granted' ? `<button class="btn-secondary" id="btn-enable-push" onclick="enablePush()">Aktiver push-varsler</button>` : `<button class="btn-secondary" onclick="testPush()">Send testvar sel</button>`}
-    <div id="push-status" style="font-size:13px;color:var(--text3);margin-top:8px;"></div>
-  `;
-
-  // Legg til før lagre-knappen
   const saveBtn = document.getElementById('btn-save-settings');
+  if (!saveBtn) return;
+
+  const pushSection = document.createElement('div');
+  pushSection.id = 'push-section';
+  pushSection.style.cssText = 'margin-top:16px;padding-top:16px;border-top:1px solid var(--border)';
+
+  const hasNotification = 'Notification' in window;
+  const hasSW = 'serviceWorker' in navigator;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                       window.navigator.standalone === true;
+
+  if (!hasNotification || !hasSW) {
+    pushSection.innerHTML = `
+      <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+      <div style="font-size:13px;color:var(--text2);">
+        Push-varsler støttes ikke i denne nettleseren. Legg til appen på hjemskjermen i Safari for å aktivere.
+      </div>`;
+  } else if (!isStandalone) {
+    pushSection.innerHTML = `
+      <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+      <div style="font-size:13px;color:var(--text2);">
+        For å aktivere push-varsler må appen legges til på hjemskjermen.<br><br>
+        Safari → Del-knapp → "Legg til på hjemskjerm"
+      </div>`;
+  } else {
+    const perm = Notification.permission;
+    pushSection.innerHTML = `
+      <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:12px;">
+        ${perm === 'granted' ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
+      </div>
+      ${perm !== 'granted'
+        ? '<button class="btn-secondary" id="btn-enable-push" onclick="enablePush()">Aktiver push-varsler</button>'
+        : '<button class="btn-secondary" onclick="testPush()">Send testvarsel</button>'
+      }
+      <div id="push-status" style="font-size:13px;color:var(--text3);margin-top:8px;"></div>`;
+  }
+
   saveBtn.parentNode.insertBefore(pushSection, saveBtn);
 }
 

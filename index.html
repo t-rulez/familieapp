@@ -292,10 +292,6 @@
         <div class="field-group"><label class="field-label">Passord</label><input class="settings-input" type="password" id="set-e1-pw" placeholder="La tomt for å beholde"/><div class="pw-status" id="e1-pw-status"></div></div>
         <div class="field-group"><label class="field-label">Filter: avsender inneholder</label><input class="settings-input" type="text" id="set-e1-from" placeholder="noreply@skoleplattform.no"/></div>
         <div class="field-group"><label class="field-label">Filter: emne inneholder</label><input class="settings-input" type="text" id="set-e1-subject" placeholder="La tomt for alle"/></div>
-        <div class="field-group"><label class="field-label">Kildenavn i appen</label><input class="settings-input" type="text" id="set-e1-label" placeholder="Skolemelding"/></div>
-        <div class="field-group"><label class="field-label">Kategori</label>
-          <select class="settings-select" id="set-e1-cat"><option value="skole">Skole</option><option value="aks">AKS</option><option value="idrett">Idrettslag</option><option value="foreldre">Foreldre</option></select>
-        </div>
         <div class="row-with-toggle"><span style="font-size:14px;color:var(--text2);">Slett e-post etter henting</span><label class="toggle"><input type="checkbox" id="set-e1-delete"><span class="toggle-slider"></span></label></div>
       </div>
     </div>
@@ -319,10 +315,6 @@
         <div class="field-group"><label class="field-label">Passord</label><input class="settings-input" type="password" id="set-e2-pw" placeholder="La tomt for å beholde"/><div class="pw-status" id="e2-pw-status"></div></div>
         <div class="field-group"><label class="field-label">Filter: avsender inneholder</label><input class="settings-input" type="text" id="set-e2-from" placeholder="no-reply@showbie.com"/></div>
         <div class="field-group"><label class="field-label">Filter: emne inneholder</label><input class="settings-input" type="text" id="set-e2-subject" placeholder="La tomt for alle"/></div>
-        <div class="field-group"><label class="field-label">Kildenavn i appen</label><input class="settings-input" type="text" id="set-e2-label" placeholder="Showbie"/></div>
-        <div class="field-group"><label class="field-label">Kategori</label>
-          <select class="settings-select" id="set-e2-cat"><option value="skole">Skole</option><option value="aks">AKS</option><option value="idrett">Idrettslag</option><option value="foreldre">Foreldre</option></select>
-        </div>
         <div class="row-with-toggle"><span style="font-size:14px;color:var(--text2);">Slett e-post etter henting</span><label class="toggle"><input type="checkbox" id="set-e2-delete"><span class="toggle-slider"></span></label></div>
       </div>
     </div>
@@ -342,16 +334,12 @@
           <label class="toggle"><input type="checkbox" id="set-wa-enabled" onchange="updateBadge('wa')"><span class="toggle-slider"></span></label>
         </div>
         <div class="field-group"><label class="field-label">Gruppefilter (kommaseparert)</label><input class="settings-input" type="text" id="set-wa-filter" placeholder="Fotball 8år, Foreldregruppe 3B"/></div>
-        <div class="field-group"><label class="field-label">Kildenavn i appen</label><input class="settings-input" type="text" id="set-wa-label" placeholder="WhatsApp"/></div>
-        <div class="field-group"><label class="field-label">Kategori</label>
-          <select class="settings-select" id="set-wa-cat"><option value="whatsapp">WhatsApp</option><option value="foreldre">Foreldre</option><option value="idrett">Idrettslag</option><option value="skole">Skole</option><option value="aks">AKS</option></select>
-        </div>
         <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;"/>
         <div class="field-label" style="margin-bottom:10px;">WhatsApp-tilkobling</div>
         <div id="wa-qr-section">
-          <div class="qr-status" id="wa-status-text">Laster status...</div>
+          <div class="qr-status" id="wa-status-text"></div>
           <div id="wa-qr-content"></div>
-          <button class="btn-secondary" onclick="loadWaQr()">Last inn QR-kode</button>
+          <button class="btn-secondary" id="btn-wa-qr" onclick="loadWaQr()">Sjekk tilkoblingsstatus</button>
         </div>
       </div>
     </div>
