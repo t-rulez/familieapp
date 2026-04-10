@@ -487,12 +487,15 @@ async function manualSync() {
   btn.disabled = true;
 
   try {
+    // Trigger synk – returnerer raskt etter datahenting, AI kjorer i bakgrunnen
     await apiFetch('/sync', { method: 'POST' });
+    // Hent og vis nye meldinger med en gang
     await loadFromApi();
     renderFeed();
     updateBadge();
   } catch (e) {
     console.error('Synk feilet:', e);
+    showSyncIndicator(false, true);
   } finally {
     btn.classList.remove('syncing');
     btn.disabled = false;
