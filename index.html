@@ -492,7 +492,13 @@
         <span class="header-title">Familie</span>
         <span class="badge" id="unread-count">6 nye</span>
       </div>
-      <div class="filters">
+      <div class="filters" id="status-filters">
+        <button class="filter-btn active" data-status="unread">Nye</button>
+        <button class="filter-btn" data-status="read">Lest</button>
+        <button class="filter-btn" data-status="skipped">Ikke relevant</button>
+        <button class="filter-btn" data-status="alle">Alle</button>
+      </div>
+      <div class="filters" id="category-filters">
         <button class="filter-btn active" data-filter="alle">Alle</button>
         <button class="filter-btn" data-filter="skole">Skole</button>
         <button class="filter-btn" data-filter="aks">AKS</button>

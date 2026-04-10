@@ -80,6 +80,7 @@ const MESSAGES = [
 let state = {
   messages: JSON.parse(localStorage.getItem('messages')) || MESSAGES,
   filter: 'alle',
+  statusFilter: 'unread',
   stats: JSON.parse(localStorage.getItem('stats')) || { read: 0, skipped: 0 }
 };
 
@@ -101,9 +102,9 @@ const SOURCE_CONFIG = {
 
 function getFiltered() {
   return state.messages.filter(m => {
-    if (m.status === 'skipped') return false;
-    if (state.filter === 'alle') return true;
-    return m.category === state.filter;
+    const statusMatch = state.statusFilter === 'alle' || m.status === state.statusFilter;
+    const categoryMatch = state.filter === 'alle' || m.category === state.filter;
+    return statusMatch && categoryMatch;
   });
 }
 
@@ -128,12 +129,11 @@ function renderFeed() {
 
 function renderCard(m) {
   const cfg = SOURCE_CONFIG[m.source] || { color: '#888', bgVar: '--surface2' };
-  const isRead = m.status === 'read';
   const tldrStyle = `background: var(${cfg.bgVar});`;
   const tldrLabelColor = cfg.color;
 
   return `
-  <div class="card${isRead ? ' read' : ''}" id="card-${m.id}" data-id="${m.id}">
+  <div class="card" id="card-${m.id}" data-id="${m.id}">
     <div class="swipe-hint swipe-hint-ok" id="hint-ok-${m.id}">Lest ✓</div>
     <div class="swipe-hint swipe-hint-skip" id="hint-skip-${m.id}">Skjul ✕</div>
 
@@ -156,8 +156,11 @@ function renderCard(m) {
     <button class="expand-btn" id="expand-${m.id}" style="color:${cfg.color}" onclick="toggleExpand(${m.id})">Les hele meldingen ↓</button>
 
     <div class="card-actions">
-      <button class="btn btn-ok" onclick="markRead(${m.id})">Lest / OK</button>
-      <button class="btn btn-skip" onclick="markSkipped(${m.id})">Ikke relevant</button>
+      ${m.status === 'unread'
+        ? `<button class="btn btn-ok" onclick="markRead(${m.id})">Lest / OK</button>
+           <button class="btn btn-skip" onclick="markSkipped(${m.id})">Ikke relevant</button>`
+        : `<button class="btn btn-skip" style="flex:1" onclick="markUnread(${m.id})">↩ Merk som ny</button>`
+      }
     </div>
   </div>`;
 }
@@ -176,6 +179,18 @@ function toggleExpand(id) {
 }
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
+
+function markUnread(id) {
+  const msg = state.messages.find(m => m.id === id);
+  if (msg) {
+    if (msg.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
+    if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
+    msg.status = 'unread';
+    saveState();
+  }
+  renderFeed();
+  updateBadge();
+}
 
 function markRead(id) {
   animateCard(id, 'right', () => {
@@ -296,9 +311,18 @@ function attachCardEvents(id) {
 
 // ─── Filter tabs ──────────────────────────────────────────────────────────────
 
-document.querySelectorAll('.filter-btn').forEach(btn => {
+document.querySelectorAll('#status-filters .filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#status-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.statusFilter = btn.dataset.status;
+    renderFeed();
+  });
+});
+
+document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#category-filters .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.filter = btn.dataset.filter;
     renderFeed();
