@@ -252,8 +252,13 @@ function animateCard(id, dir, cb) {
 function updateBadge() {
   const unread = state.messages.filter(m => m.status === 'unread').length;
   const badge = document.getElementById('unread-count');
-  badge.textContent = unread > 0 ? `${unread} nye` : 'Alt lest';
-  badge.style.background = unread > 0 ? 'var(--text)' : 'var(--green)';
+  if (!badge) return;
+  if (unread > 0) {
+    badge.textContent = unread > 9 ? '9+' : unread;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
 }
 
 // ─── Swipe ────────────────────────────────────────────────────────────────────
@@ -476,6 +481,15 @@ async function initApp() {
   }
   const nameEl = document.getElementById('user-display-name');
   if (nameEl) nameEl.textContent = user.display_name;
+  // Sett initialer i avatar
+  const avatar = document.getElementById('user-avatar');
+  if (avatar && user.display_name) {
+    const parts = user.display_name.trim().split(' ');
+    const initials = parts.length > 1
+      ? parts[0][0] + parts[parts.length-1][0]
+      : parts[0].substring(0, 2);
+    avatar.textContent = initials.toUpperCase();
+  }
   showApp();
   try {
     const data = await apiFetch('/messages');
