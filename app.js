@@ -153,7 +153,7 @@ function renderCard(m) {
         <span class="source-label" style="color:${cfg.color}">${m.sourceLabel} · ${categoryLabel(m.category)}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        ${state.statusFilter !== 'unread' ? `<span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;color:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"><span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"></span>${m.status==='read'?'lest':m.status==='skipped'?'ignorert':'ny'}</span>` : ''}
+        ${state.statusFilter !== 'unread' ? `<span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;color:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"><span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"></span>${m.status==='read'?'relevant':m.status==='skipped'?'ignorert':'ny'}</span>` : ''}
         <span class="card-time">${m.time}</span>
       </div>
     </div>
@@ -169,7 +169,7 @@ function renderCard(m) {
         ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}">Lest / OK</button>
            <button class="btn btn-skip" data-action="skip" data-id="${m.id}">Ikke relevant</button>`
         : m.status === 'skipped'
-        ? `<button class="btn btn-ok" style="flex:1" data-action="read" data-id="${m.id}">Relevant – merk som lest</button>
+        ? `<button class="btn btn-ok" style="flex:1" data-action="read" data-id="${m.id}">Relevant</button>
            <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
         : `<button class="btn btn-skip" data-action="skip" data-id="${m.id}">Ikke relevant</button>
            <button class="btn btn-skip" style="background:var(--surface2)" data-action="unread" data-id="${m.id}">↩ Ny</button>`

@@ -71,7 +71,7 @@
     /* Filters */
     .filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
     .filters::-webkit-scrollbar{display:none}
-    .filter-btn{flex-shrink:0;padding:8px 16px;border-radius:20px;font-size:14px;font-family:var(--font);cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);white-space:nowrap;min-height:36px}
+    .filter-btn{flex-shrink:0;padding:6px 11px;border-radius:20px;font-size:12px;font-family:var(--font);cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);white-space:nowrap;min-height:32px}
     .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
     /* Feed */
@@ -81,7 +81,7 @@
     .empty-state p{font-size:16px}
 
     /* Card */
-    .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:10px;position:relative;overflow:hidden;touch-action:pan-y;user-select:none;transition:opacity 0.3s,transform 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+    .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:12px;margin-bottom:8px;position:relative;overflow:hidden;touch-action:pan-y;user-select:none;transition:opacity 0.3s,transform 0.4s cubic-bezier(0.34,1.56,0.64,1)}
     .card.swiping{transition:none}
     .card.dismissed-right{transform:translateX(110%);opacity:0}
     .card.dismissed-left{transform:translateX(-110%);opacity:0}
@@ -98,7 +98,7 @@
     .card-body.expanded{display:block}
     .expand-btn{background:none;border:none;font-size:13px;cursor:pointer;padding:0;font-family:var(--font);margin-bottom:12px;min-height:44px;display:flex;align-items:center}
     .card-actions{display:flex;gap:8px;margin-top:12px}
-    .btn{flex:1;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:var(--font);cursor:pointer;border:none;min-height:44px}
+    .btn{flex:1;padding:8px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;border:none;min-height:36px}
     .btn-ok{background:var(--green-bg);color:var(--green)}
     .btn-skip{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
     .swipe-hint{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;border-radius:var(--radius);opacity:0;pointer-events:none;transition:opacity 0.1s}
@@ -208,13 +208,13 @@
       </div>
       <div class="filters" id="status-filters">
         <button class="filter-btn active" data-status="unread">Nye</button>
-        <button class="filter-btn" data-status="read">Lest</button>
+        <button class="filter-btn" data-status="read">Relevant</button>
         <button class="filter-btn" data-status="skipped">Ikke relevant</button>
         <button class="filter-btn" data-status="alle">Alle</button>
       </div>
       <div class="filters" id="category-filters">
         <button class="filter-btn active" data-source="alle">Alle</button>
-        <button class="filter-btn" data-source="skolemelding">Skolemelding</button>
+        <button class="filter-btn" data-source="skolemelding">Skole</button>
         <button class="filter-btn" data-source="showbie">Showbie</button>
         <button class="filter-btn" data-source="spond">Spond</button>
         <button class="filter-btn" data-source="whatsapp">WhatsApp</button>
