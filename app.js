@@ -1,6 +1,6 @@
 // ─── Konfig ───────────────────────────────────────────────────────────────────
 
-const API_URL = localStorage.getItem('api_url') || null;
+const API_URL = localStorage.getItem('api_url') || 'https://familieapp-backend.up.railway.app';
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
@@ -492,12 +492,4 @@ async function initApp() {
 }
 
 // Start
-if (!API_URL) {
-  document.body.innerHTML = `<div style="font-family:sans-serif;padding:40px;text-align:center">
-    <h2>Mangler API-URL</h2>
-    <p>Kjør i konsollen:</p>
-    <code>localStorage.setItem('api_url', 'https://din-backend.up.railway.app')</code>
-  </div>`;
-} else {
-  initApp();
-}
+initApp();
