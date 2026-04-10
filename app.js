@@ -75,20 +75,88 @@ const MESSAGES = [
   }
 ];
 
-// ─── State ───────────────────────────────────────────────────────────────────
+// ─── API-konfig ───────────────────────────────────────────────────────────────────────
+// Sett API_URL til Railway-backenden din når den er oppe.
+// Så lenge den er null, brukes lokale eksempeldata.
+
+const API_URL = localStorage.getItem('api_url') || null;
+const API_TOKEN = localStorage.getItem('api_token') || null;
+
+// ─── State ──────────────────────────────────────────────────────────────────────────────
 
 let state = {
   messages: JSON.parse(localStorage.getItem('messages')) || MESSAGES,
   filter: 'alle',
   statusFilter: 'unread',
-  stats: JSON.parse(localStorage.getItem('stats')) || { read: 0, skipped: 0 }
+  stats: JSON.parse(localStorage.getItem('stats')) || { read: 0, skipped: 0 },
+  usingApi: false
 };
 
 function saveState() {
-  localStorage.setItem('messages', JSON.stringify(state.messages));
+  if (!state.usingApi) {
+    localStorage.setItem('messages', JSON.stringify(state.messages));
+  }
   localStorage.setItem('stats', JSON.stringify(state.stats));
 }
 
+// ─── API-kall ─────────────────────────────────────────────────────────────────────────────────
+
+async function apiFetch(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (API_TOKEN) headers['x-api-token'] = API_TOKEN;
+  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  if (!res.ok) throw new Error(`API-feil: ${res.status}`);
+  return res.json();
+}
+
+async function loadFromApi() {
+  if (!API_URL) return false;
+  try {
+    showSyncIndicator(true);
+    const data = await apiFetch('/messages');
+    const localStatus = {};
+    state.messages.forEach(m => { localStatus[m.id] = m.status; });
+    state.messages = data.messages.map(m => ({
+      ...m,
+      status: localStatus[m.id] || m.status
+    }));
+    state.usingApi = true;
+    document.getElementById('last-sync').textContent =
+      new Date(data.last_sync).toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+    showSyncIndicator(false);
+    return true;
+  } catch (e) {
+    console.error('Kunne ikke hente fra API:', e);
+    showSyncIndicator(false, true);
+    return false;
+  }
+}
+
+async function syncStatusToApi(messageId, status) {
+  if (!API_URL) return;
+  try {
+    await apiFetch(`/messages/${messageId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status })
+    });
+  } catch (e) {
+    console.error('Kunne ikke synke status til API:', e);
+  }
+}
+
+function showSyncIndicator(loading, error = false) {
+  const badge = document.getElementById('unread-count');
+  if (loading) {
+    badge.textContent = '↻ synker...';
+    badge.style.background = 'var(--text3)';
+  } else if (error) {
+    badge.textContent = '⚠ offline';
+    badge.style.background = '#BA7517';
+    setTimeout(updateBadge, 3000);
+  } else {
+    updateBadge();
+  }
+}
 // ─── Source config ────────────────────────────────────────────────────────────
 
 const SOURCE_CONFIG = {
@@ -187,6 +255,7 @@ function markUnread(id) {
     if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
     msg.status = 'unread';
     saveState();
+    syncStatusToApi(msg.id, 'unread');
   }
   renderFeed();
   updateBadge();
@@ -199,6 +268,7 @@ function markRead(id) {
       msg.status = 'read';
       state.stats.read++;
       saveState();
+      syncStatusToApi(msg.id, 'read');
     }
     renderFeed();
     updateBadge();
@@ -212,6 +282,7 @@ function markSkipped(id) {
       msg.status = 'skipped';
       state.stats.skipped++;
       saveState();
+      syncStatusToApi(msg.id, 'skipped');
     }
     renderFeed();
     updateBadge();
@@ -378,12 +449,19 @@ function renderStats() {
     </div>`).join('');
 }
 
-// ─── Last sync timestamp ──────────────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────────────────────────────
 
-document.getElementById('last-sync').textContent =
-  new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+async function init() {
+  renderFeed();
+  updateBadge();
+  const loaded = await loadFromApi();
+  if (loaded) {
+    renderFeed();
+    updateBadge();
+  } else {
+    document.getElementById('last-sync').textContent =
+      new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+  }
+}
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
-
-renderFeed();
-updateBadge();
+init();
