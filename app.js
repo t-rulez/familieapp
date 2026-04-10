@@ -1,172 +1,124 @@
-// ─── Sample data (will be replaced by API in Phase 2) ───────────────────────
-
-const MESSAGES = [
-  {
-    id: 1,
-    source: 'spond',
-    sourceLabel: 'Spond',
-    category: 'idrett',
-    title: 'Dugnadsdag 19. april',
-    tldr: 'Dugnad lørdag 19. april kl. 10–13 på Voldsløkka. Ta med hansker og rake. Obligatorisk for alle familier.',
-    body: 'Kjære foreldre, vi minner om årets dugnadsdag som er satt til lørdag 19. april fra kl. 10:00 til 13:00 på Voldsløkka. Det er obligatorisk at en voksen fra hver familie møter opp. Ta gjerne med hanske, rake og eventuelt greinsaks. Det serveres kaffe og brus. Kontakt Kjetil på 99887766 ved spørsmål.',
-    time: '10:32',
-    priority: 'high',
-    status: 'unread'
-  },
-  {
-    id: 2,
-    source: 'skolemelding',
-    sourceLabel: 'Skolemelding',
-    category: 'skole',
-    title: 'Foreldremøte 22. april',
-    tldr: 'Obligatorisk foreldremøte for 3. trinn onsdag 22. april kl. 18:00 i aulaen. Påmelding ikke nødvendig.',
-    body: 'Vi inviterer alle foresatte på 3. trinn til foreldremøte onsdag 22. april kl. 18:00–19:30 i aulaen. Tema er faglig utvikling, sosiale mål og planlegging av våravslutning. Ingen påmelding nødvendig. Enkel servering. Vel møtt! Hilsen Tone Bakken, kontaktlærer 3B.',
-    time: '08:14',
-    priority: 'high',
-    status: 'unread'
-  },
-  {
-    id: 3,
-    source: 'showbie',
-    sourceLabel: 'Showbie',
-    category: 'skole',
-    title: 'Lekser uke 16',
-    tldr: 'Matematikk s. 42–43 og leselogg. Innlevering fredag.',
-    body: 'Hei! Denne uken er leksene: Matematikk side 42–43 (alle oppgaver), leselogg med minst 20 min lesing per dag, og skriveøvelse "Min beste ferie" (minst 10 setninger). Leveres i Showbie innen fredag kl. 23:59.',
-    time: 'i går',
-    priority: 'medium',
-    status: 'unread'
-  },
-  {
-    id: 4,
-    source: 'spond',
-    sourceLabel: 'Spond',
-    category: 'idrett',
-    title: 'Trening avlyst fredag',
-    tldr: 'Fredagens trening er avlyst pga. hallkonflikt. Neste trening er mandag som normalt.',
-    body: 'Beklager kort varsel – fredagens trening 18. april er dessverre avlyst fordi hallen er booket til en skolefunksjon. Neste planlagte trening er mandag 22. april kl. 17:30. Samme oppmøtested. Ha en god helg!',
-    time: 'i går',
-    priority: 'medium',
-    status: 'unread'
-  },
-  {
-    id: 5,
-    source: 'skolemelding',
-    sourceLabel: 'Skolemelding',
-    category: 'aks',
-    title: 'AKS stengt 1. mai',
-    tldr: 'AKS holder stengt 1. mai (offentlig fridag). Husk å ordne barnepass.',
-    body: 'Vi minner om at AKS holder stengt på offentlige fridager, herunder 1. mai. Skolen er åpen, men AKS gir ikke tilbud denne dagen. Har du behov for tilrettelagt dagplass, ta kontakt med kommunen.',
-    time: '2 dager siden',
-    priority: 'medium',
-    status: 'unread'
-  },
-  {
-    id: 6,
-    source: 'skolemelding',
-    sourceLabel: 'Skolemelding',
-    category: 'skole',
-    title: 'Påskeferie – skolestart etter ferien',
-    tldr: 'Skolen starter igjen mandag 22. april. God påske!',
-    body: 'Vi ønsker alle elever og foresatte en riktig god påskeferie. Skolen åpner igjen mandag 22. april kl. 08:15. Husk at SFO/AKS har ordinære åpningstider fra samme dag.',
-    time: '3 dager siden',
-    priority: 'low',
-    status: 'unread'
-  }
-];
-
-// ─── API-konfig ───────────────────────────────────────────────────────────────────────
-// Sett API_URL til Railway-backenden din når den er oppe.
-// Så lenge den er null, brukes lokale eksempeldata.
+// ─── Konfig ───────────────────────────────────────────────────────────────────
 
 const API_URL = localStorage.getItem('api_url') || null;
-const API_TOKEN = localStorage.getItem('api_token') || null;
 
-// ─── State ──────────────────────────────────────────────────────────────────────────────
+// ─── Auth ─────────────────────────────────────────────────────────────────────
 
-let state = {
-  messages: JSON.parse(localStorage.getItem('messages')) || MESSAGES,
-  filter: 'alle',
-  statusFilter: 'unread',
-  stats: JSON.parse(localStorage.getItem('stats')) || { read: 0, skipped: 0 },
-  usingApi: false
-};
+function getToken() { return localStorage.getItem('auth_token'); }
+function getUser()  { return JSON.parse(localStorage.getItem('auth_user') || 'null'); }
 
-function saveState() {
-  if (!state.usingApi) {
-    localStorage.setItem('messages', JSON.stringify(state.messages));
-  }
-  localStorage.setItem('stats', JSON.stringify(state.stats));
+function saveAuth(token, user) {
+  localStorage.setItem('auth_token', token);
+  localStorage.setItem('auth_user', JSON.stringify(user));
 }
 
-// ─── API-kall ─────────────────────────────────────────────────────────────────────────────────
+function logout() {
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('auth_user');
+  showLogin();
+}
+
+// ─── API ──────────────────────────────────────────────────────────────────────
 
 async function apiFetch(path, options = {}) {
   const headers = { 'Content-Type': 'application/json' };
-  if (API_TOKEN) headers['x-api-token'] = API_TOKEN;
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   const res = await fetch(`${API_URL}${path}`, { ...options, headers });
-  if (!res.ok) throw new Error(`API-feil: ${res.status}`);
+  if (res.status === 401) { logout(); throw new Error('Ikke autentisert'); }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Feil: ${res.status}`);
+  }
   return res.json();
 }
 
-async function loadFromApi() {
-  if (!API_URL) return false;
-  try {
-    showSyncIndicator(true);
-    const data = await apiFetch('/messages');
-    const localStatus = {};
-    state.messages.forEach(m => { localStatus[m.id] = m.status; });
-    state.messages = data.messages.map(m => ({
-      ...m,
-      status: localStatus[m.id] || m.status
-    }));
-    state.usingApi = true;
-    document.getElementById('last-sync').textContent =
-      new Date(data.last_sync).toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-    showSyncIndicator(false);
-    return true;
-  } catch (e) {
-    console.error('Kunne ikke hente fra API:', e);
-    showSyncIndicator(false, true);
-    return false;
-  }
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let state = {
+  messages: [],
+  filter: 'alle',
+  statusFilter: 'unread',
+  stats: { read: 0, skipped: 0 },
+  lastSync: null
+};
+
+function saveLocalStats() {
+  localStorage.setItem('stats', JSON.stringify(state.stats));
 }
 
-async function syncStatusToApi(messageId, status) {
-  if (!API_URL) return;
-  try {
-    await apiFetch(`/messages/${messageId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ status })
-    });
-  } catch (e) {
-    console.error('Kunne ikke synke status til API:', e);
-  }
-}
-
-function showSyncIndicator(loading, error = false) {
-  const badge = document.getElementById('unread-count');
-  if (loading) {
-    badge.textContent = '↻ synker...';
-    badge.style.background = 'var(--text3)';
-  } else if (error) {
-    badge.textContent = '⚠ offline';
-    badge.style.background = '#BA7517';
-    setTimeout(updateBadge, 3000);
-  } else {
-    updateBadge();
-  }
-}
 // ─── Source config ────────────────────────────────────────────────────────────
 
 const SOURCE_CONFIG = {
-  spond:       { color: '#185FA5', bgVar: '--spond-bg' },
-  skolemelding:{ color: '#2D6A4F', bgVar: '--skolemelding-bg' },
-  showbie:     { color: '#BA7517', bgVar: '--showbie-bg' },
-  whatsapp:    { color: '#993556', bgVar: '--whatsapp-bg' }
+  spond:        { color: '#185FA5', bgVar: '--spond-bg' },
+  skolemelding: { color: '#2D6A4F', bgVar: '--skolemelding-bg' },
+  showbie:      { color: '#BA7517', bgVar: '--showbie-bg' },
+  whatsapp:     { color: '#993556', bgVar: '--whatsapp-bg' }
 };
 
-// ─── Render feed ──────────────────────────────────────────────────────────────
+// ─── Visning ──────────────────────────────────────────────────────────────────
+
+function showLogin()    { document.getElementById('screen-login').style.display = 'flex';  document.getElementById('screen-app').style.display = 'none'; }
+function showApp()      { document.getElementById('screen-login').style.display = 'none';  document.getElementById('screen-app').style.display = 'flex'; }
+function showAuthError(msg) { document.getElementById('auth-error').textContent = msg; }
+
+// ─── Innlogging ───────────────────────────────────────────────────────────────
+
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) return showAuthError('Fyll inn e-post og passord');
+  try {
+    document.getElementById('btn-login').textContent = 'Logger inn...';
+    const data = await apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    saveAuth(data.token, data.user);
+    showAuthError('');
+    await initApp();
+  } catch (e) {
+    showAuthError(e.message || 'Innlogging feilet');
+  } finally {
+    document.getElementById('btn-login').textContent = 'Logg inn';
+  }
+});
+
+document.getElementById('btn-show-register').addEventListener('click', () => {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'flex';
+  showAuthError('');
+});
+
+document.getElementById('btn-show-login').addEventListener('click', () => {
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'flex';
+  showAuthError('');
+});
+
+document.getElementById('btn-register').addEventListener('click', async () => {
+  const email    = document.getElementById('reg-email').value.trim();
+  const name     = document.getElementById('reg-name').value.trim();
+  const password = document.getElementById('reg-password').value;
+  if (!email || !name || !password) return showAuthError('Fyll inn alle felt');
+  if (password.length < 8) return showAuthError('Passord må være minst 8 tegn');
+  try {
+    document.getElementById('btn-register').textContent = 'Registrerer...';
+    const data = await apiFetch('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email, display_name: name, password })
+    });
+    saveAuth(data.token, data.user);
+    showAuthError('');
+    await initApp();
+  } catch (e) {
+    showAuthError(e.message || 'Registrering feilet');
+  } finally {
+    document.getElementById('btn-register').textContent = 'Registrer';
+  }
+});
+
+// ─── Feed ─────────────────────────────────────────────────────────────────────
 
 function getFiltered() {
   return state.messages.filter(m => {
@@ -179,60 +131,38 @@ function getFiltered() {
 function renderFeed() {
   const feed = document.getElementById('feed');
   const msgs = getFiltered();
-
   if (msgs.length === 0) {
-    feed.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">✓</div>
-        <p>Ingen uleste meldinger${state.filter !== 'alle' ? ' i denne kategorien' : ''}.</p>
-      </div>`;
+    feed.innerHTML = `<div class="empty-state"><div class="icon">✓</div><p>Ingen meldinger${state.filter !== 'alle' ? ' i denne kategorien' : ''}.</p></div>`;
     return;
   }
-
   feed.innerHTML = msgs.map(m => renderCard(m)).join('');
-
   msgs.forEach(m => attachCardEvents(m.id));
   updateBadge();
 }
 
 function renderCard(m) {
   const cfg = SOURCE_CONFIG[m.source] || { color: '#888', bgVar: '--surface2' };
-  const tldrStyle = `background: var(${cfg.bgVar});`;
-  const tldrLabelColor = cfg.color;
-
-  const eid = CSS.escape(m.id);
   return `
   <div class="card" id="card-${m.id}" data-id="${m.id}">
-    <div class="swipe-hint swipe-hint-ok" id="hint-ok-${m.id}">Lest ✓</div>
-    <div class="swipe-hint swipe-hint-skip" id="hint-skip-${m.id}">Skjul ✕</div>
-
+    <div class="swipe-hint swipe-hint-ok">Lest ✓</div>
+    <div class="swipe-hint swipe-hint-skip">Skjul ✕</div>
     <div class="card-header">
       <div class="source-tag">
         <div class="source-dot" style="background:${cfg.color}"></div>
         <span class="source-label" style="color:${cfg.color}">${m.sourceLabel} · ${categoryLabel(m.category)}</span>
       </div>
-      <div style="display:flex; align-items:center; gap:6px;">
-        ${state.statusFilter !== 'unread' ? `<span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;
-          color:${m.status === 'read' ? 'var(--green)' : m.status === 'skipped' ? 'var(--red)' : '#BA7517'}">
-          <span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${
-            m.status === 'read' ? 'var(--green)' : m.status === 'skipped' ? 'var(--red)' : '#BA7517'
-          }"></span>${
-            m.status === 'read' ? 'lest' : m.status === 'skipped' ? 'ignorert' : 'ny'
-          }</span>` : ''}
+      <div style="display:flex;align-items:center;gap:6px;">
+        ${state.statusFilter !== 'unread' ? `<span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;color:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"><span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"></span>${m.status==='read'?'lest':m.status==='skipped'?'ignorert':'ny'}</span>` : ''}
         <span class="card-time">${m.time}</span>
       </div>
     </div>
-
     <div class="card-title">${m.title}</div>
-
-    <div class="tldr" style="${tldrStyle}">
+    <div class="tldr" style="background:var(${cfg.bgVar})">
       <div class="tldr-label" style="color:${cfg.color}">TL;DR</div>
       <div class="tldr-text" style="color:${cfg.color}">${m.tldr}</div>
     </div>
-
     <div class="card-body" id="body-${m.id}">${m.body}</div>
     <button class="expand-btn" id="expand-${m.id}" data-id="${m.id}" style="color:${cfg.color}">Les hele meldingen ↓</button>
-
     <div class="card-actions">
       ${m.status === 'unread'
         ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}">Lest / OK</button>
@@ -248,23 +178,20 @@ function renderCard(m) {
 }
 
 function categoryLabel(cat) {
-  const map = { skole: 'Skole', aks: 'AKS', idrett: 'Idrettslag', foreldre: 'Foreldre' };
-  return map[cat] || cat;
+  return { skole: 'Skole', aks: 'AKS', idrett: 'Idrettslag', foreldre: 'Foreldre' }[cat] || cat;
 }
 
 function toggleExpand(id) {
   const body = document.getElementById(`body-${id}`);
-  const btn = document.getElementById(`expand-${id}`);
+  const btn  = document.getElementById(`expand-${id}`);
   const expanded = body.classList.toggle('expanded');
   btn.textContent = expanded ? 'Skjul ↑' : 'Les hele meldingen ↓';
 }
 
-// Event delegation – handles all card button clicks safely (IDs may contain special chars)
 document.addEventListener('click', e => {
   const btn = e.target.closest('[data-action]');
   if (btn) {
-    const id = btn.dataset.id;
-    const action = btn.dataset.action;
+    const id = btn.dataset.id, action = btn.dataset.action;
     if (action === 'read')   markRead(id);
     if (action === 'skip')   markSkipped(id);
     if (action === 'unread') markUnread(id);
@@ -275,60 +202,49 @@ document.addEventListener('click', e => {
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
-function markUnread(id) {
+async function markRead(id) {
   const msg = state.messages.find(m => m.id === id);
-  if (msg) {
-    if (msg.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
+  if (!msg || msg.status === 'read') return;
+  animateCard(id, 'right', async () => {
     if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
-    msg.status = 'unread';
-    saveState();
-    syncStatusToApi(msg.id, 'unread');
-  }
-  renderFeed();
-  updateBadge();
-}
-
-function markRead(id) {
-  animateCard(id, 'right', () => {
-    const msg = state.messages.find(m => m.id === id);
-    if (msg && msg.status !== 'read') {
-      if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
-      msg.status = 'read';
-      state.stats.read++;
-      saveState();
-      syncStatusToApi(msg.id, 'read');
-    }
-    renderFeed();
-    updateBadge();
+    msg.status = 'read';
+    state.stats.read++;
+    saveLocalStats();
+    renderFeed(); updateBadge();
+    await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'read' }) }).catch(console.error);
   });
 }
 
-function markSkipped(id) {
-  animateCard(id, 'left', () => {
-    const msg = state.messages.find(m => m.id === id);
-    if (msg) {
-      if (msg.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
-      msg.status = 'skipped';
-      state.stats.skipped++;
-      saveState();
-      syncStatusToApi(msg.id, 'skipped');
-    }
-    renderFeed();
-    updateBadge();
+async function markSkipped(id) {
+  const msg = state.messages.find(m => m.id === id);
+  if (!msg) return;
+  animateCard(id, 'left', async () => {
+    if (msg.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
+    msg.status = 'skipped';
+    state.stats.skipped++;
+    saveLocalStats();
+    renderFeed(); updateBadge();
+    await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'skipped' }) }).catch(console.error);
   });
+}
+
+async function markUnread(id) {
+  const msg = state.messages.find(m => m.id === id);
+  if (!msg) return;
+  if (msg.status === 'read')    state.stats.read    = Math.max(0, state.stats.read - 1);
+  if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
+  msg.status = 'unread';
+  saveLocalStats();
+  renderFeed(); updateBadge();
+  await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'unread' }) }).catch(console.error);
 }
 
 function animateCard(id, dir, cb) {
-  const card = document.getElementById(`card-${id}`);
+  const card = document.querySelector(`[data-id="${id}"].card`);
   if (!card) return cb();
   card.classList.add(dir === 'right' ? 'dismissed-right' : 'dismissed-left');
   card.style.height = card.offsetHeight + 'px';
-  setTimeout(() => {
-    card.style.height = '0';
-    card.style.marginBottom = '0';
-    card.style.padding = '0';
-    card.style.overflow = 'hidden';
-  }, 280);
+  setTimeout(() => { card.style.height = '0'; card.style.marginBottom = '0'; card.style.padding = '0'; card.style.overflow = 'hidden'; }, 280);
   setTimeout(cb, 500);
 }
 
@@ -339,77 +255,46 @@ function updateBadge() {
   badge.style.background = unread > 0 ? 'var(--text)' : 'var(--green)';
 }
 
-// ─── Swipe gesture ────────────────────────────────────────────────────────────
+// ─── Swipe ────────────────────────────────────────────────────────────────────
 
 function attachCardEvents(id) {
   const card = document.querySelector(`[data-id="${id}"].card`);
   if (!card) return;
-
   let startX = 0, startY = 0, currentX = 0, dragging = false, axis = null;
-
   card.addEventListener('touchstart', e => {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    dragging = true;
-    axis = null;
-    card.classList.add('swiping');
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    dragging = true; axis = null; card.classList.add('swiping');
   }, { passive: true });
-
   card.addEventListener('touchmove', e => {
     if (!dragging) return;
-    const dx = e.touches[0].clientX - startX;
-    const dy = e.touches[0].clientY - startY;
-
-    if (!axis) {
-      axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    }
-
+    const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
+    if (!axis) axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
     if (axis === 'x') {
-      e.preventDefault();
-      currentX = dx;
+      e.preventDefault(); currentX = dx;
       card.style.transform = `translateX(${dx}px) rotate(${dx * 0.02}deg)`;
-
-      const hintOk = card.querySelector('.swipe-hint-ok');
-      const hintSkip = card.querySelector('.swipe-hint-skip');
-
-      if (dx > 30) {
-        hintOk.style.opacity = Math.min((dx - 30) / 60, 0.9);
-        hintSkip.style.opacity = 0;
-      } else if (dx < -30) {
-        hintSkip.style.opacity = Math.min((-dx - 30) / 60, 0.9);
-        hintOk.style.opacity = 0;
-      } else {
-        hintOk.style.opacity = 0;
-        hintSkip.style.opacity = 0;
-      }
+      const hintOk = card.querySelector('.swipe-hint-ok'), hintSkip = card.querySelector('.swipe-hint-skip');
+      if (dx > 30)       { hintOk.style.opacity = Math.min((dx - 30) / 60, 0.9); hintSkip.style.opacity = 0; }
+      else if (dx < -30) { hintSkip.style.opacity = Math.min((-dx - 30) / 60, 0.9); hintOk.style.opacity = 0; }
+      else               { hintOk.style.opacity = 0; hintSkip.style.opacity = 0; }
     }
   }, { passive: false });
-
   card.addEventListener('touchend', () => {
     if (!dragging) return;
-    dragging = false;
-    card.classList.remove('swiping');
-
+    dragging = false; card.classList.remove('swiping');
     if (axis === 'x') {
-      if (currentX > 80) {
-        markRead(id);
-      } else if (currentX < -80) {
-        markSkipped(id);
-      } else {
+      if (currentX > 80) markRead(id);
+      else if (currentX < -80) markSkipped(id);
+      else {
         card.style.transform = '';
         card.querySelector('.swipe-hint-ok').style.opacity = 0;
         card.querySelector('.swipe-hint-skip').style.opacity = 0;
       }
-    } else {
-      card.style.transform = '';
-    }
-
-    currentX = 0;
-    axis = null;
+    } else { card.style.transform = ''; }
+    currentX = 0; axis = null;
   });
 }
 
-// ─── Filter tabs ──────────────────────────────────────────────────────────────
+// ─── Filter-tabs ──────────────────────────────────────────────────────────────
 
 document.querySelectorAll('#status-filters .filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -429,92 +314,190 @@ document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
   });
 });
 
-// ─── Navigation ──────────────────────────────────────────────────────────────
+// ─── Navigasjon ───────────────────────────────────────────────────────────────
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const view = btn.dataset.view;
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     document.getElementById('view-feed').style.display = view === 'feed' ? 'flex' : 'none';
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-
-    if (view !== 'feed') {
-      document.getElementById(`view-${view}`).classList.add('active');
-    }
-
+    if (view !== 'feed') document.getElementById(`view-${view}`).classList.add('active');
     if (view === 'stats') renderStats();
+    if (view === 'settings') loadSettings();
   });
 });
 
-// ─── Stats ────────────────────────────────────────────────────────────────────
+// ─── Manuell synk ─────────────────────────────────────────────────────────────
+
+async function manualSync() {
+  if (!API_URL) return;
+  const btn = document.getElementById('sync-btn');
+  btn.classList.add('syncing'); btn.disabled = true;
+  try {
+    await apiFetch('/sync', { method: 'POST' });
+    const data = await apiFetch('/messages');
+    state.messages = data.messages;
+    state.lastSync = data.last_sync;
+    renderFeed(); updateBadge();
+    document.getElementById('last-sync').textContent =
+      new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+    console.error('Synk feilet:', e);
+  } finally {
+    btn.classList.remove('syncing'); btn.disabled = false;
+  }
+}
+
+// ─── Statistikk ───────────────────────────────────────────────────────────────
 
 function renderStats() {
-  const total = state.messages.length;
-  const read = state.messages.filter(m => m.status === 'read').length;
+  const total   = state.messages.length;
+  const read    = state.messages.filter(m => m.status === 'read').length;
   const skipped = state.messages.filter(m => m.status === 'skipped').length;
-  const unread = state.messages.filter(m => m.status === 'unread').length;
-
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-read').textContent = read;
+  const unread  = state.messages.filter(m => m.status === 'unread').length;
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-read').textContent    = read;
   document.getElementById('stat-skipped').textContent = skipped;
-  document.getElementById('stat-unread').textContent = unread;
-
+  document.getElementById('stat-unread').textContent  = unread;
   const sources = {};
   state.messages.forEach(m => {
     if (!sources[m.source]) sources[m.source] = { label: m.sourceLabel, count: 0 };
     sources[m.source].count++;
   });
-
-  const cfg = SOURCE_CONFIG;
   document.getElementById('source-stats').innerHTML = Object.entries(sources).map(([key, val]) => `
     <div class="settings-row">
       <div class="settings-row-left">
-        <div style="width:10px;height:10px;border-radius:50%;background:${cfg[key]?.color || '#888'};flex-shrink:0;"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:${SOURCE_CONFIG[key]?.color||'#888'};flex-shrink:0;"></div>
         <span class="settings-row-text">${val.label}</span>
       </div>
       <span style="font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;">${val.count} meldinger</span>
     </div>`).join('');
 }
 
-// ─── Manuell synk ───────────────────────────────────────────────────────────────────────────
+// ─── Innstillinger ────────────────────────────────────────────────────────────
 
-async function manualSync() {
-  if (!API_URL) return;
-  const btn = document.getElementById('sync-btn');
-  btn.classList.add('syncing');
-  btn.disabled = true;
-
+async function loadSettings() {
   try {
-    // Trigger synk – returnerer raskt etter datahenting, AI kjorer i bakgrunnen
-    await apiFetch('/sync', { method: 'POST' });
-    // Hent og vis nye meldinger med en gang
-    await loadFromApi();
-    renderFeed();
-    updateBadge();
+    const s = await apiFetch('/settings');
+    // Spond
+    document.getElementById('set-spond-user').value    = s.spond_username || '';
+    document.getElementById('set-spond-enabled').checked = !!s.spond_enabled;
+    document.getElementById('spond-pw-status').textContent = s.spond_has_password ? '(passord lagret)' : '(ikke satt)';
+    // E-post 1
+    document.getElementById('set-e1-host').value      = s.email_1_host || 'imap.one.com';
+    document.getElementById('set-e1-user').value      = s.email_1_username || '';
+    document.getElementById('set-e1-from').value      = s.email_1_from_filter || '';
+    document.getElementById('set-e1-subject').value   = s.email_1_subject_filter || '';
+    document.getElementById('set-e1-label').value     = s.email_1_source_label || 'Skolemelding';
+    document.getElementById('set-e1-cat').value       = s.email_1_category || 'skole';
+    document.getElementById('set-e1-delete').checked  = !!s.email_1_delete_after;
+    document.getElementById('set-e1-enabled').checked = !!s.email_1_enabled;
+    document.getElementById('e1-pw-status').textContent = s.email_1_has_password ? '(passord lagret)' : '(ikke satt)';
+    // E-post 2
+    document.getElementById('set-e2-host').value      = s.email_2_host || 'imap.one.com';
+    document.getElementById('set-e2-user').value      = s.email_2_username || '';
+    document.getElementById('set-e2-from').value      = s.email_2_from_filter || '';
+    document.getElementById('set-e2-subject').value   = s.email_2_subject_filter || '';
+    document.getElementById('set-e2-label').value     = s.email_2_source_label || 'Showbie';
+    document.getElementById('set-e2-cat').value       = s.email_2_category || 'skole';
+    document.getElementById('set-e2-delete').checked  = !!s.email_2_delete_after;
+    document.getElementById('set-e2-enabled').checked = !!s.email_2_enabled;
+    document.getElementById('e2-pw-status').textContent = s.email_2_has_password ? '(passord lagret)' : '(ikke satt)';
+    // WhatsApp
+    document.getElementById('set-wa-filter').value   = s.wa_group_filter || '';
+    document.getElementById('set-wa-label').value    = s.wa_source_label || 'WhatsApp';
+    document.getElementById('set-wa-cat').value      = s.wa_category || 'foreldre';
+    document.getElementById('set-wa-enabled').checked = !!s.wa_enabled;
+    // Brukerinfo
+    const user = getUser();
+    document.getElementById('set-user-name').textContent  = user?.display_name || '';
+    document.getElementById('set-user-email').textContent = user?.email || '';
   } catch (e) {
-    console.error('Synk feilet:', e);
-    showSyncIndicator(false, true);
-  } finally {
-    btn.classList.remove('syncing');
+    console.error('Kunne ikke laste innstillinger:', e);
+  }
+}
+
+async function saveSettings() {
+  const btn = document.getElementById('btn-save-settings');
+  btn.textContent = 'Lagrer...'; btn.disabled = true;
+  try {
+    const updates = {
+      spond_username: document.getElementById('set-spond-user').value.trim(),
+      spond_enabled:  document.getElementById('set-spond-enabled').checked,
+      email_1_host:           document.getElementById('set-e1-host').value.trim(),
+      email_1_username:       document.getElementById('set-e1-user').value.trim(),
+      email_1_from_filter:    document.getElementById('set-e1-from').value.trim(),
+      email_1_subject_filter: document.getElementById('set-e1-subject').value.trim(),
+      email_1_source_label:   document.getElementById('set-e1-label').value.trim(),
+      email_1_category:       document.getElementById('set-e1-cat').value,
+      email_1_delete_after:   document.getElementById('set-e1-delete').checked,
+      email_1_enabled:        document.getElementById('set-e1-enabled').checked,
+      email_2_host:           document.getElementById('set-e2-host').value.trim(),
+      email_2_username:       document.getElementById('set-e2-user').value.trim(),
+      email_2_from_filter:    document.getElementById('set-e2-from').value.trim(),
+      email_2_subject_filter: document.getElementById('set-e2-subject').value.trim(),
+      email_2_source_label:   document.getElementById('set-e2-label').value.trim(),
+      email_2_category:       document.getElementById('set-e2-cat').value,
+      email_2_delete_after:   document.getElementById('set-e2-delete').checked,
+      email_2_enabled:        document.getElementById('set-e2-enabled').checked,
+      wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
+      wa_source_label:  document.getElementById('set-wa-label').value.trim(),
+      wa_category:      document.getElementById('set-wa-cat').value,
+      wa_enabled:       document.getElementById('set-wa-enabled').checked,
+    };
+    // Passord – bare send hvis fylt inn
+    const spondPw = document.getElementById('set-spond-pw').value;
+    if (spondPw) updates.spond_password = spondPw;
+    const e1pw = document.getElementById('set-e1-pw').value;
+    if (e1pw) updates.email_1_password = e1pw;
+    const e2pw = document.getElementById('set-e2-pw').value;
+    if (e2pw) updates.email_2_password = e2pw;
+
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
+    btn.textContent = 'Lagret ✓';
+    setTimeout(() => { btn.textContent = 'Lagre innstillinger'; btn.disabled = false; }, 2000);
+    await loadSettings();
+  } catch (e) {
+    btn.textContent = 'Feil – prøv igjen';
     btn.disabled = false;
+    console.error(e);
   }
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────────────────
 
-async function init() {
-  renderFeed();
-  updateBadge();
-  const loaded = await loadFromApi();
-  if (loaded) {
-    renderFeed();
-    updateBadge();
-  } else {
+async function initApp() {
+  const user = getUser();
+  if (!user) { showLogin(); return; }
+  document.getElementById('user-display-name').textContent = user.display_name;
+  showApp();
+  try {
+    const data = await apiFetch('/messages');
+    state.messages = data.messages;
+    state.lastSync = data.last_sync;
+    state.stats = {
+      read:    data.messages.filter(m => m.status === 'read').length,
+      skipped: data.messages.filter(m => m.status === 'skipped').length
+    };
+    renderFeed(); updateBadge();
     document.getElementById('last-sync').textContent =
-      new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+      state.lastSync
+        ? new Date(state.lastSync).toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })
+        : '–';
+  } catch (e) {
+    console.error('Kunne ikke laste meldinger:', e);
   }
 }
 
-init();
+// Start
+if (!API_URL) {
+  document.body.innerHTML = `<div style="font-family:sans-serif;padding:40px;text-align:center">
+    <h2>Mangler API-URL</h2>
+    <p>Kjør i konsollen:</p>
+    <code>localStorage.setItem('api_url', 'https://din-backend.up.railway.app')</code>
+  </div>`;
+} else {
+  initApp();
+}
