@@ -35,7 +35,7 @@
       --spond-bg:#0A1E35;--skolemelding-bg:#0F2D1A;
       --showbie-bg:#2D1A05;--whatsapp-bg:#2D0F1C;
     }}
-    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+    html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overscroll-behavior:none;margin:0;padding:0;}
 
     /* ── Login ── */
     #screen-login{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
@@ -109,8 +109,10 @@
     .swipe-hint-skip{background:var(--red-bg);color:var(--red)}
 
     /* Bottom nav */
-    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:10;margin-bottom:0;}
-    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 calc(8px + env(safe-area-inset-bottom, 0px));background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--font);font-size:10px;}
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;flex-direction:column;z-index:10;}
+    .bottom-nav::after{content:'';display:block;height:env(safe-area-inset-bottom,0px);background:var(--surface);}
+    .nav-btns{display:flex;width:100%;}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--font);font-size:10px;}
     .nav-icon{width:20px;height:20px}
     .nav-btn.active{color:var(--text)}
     .nav-icon{width:22px;height:22px}
@@ -381,6 +383,7 @@
 
   <!-- Bottom nav -->
   <nav class="bottom-nav">
+    <div class="nav-btns">
     <button class="nav-btn active" data-view="feed">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Feed
@@ -393,6 +396,7 @@
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       Innstillinger
     </button>
+    </div>
   </nav>
 </div>
 <script src="/app.js"></script>
