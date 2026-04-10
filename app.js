@@ -228,6 +228,9 @@ function renderCard(m) {
       ${m.status === 'unread'
         ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}">Lest / OK</button>
            <button class="btn btn-skip" data-action="skip" data-id="${m.id}">Ikke relevant</button>`
+        : m.status === 'skipped'
+        ? `<button class="btn btn-ok" style="flex:1" data-action="read" data-id="${m.id}">Relevant – merk som lest</button>
+           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
         : `<button class="btn btn-skip" style="flex:1" data-action="unread" data-id="${m.id}">↩ Merk som ny</button>`
       }
     </div>
@@ -279,6 +282,7 @@ function markRead(id) {
   animateCard(id, 'right', () => {
     const msg = state.messages.find(m => m.id === id);
     if (msg && msg.status !== 'read') {
+      if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
       msg.status = 'read';
       state.stats.read++;
       saveState();
