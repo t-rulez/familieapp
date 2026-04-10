@@ -200,6 +200,7 @@ function renderCard(m) {
   const tldrStyle = `background: var(${cfg.bgVar});`;
   const tldrLabelColor = cfg.color;
 
+  const eid = CSS.escape(m.id);
   return `
   <div class="card" id="card-${m.id}" data-id="${m.id}">
     <div class="swipe-hint swipe-hint-ok" id="hint-ok-${m.id}">Lest ✓</div>
@@ -221,13 +222,13 @@ function renderCard(m) {
     </div>
 
     <div class="card-body" id="body-${m.id}">${m.body}</div>
-    <button class="expand-btn" id="expand-${m.id}" style="color:${cfg.color}" onclick="toggleExpand(${m.id})">Les hele meldingen ↓</button>
+    <button class="expand-btn" id="expand-${m.id}" data-id="${m.id}" style="color:${cfg.color}">Les hele meldingen ↓</button>
 
     <div class="card-actions">
       ${m.status === 'unread'
-        ? `<button class="btn btn-ok" onclick="markRead(${m.id})">Lest / OK</button>
-           <button class="btn btn-skip" onclick="markSkipped(${m.id})">Ikke relevant</button>`
-        : `<button class="btn btn-skip" style="flex:1" onclick="markUnread(${m.id})">↩ Merk som ny</button>`
+        ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}">Lest / OK</button>
+           <button class="btn btn-skip" data-action="skip" data-id="${m.id}">Ikke relevant</button>`
+        : `<button class="btn btn-skip" style="flex:1" data-action="unread" data-id="${m.id}">↩ Merk som ny</button>`
       }
     </div>
   </div>`;
@@ -242,9 +243,22 @@ function toggleExpand(id) {
   const body = document.getElementById(`body-${id}`);
   const btn = document.getElementById(`expand-${id}`);
   const expanded = body.classList.toggle('expanded');
-  const cfg = SOURCE_CONFIG[state.messages.find(m => m.id === id)?.source] || {};
   btn.textContent = expanded ? 'Skjul ↑' : 'Les hele meldingen ↓';
 }
+
+// Event delegation – handles all card button clicks safely (IDs may contain special chars)
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-action]');
+  if (btn) {
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (action === 'read')   markRead(id);
+    if (action === 'skip')   markSkipped(id);
+    if (action === 'unread') markUnread(id);
+  }
+  const expandBtn = e.target.closest('.expand-btn[data-id]');
+  if (expandBtn) toggleExpand(expandBtn.dataset.id);
+});
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
@@ -313,7 +327,7 @@ function updateBadge() {
 // ─── Swipe gesture ────────────────────────────────────────────────────────────
 
 function attachCardEvents(id) {
-  const card = document.getElementById(`card-${id}`);
+  const card = document.querySelector(`[data-id="${id}"].card`);
   if (!card) return;
 
   let startX = 0, startY = 0, currentX = 0, dragging = false, axis = null;
@@ -340,8 +354,8 @@ function attachCardEvents(id) {
       currentX = dx;
       card.style.transform = `translateX(${dx}px) rotate(${dx * 0.02}deg)`;
 
-      const hintOk = document.getElementById(`hint-ok-${id}`);
-      const hintSkip = document.getElementById(`hint-skip-${id}`);
+      const hintOk = card.querySelector('.swipe-hint-ok');
+      const hintSkip = card.querySelector('.swipe-hint-skip');
 
       if (dx > 30) {
         hintOk.style.opacity = Math.min((dx - 30) / 60, 0.9);
@@ -368,8 +382,8 @@ function attachCardEvents(id) {
         markSkipped(id);
       } else {
         card.style.transform = '';
-        document.getElementById(`hint-ok-${id}`).style.opacity = 0;
-        document.getElementById(`hint-skip-${id}`).style.opacity = 0;
+        card.querySelector('.swipe-hint-ok').style.opacity = 0;
+        card.querySelector('.swipe-hint-skip').style.opacity = 0;
       }
     } else {
       card.style.transform = '';
