@@ -231,7 +231,8 @@ function renderCard(m) {
         : m.status === 'skipped'
         ? `<button class="btn btn-ok" style="flex:1" data-action="read" data-id="${m.id}">Relevant – merk som lest</button>
            <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
-        : `<button class="btn btn-skip" style="flex:1" data-action="unread" data-id="${m.id}">↩ Merk som ny</button>`
+        : `<button class="btn btn-skip" data-action="skip" data-id="${m.id}">Ikke relevant</button>
+           <button class="btn btn-skip" style="background:var(--surface2)" data-action="unread" data-id="${m.id}">↩ Ny</button>`
       }
     </div>
   </div>`;
@@ -297,6 +298,7 @@ function markSkipped(id) {
   animateCard(id, 'left', () => {
     const msg = state.messages.find(m => m.id === id);
     if (msg) {
+      if (msg.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
       msg.status = 'skipped';
       state.stats.skipped++;
       saveState();
