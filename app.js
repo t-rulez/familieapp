@@ -539,7 +539,7 @@ async function loadWaQr() {
         <button class="btn-secondary" style="margin-top:10px;color:var(--red);border-color:var(--red)" onclick="logoutWhatsApp()">
           Koble fra WhatsApp
         </button>`;
-      if (btn) btn.textContent = 'Oppdater status';
+      if (btn) { btn.textContent = 'Oppdater status'; btn.style.display = 'inline-block'; }
     } else if (data.hasQr) {
       statusEl.textContent = 'Scan med WhatsApp for å koble til:';
       const qrRes = await fetch(`${WA_URL}/qr`, { signal: AbortSignal.timeout(8000) });
@@ -576,13 +576,22 @@ async function logoutWhatsApp() {
   if (!confirm('Er du sikker på at du vil koble fra WhatsApp? Du må scanne QR-kode på nytt for å koble til igjen.')) return;
   const contentEl = document.getElementById('wa-qr-content');
   const statusEl  = document.getElementById('wa-status-text');
+  const btn       = document.getElementById('btn-wa-qr');
   try {
     statusEl.textContent = 'Kobler fra...';
     contentEl.innerHTML  = '';
     await apiFetch('/whatsapp/logout', { method: 'POST' });
-    statusEl.textContent = 'Koblet fra. Trykk "Sjekk tilkoblingsstatus" for ny QR-kode.';
-    const btn = document.getElementById('btn-wa-qr');
-    if (btn) btn.textContent = 'Sjekk tilkoblingsstatus';
+    // Vis instruksjoner for å koble til på nytt
+    statusEl.textContent = 'Ikke tilkoblet.';
+    contentEl.innerHTML = `
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6;">
+        Åpne lenken nedenfor på en PC eller et nettbrett, og scan QR-koden med WhatsApp på telefonen din.
+      </div>
+      <a href="${WA_URL}/qr" target="_blank" style="display:block;padding:12px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;color:#185FA5;word-break:break-all;text-decoration:none;margin-bottom:12px;">
+        ${WA_URL}/qr
+      </a>
+      <button class="btn-secondary" onclick="loadWaQr()">Sjekk status etter scanning</button>`;
+    if (btn) btn.style.display = 'none';
   } catch (e) {
     statusEl.textContent = `Feil: ${e.message}`;
   }
