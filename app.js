@@ -470,6 +470,10 @@ async function initApp() {
   initPullToRefresh();
   const user = getUser();
   if (!user) { showLogin(); return; }
+  // Auto-registrer push hvis tillatelse allerede er gitt
+  if ('Notification' in window && Notification.permission === 'granted') {
+    subscribeToPush().catch(() => {});
+  }
   const nameEl = document.getElementById('user-display-name');
   if (nameEl) nameEl.textContent = user.display_name;
   showApp();
@@ -776,8 +780,17 @@ async function testPush() {
   const statusEl = document.getElementById('push-status');
   statusEl.textContent = 'Sender test...';
   try {
-    await apiFetch('/push/test', { method: 'POST' });
-    statusEl.textContent = '✓ Testvarsel sendt!';
+    const result = await apiFetch('/push/test', { method: 'POST' });
+    if (result.sent_to === 0) {
+      statusEl.textContent = 'Ingen enheter registrert – prøv å aktivere push på nytt';
+      // Prøv å re-registrere
+      const ok = await subscribeToPush();
+      if (ok) {
+        statusEl.textContent = 'Registrert! Prøv testvarsel igjen.';
+      }
+    } else {
+      statusEl.textContent = `✓ Testvarsel sendt til ${result.sent_to} enhet(er)!`;
+    }
   } catch (e) {
     statusEl.textContent = `Feil: ${e.message}`;
   }
