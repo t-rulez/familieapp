@@ -534,7 +534,11 @@ async function loadWaQr() {
     const btn = document.getElementById('btn-wa-qr');
     if (data.ready) {
       statusEl.textContent = '';
-      contentEl.innerHTML  = '<div class="qr-connected">✓ WhatsApp er tilkoblet</div>';
+      contentEl.innerHTML  = `
+        <div class="qr-connected">✓ WhatsApp er tilkoblet</div>
+        <button class="btn-secondary" style="margin-top:10px;color:var(--red);border-color:var(--red)" onclick="logoutWhatsApp()">
+          Koble fra WhatsApp
+        </button>`;
       if (btn) btn.textContent = 'Oppdater status';
     } else if (data.hasQr) {
       statusEl.textContent = 'Scan med WhatsApp for å koble til:';
@@ -553,6 +557,24 @@ async function loadWaQr() {
       statusEl.textContent = 'WhatsApp-tjenesten starter opp, prøv igjen om litt...';
       if (btn) btn.textContent = 'Prøv igjen';
     }
+  } catch (e) {
+    statusEl.textContent = `Feil: ${e.message}`;
+  }
+}
+
+// ─── WhatsApp logout ──────────────────────────────────────────────────────────
+
+async function logoutWhatsApp() {
+  if (!confirm('Er du sikker på at du vil koble fra WhatsApp? Du må scanne QR-kode på nytt for å koble til igjen.')) return;
+  const contentEl = document.getElementById('wa-qr-content');
+  const statusEl  = document.getElementById('wa-status-text');
+  try {
+    statusEl.textContent = 'Kobler fra...';
+    contentEl.innerHTML  = '';
+    await apiFetch('/whatsapp/logout', { method: 'POST' });
+    statusEl.textContent = 'Koblet fra. Trykk "Sjekk tilkoblingsstatus" for ny QR-kode.';
+    const btn = document.getElementById('btn-wa-qr');
+    if (btn) btn.textContent = 'Sjekk tilkoblingsstatus';
   } catch (e) {
     statusEl.textContent = `Feil: ${e.message}`;
   }
