@@ -211,7 +211,16 @@ function renderCard(m) {
         <div class="source-dot" style="background:${cfg.color}"></div>
         <span class="source-label" style="color:${cfg.color}">${m.sourceLabel} · ${categoryLabel(m.category)}</span>
       </div>
-      <span class="card-time">${m.time}</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        ${state.statusFilter !== 'unread' ? `<span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;
+          color:${m.status === 'read' ? 'var(--green)' : m.status === 'skipped' ? 'var(--red)' : '#BA7517'}">
+          <span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${
+            m.status === 'read' ? 'var(--green)' : m.status === 'skipped' ? 'var(--red)' : '#BA7517'
+          }"></span>${
+            m.status === 'read' ? 'lest' : m.status === 'skipped' ? 'ignorert' : 'ny'
+          }</span>` : ''}
+        <span class="card-time">${m.time}</span>
+      </div>
     </div>
 
     <div class="card-title">${m.title}</div>
