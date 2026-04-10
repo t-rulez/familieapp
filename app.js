@@ -449,6 +449,27 @@ function renderStats() {
     </div>`).join('');
 }
 
+// ─── Manuell synk ───────────────────────────────────────────────────────────────────────────
+
+async function manualSync() {
+  if (!API_URL) return;
+  const btn = document.getElementById('sync-btn');
+  btn.classList.add('syncing');
+  btn.disabled = true;
+
+  try {
+    await apiFetch('/sync', { method: 'POST' });
+    await loadFromApi();
+    renderFeed();
+    updateBadge();
+  } catch (e) {
+    console.error('Synk feilet:', e);
+  } finally {
+    btn.classList.remove('syncing');
+    btn.disabled = false;
+  }
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────────────────
 
 async function init() {
