@@ -123,7 +123,8 @@ document.getElementById('btn-register').addEventListener('click', async () => {
 function getFiltered() {
   return state.messages.filter(m => {
     const statusMatch = state.statusFilter === 'alle' || m.status === state.statusFilter;
-    const categoryMatch = state.filter === 'alle' || m.category === state.filter;
+    const categoryMatch = state.filter === 'alle' || 
+      (m.category || '').toLowerCase() === state.filter.toLowerCase();
     return statusMatch && categoryMatch;
   });
 }
@@ -178,7 +179,7 @@ function renderCard(m) {
 }
 
 function categoryLabel(cat) {
-  return { skole: 'Skole', aks: 'AKS', idrett: 'Idrettslag', foreldre: 'Foreldre' }[cat] || cat;
+  return { skole: 'Skole', aks: 'AKS', idrett: 'Spond', foreldre: 'WhatsApp', whatsapp: 'WhatsApp' }[(cat||'').toLowerCase()] || cat;
 }
 
 function toggleExpand(id) {
