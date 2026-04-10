@@ -554,8 +554,16 @@ async function loadWaQr() {
       }
       if (btn) btn.textContent = 'Last inn QR på nytt';
     } else {
-      statusEl.textContent = 'WhatsApp-tjenesten starter opp, prøv igjen om litt...';
-      if (btn) btn.textContent = 'Prøv igjen';
+      statusEl.textContent = 'Ikke tilkoblet.';
+      contentEl.innerHTML = `
+        <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6;">
+          Åpne lenken nedenfor på en PC eller et nettbrett, og scan QR-koden med WhatsApp på telefonen din.
+        </div>
+        <a href="${WA_URL}/qr" target="_blank" style="display:block;padding:12px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;color:#185FA5;word-break:break-all;text-decoration:none;margin-bottom:12px;">
+          ${WA_URL}/qr
+        </a>
+        <button class="btn-secondary" onclick="loadWaQr()">Sjekk status etter scanning</button>`;
+      if (btn) btn.style.display = 'none';
     }
   } catch (e) {
     statusEl.textContent = `Feil: ${e.message}`;
