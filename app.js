@@ -37,7 +37,7 @@ async function apiFetch(path, options = {}) {
 
 let state = {
   messages: [],
-  filter: 'alle',
+  sourceFilter: 'alle',
   statusFilter: 'unread',
   stats: { read: 0, skipped: 0 },
   lastSync: null
@@ -123,9 +123,9 @@ document.getElementById('btn-register').addEventListener('click', async () => {
 function getFiltered() {
   return state.messages.filter(m => {
     const statusMatch = state.statusFilter === 'alle' || m.status === state.statusFilter;
-    const categoryMatch = state.filter === 'alle' || 
-      (m.category || '').toLowerCase() === state.filter.toLowerCase();
-    return statusMatch && categoryMatch;
+    const sourceMatch = state.sourceFilter === 'alle' ||
+      (m.source || '').toLowerCase() === state.sourceFilter.toLowerCase();
+    return statusMatch && sourceMatch;
   });
 }
 
@@ -310,7 +310,7 @@ document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('#category-filters .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    state.filter = btn.dataset.filter;
+    state.sourceFilter = btn.dataset.source;
     renderFeed();
   });
 });
