@@ -54,7 +54,7 @@
     #login-form{display:flex;flex-direction:column}
 
     /* ── App ── */
-    #screen-app{display:none;flex-direction:column;max-width:430px;margin:0 auto;min-height:100dvh}
+    #screen-app{display:none;flex-direction:column;max-width:430px;margin:0 auto;height:100dvh;overflow:hidden;}
 
     /* Pull to refresh */
     .ptr-indicator{height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:height 0.2s;color:var(--text2);font-size:13px}
@@ -78,7 +78,7 @@
     .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
     /* Feed */
-    .feed{flex:1;padding:8px 16px calc(60px + env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .feed{flex:1;padding:8px 16px calc(60px + env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);}
     .empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
     .empty-state .icon{font-size:40px;margin-bottom:12px}
     .empty-state p{font-size:16px}
@@ -202,7 +202,7 @@
 <div id="screen-app">
 
   <!-- Feed -->
-  <div id="view-feed" style="display:flex;flex-direction:column;flex:1;min-height:0;">
+  <div id="view-feed" style="display:flex;flex-direction:column;flex:1;min-height:0;height:100%;">
     <div class="header">
       <div class="header-top">
         <div style="display:flex;align-items:center;gap:10px;">
