@@ -413,6 +413,9 @@ async function loadSettings() {
     // Brukerinfo
     const user = getUser();
     document.getElementById('set-user-name').textContent  = user?.display_name || '';
+    // Update accordion badges
+    ['spond','e1','e2','wa'].forEach(k => updateBadge(k));
+    initPushSettings();
     document.getElementById('set-user-email').textContent = user?.email || '';
   } catch (e) {
     console.error('Kunne ikke laste innstillinger:', e);
@@ -469,6 +472,7 @@ async function saveSettings() {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 async function initApp() {
+  initPullToRefresh();
   const user = getUser();
   if (!user) { showLogin(); return; }
   document.getElementById('user-display-name').textContent = user.display_name;
@@ -493,3 +497,224 @@ async function initApp() {
 
 // Start
 initApp();
+
+// ─── Accordion ────────────────────────────────────────────────────────────────
+
+function toggleAccordion(key) {
+  const body  = document.getElementById(`body-${key}`);
+  const arrow = document.getElementById(`arrow-${key}`);
+  const header = body.previousElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+
+function updateBadge(key) {
+  const enabled = document.getElementById(
+    key === 'spond' ? 'set-spond-enabled' :
+    key === 'e1'    ? 'set-e1-enabled' :
+    key === 'e2'    ? 'set-e2-enabled' : 'set-wa-enabled'
+  )?.checked;
+  const badge = document.getElementById(`badge-${key}`);
+  if (!badge) return;
+  badge.textContent = enabled ? 'På' : 'Av';
+  badge.classList.toggle('off', !enabled);
+}
+
+// ─── WhatsApp QR i innstillinger ──────────────────────────────────────────────
+
+const WA_URL = localStorage.getItem('wa_url') || 'https://familieapp-whatsapp-service.up.railway.app';
+
+async function loadWaQr() {
+  const content = document.getElementById('wa-qr-content');
+  const statusEl = document.getElementById('wa-status-text');
+  statusEl.textContent = 'Henter status...';
+  content.innerHTML = '';
+  try {
+    const res = await fetch(`${WA_URL}/`);
+    const data = await res.json();
+    if (data.ready) {
+      statusEl.textContent = '';
+      content.innerHTML = `<div class="qr-connected">✓ WhatsApp er tilkoblet</div>`;
+    } else if (data.hasQr) {
+      statusEl.textContent = 'Scan med WhatsApp for å koble til:';
+      const qrRes = await fetch(`${WA_URL}/qr`);
+      const html  = await qrRes.text();
+      const match = html.match(/src="(data:image\/png;base64,[^"]+)"/);
+      if (match) {
+        content.innerHTML = `
+          <div class="qr-container">
+            <img src="${match[1]}" alt="QR-kode"/>
+            <p style="font-size:12px;color:var(--text3);margin-top:8px;">Innstillinger → Tilkoblede enheter → Koble til enhet</p>
+          </div>`;
+      }
+    } else {
+      statusEl.textContent = 'WhatsApp-tjenesten starter opp...';
+    }
+  } catch (e) {
+    statusEl.textContent = 'Kunne ikke nå WhatsApp-tjenesten';
+  }
+}
+
+// ─── Pull-to-refresh ──────────────────────────────────────────────────────────
+
+function initPullToRefresh() {
+  const feedView = document.getElementById('view-feed');
+  const indicator = document.getElementById('ptr-indicator');
+  const spinner   = document.getElementById('ptr-spinner');
+  const ptrText   = document.getElementById('ptr-text');
+  let startY = 0, pulling = false, triggered = false;
+  const THRESHOLD = 80;
+
+  feedView.addEventListener('touchstart', e => {
+    const feed = document.getElementById('feed');
+    if (feed.scrollTop > 0) return;
+    startY = e.touches[0].clientY;
+    pulling = true;
+    triggered = false;
+  }, { passive: true });
+
+  feedView.addEventListener('touchmove', e => {
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy <= 0) return;
+    const progress = Math.min(dy / THRESHOLD, 1);
+    indicator.classList.add('visible');
+    indicator.style.height = `${Math.min(dy * 0.4, 44)}px`;
+    if (dy > THRESHOLD && !triggered) {
+      ptrText.textContent = 'Slipp for å oppdatere';
+      spinner.style.borderTopColor = 'var(--green)';
+    } else if (dy <= THRESHOLD) {
+      ptrText.textContent = 'Dra ned for å oppdatere';
+      spinner.style.borderTopColor = 'var(--text2)';
+    }
+  }, { passive: true });
+
+  feedView.addEventListener('touchend', async e => {
+    if (!pulling) return;
+    pulling = false;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (dy > THRESHOLD) {
+      spinner.classList.add('spinning');
+      ptrText.textContent = 'Oppdaterer...';
+      await manualSync();
+      spinner.classList.remove('spinning');
+    }
+    indicator.classList.remove('visible');
+    indicator.style.height = '0';
+    ptrText.textContent = 'Dra ned for å oppdatere';
+  });
+}
+
+// ─── Push-varsler ─────────────────────────────────────────────────────────────
+
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.register('/sw.js');
+    await navigator.serviceWorker.ready;
+    return reg;
+  } catch (e) {
+    console.error('Service worker feil:', e);
+  }
+}
+
+async function subscribeToPush() {
+  try {
+    const reg = await registerServiceWorker();
+    if (!reg) return false;
+
+    // Hent VAPID public key fra backend
+    const { publicKey } = await apiFetch('/push/vapid-key');
+    if (!publicKey) return false;
+
+    // Konverter base64url til Uint8Array
+    const key = urlBase64ToUint8Array(publicKey);
+
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: key
+    });
+
+    // Lagre abonnement i backend
+    const subJson = sub.toJSON();
+    await apiFetch('/push/subscribe', {
+      method: 'POST',
+      body: JSON.stringify({
+        endpoint: subJson.endpoint,
+        keys: subJson.keys
+      })
+    });
+
+    return true;
+  } catch (e) {
+    console.error('Push-abonnering feilet:', e);
+    return false;
+  }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = window.atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+async function requestPushPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') {
+    return subscribeToPush();
+  }
+  if (Notification.permission === 'denied') return false;
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') return subscribeToPush();
+  return false;
+}
+
+// Legg til varsler-knapp i innstillinger (kalles fra loadSettings)
+async function initPushSettings() {
+  const container = document.getElementById('wa-qr-section');
+  if (!container) return;
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+
+  // Sjekk om push-varsler allerede er aktivert
+  const perm = Notification.permission;
+  const pushSection = document.createElement('div');
+  pushSection.style.cssText = 'margin-top:16px;padding-top:16px;border-top:1px solid var(--border)';
+  pushSection.innerHTML = `
+    <div class="field-label" style="margin-bottom:10px;">Push-varsler</div>
+    <div style="font-size:14px;color:var(--text2);margin-bottom:12px;">
+      ${perm === 'granted' ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
+    </div>
+    ${perm !== 'granted' ? `<button class="btn-secondary" id="btn-enable-push" onclick="enablePush()">Aktiver push-varsler</button>` : `<button class="btn-secondary" onclick="testPush()">Send testvar sel</button>`}
+    <div id="push-status" style="font-size:13px;color:var(--text3);margin-top:8px;"></div>
+  `;
+
+  // Legg til før lagre-knappen
+  const saveBtn = document.getElementById('btn-save-settings');
+  saveBtn.parentNode.insertBefore(pushSection, saveBtn);
+}
+
+async function enablePush() {
+  const statusEl = document.getElementById('push-status');
+  statusEl.textContent = 'Aktiverer...';
+  const ok = await requestPushPermission();
+  if (ok) {
+    statusEl.textContent = '✓ Push-varsler aktivert!';
+    document.getElementById('btn-enable-push')?.remove();
+  } else {
+    statusEl.textContent = 'Kunne ikke aktivere push-varsler';
+  }
+}
+
+async function testPush() {
+  const statusEl = document.getElementById('push-status');
+  statusEl.textContent = 'Sender test...';
+  try {
+    await apiFetch('/push/test', { method: 'POST' });
+    statusEl.textContent = '✓ Testvarsel sendt!';
+  } catch (e) {
+    statusEl.textContent = `Feil: ${e.message}`;
+  }
+}
