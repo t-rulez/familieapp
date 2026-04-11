@@ -160,7 +160,7 @@ function renderCard(m) {
     <div class="card-header">
       <div class="source-tag">
         <div class="source-dot" style="background:${cfg.color}"></div>
-        <span class="source-label" style="color:${cfg.color}">${m.sourceLabel} · ${categoryLabel(m.category)}</span>
+        <span class="source-label" style="color:${cfg.color}">${m.sourceLabel} · ${categoryLabel(m)}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
         ${state.statusFilter !== 'unread' ? `<span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;color:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"><span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${m.status==='read'?'var(--green)':m.status==='skipped'?'var(--red)':'#BA7517'}"></span>${m.status==='read'?'relevant':m.status==='skipped'?'ignorert':'ny'}</span>` : ''}
@@ -188,8 +188,11 @@ function renderCard(m) {
   </div>`;
 }
 
-function categoryLabel(cat) {
-  return { skole: 'Skole', aks: 'AKS', idrett: 'Spond', foreldre: 'WhatsApp', whatsapp: 'WhatsApp' }[(cat||'').toLowerCase()] || cat;
+function categoryLabel(m) {
+  const cat = (m.category || '').toLowerCase();
+  // For WhatsApp viser vi gruppenavnet fra meta
+  if (m.source === 'whatsapp' && m.meta?.group) return m.meta.group;
+  return { skole: 'Skole', aks: 'AKS', idrett: 'Spond', foreldre: 'WhatsApp', whatsapp: 'WhatsApp' }[cat] || m.category || cat;
 }
 
 function toggleExpand(id) {
@@ -334,22 +337,27 @@ document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
 
 let searchDebounce = null;
 const searchInput = document.getElementById('search-input');
+const searchClear = document.getElementById('search-clear');
+
+function clearSearch() {
+  if (searchInput) searchInput.value = '';
+  if (searchClear) searchClear.style.display = 'none';
+  state.searchQuery = '';
+  renderFeed();
+  if (searchInput) searchInput.focus();
+}
+
 if (searchInput) {
   searchInput.addEventListener('input', e => {
     clearTimeout(searchDebounce);
+    if (searchClear) searchClear.style.display = e.target.value ? 'block' : 'none';
     searchDebounce = setTimeout(() => {
       state.searchQuery = e.target.value;
       renderFeed();
     }, 150);
   });
-  // Clear search on ESC
   searchInput.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      searchInput.value = '';
-      state.searchQuery = '';
-      renderFeed();
-      searchInput.blur();
-    }
+    if (e.key === 'Escape') clearSearch();
   });
 }
 

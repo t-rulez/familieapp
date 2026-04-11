@@ -232,9 +232,12 @@
       </div>
     </div>
     <div style="padding:0 16px 10px;">
-      <div style="position:relative;">
-        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="search" id="search-input" placeholder="Søk i meldinger..." style="width:100%;padding:9px 12px 9px 36px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:15px;-webkit-appearance:none;outline:none;" />
+      <div style="position:relative;display:flex;align-items:center;">
+        <svg style="position:absolute;left:12px;color:var(--text3);pointer-events:none;flex-shrink:0;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" id="search-input" placeholder="Søk i meldinger..." style="width:100%;padding:9px 36px 9px 36px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:15px;-webkit-appearance:none;outline:none;" />
+        <button id="search-clear" onclick="clearSearch()" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;color:var(--text3);display:none;padding:4px;line-height:1;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+        </button>
       </div>
     </div>
     <div class="ptr-indicator" id="ptr-indicator">
