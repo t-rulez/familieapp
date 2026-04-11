@@ -690,6 +690,17 @@ avatar.textContent = initials.toUpperCase();
   }
   showApp();
   loadAiHistory();
+  // Sett dato-begrensning for historisk henting
+  const historyInput = document.getElementById('set-history-from');
+  if (historyInput) {
+    const minDate = new Date();
+    minDate.setMonth(minDate.getMonth() - 3);
+    const minStr = minDate.toISOString().substring(0, 10);
+    const todayStr = new Date().toISOString().substring(0, 10);
+    historyInput.min = minStr;
+    historyInput.max = todayStr;
+    historyInput.value = minStr;
+  }
   try {
 const data = await apiFetch('/messages');
 state.messages = data.messages;
