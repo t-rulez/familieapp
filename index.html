@@ -374,6 +374,13 @@
         <span class="accordion-arrow" id="arrow-annet">▼</span>
       </div>
       <div class="accordion-body" id="body-annet">
+        <div class="field-group" style="margin-bottom:16px;">
+          <label class="field-label">Familieprofil</label>
+          <textarea id="set-family-context" rows="5" class="settings-input"
+            placeholder="F.eks: Gustav, gutt f. 2015, fotball Ready Rød (G2015), svømming Tøyen. Rasmus, gutt f. 2017, fotball Ready Gul (G2017)."
+            style="resize:vertical;line-height:1.5;"></textarea>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px;">Hjelper AI-assistenten å forstå hvem som er hvem i familien.</div>
+        </div>
         <div id="push-section-placeholder"></div>
       </div>
     </div>
@@ -389,11 +396,38 @@
     </div>
   </div>
 
+  <!-- AI Chat -->
+  <div class="view" id="view-ai">
+    <div class="view-title">AI-assistent</div>
+
+    <div id="ai-messages" style="margin-bottom:16px;display:flex;flex-direction:column;gap:12px;min-height:100px;"></div>
+
+    <div style="position:sticky;bottom:calc(60px + env(safe-area-inset-bottom,0px));background:var(--bg);padding:12px 0 4px;">
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <textarea id="ai-input" placeholder="Spør om noe fra meldingene dine..." rows="2"
+          style="flex:1;padding:10px 14px;border-radius:12px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;resize:none;outline:none;line-height:1.4;max-height:120px;overflow-y:auto;"></textarea>
+        <button id="ai-send" onclick="sendAiQuestion()"
+          style="background:#185FA5;color:white;border:none;border-radius:12px;padding:10px 16px;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:500;min-height:44px;flex-shrink:0;">
+          Send
+        </button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center;">
+        Basert på dine lagrede meldinger
+      </div>
+    </div>
+  </div>
+
   <!-- Bottom nav -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-view="feed">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Feed
+    </button>
+    <button class="nav-btn" data-view="ai">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/><path d="M8.5 7V5M15.5 7V5"/>
+      </svg>
+      AI
     </button>
     <button class="nav-btn" data-view="stats">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
