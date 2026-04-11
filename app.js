@@ -1,1043 +1,1048 @@
-    /    /         ─    ─    ─         K    o    n    f    i    g         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    c    o    n    s    t         A    P    I    _    U    R    L         =         l    o    c    a    l    S    t    o    r    a    g    e    .    g    e    t    I    t    e    m    (    '    a    p    i    _    u    r    l    '    )         |    |         '    h    t    t    p    s    :    /    /    f    a    m    i    l    i    e    a    p    p    -    b    a    c    k    e    n    d    .    u    p    .    r    a    i    l    w    a    y    .    a    p    p    '    ;    
-    
-    /    /         ─    ─    ─         A    u    t    h         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         g    e    t    T    o    k    e    n    (    )         {         r    e    t    u    r    n         l    o    c    a    l    S    t    o    r    a    g    e    .    g    e    t    I    t    e    m    (    '    a    u    t    h    _    t    o    k    e    n    '    )    ;         }    
-    f    u    n    c    t    i    o    n         g    e    t    U    s    e    r    (    )              {         r    e    t    u    r    n         J    S    O    N    .    p    a    r    s    e    (    l    o    c    a    l    S    t    o    r    a    g    e    .    g    e    t    I    t    e    m    (    '    a    u    t    h    _    u    s    e    r    '    )         |    |         '    n    u    l    l    '    )    ;         }    
-    
-    f    u    n    c    t    i    o    n         s    a    v    e    A    u    t    h    (    t    o    k    e    n    ,         u    s    e    r    )         {    
-              l    o    c    a    l    S    t    o    r    a    g    e    .    s    e    t    I    t    e    m    (    '    a    u    t    h    _    t    o    k    e    n    '    ,         t    o    k    e    n    )    ;    
-              l    o    c    a    l    S    t    o    r    a    g    e    .    s    e    t    I    t    e    m    (    '    a    u    t    h    _    u    s    e    r    '    ,         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    u    s    e    r    )    )    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         l    o    g    o    u    t    (    )         {    
-              l    o    c    a    l    S    t    o    r    a    g    e    .    r    e    m    o    v    e    I    t    e    m    (    '    a    u    t    h    _    t    o    k    e    n    '    )    ;    
-              l    o    c    a    l    S    t    o    r    a    g    e    .    r    e    m    o    v    e    I    t    e    m    (    '    a    u    t    h    _    u    s    e    r    '    )    ;    
-              s    h    o    w    L    o    g    i    n    (    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         A    P    I         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         a    p    i    F    e    t    c    h    (    p    a    t    h    ,         o    p    t    i    o    n    s         =         {    }    )         {    
-              c    o    n    s    t         h    e    a    d    e    r    s         =         {         '    C    o    n    t    e    n    t    -    T    y    p    e    '    :         '    a    p    p    l    i    c    a    t    i    o    n    /    j    s    o    n    '         }    ;    
-              c    o    n    s    t         t    o    k    e    n         =         g    e    t    T    o    k    e    n    (    )    ;    
-              i    f         (    t    o    k    e    n    )         h    e    a    d    e    r    s    [    '    A    u    t    h    o    r    i    z    a    t    i    o    n    '    ]         =         `    B    e    a    r    e    r         $    {    t    o    k    e    n    }    `    ;    
-              c    o    n    s    t         r    e    s         =         a    w    a    i    t         f    e    t    c    h    (    `    $    {    A    P    I    _    U    R    L    }    $    {    p    a    t    h    }    `    ,         {         .    .    .    o    p    t    i    o    n    s    ,         h    e    a    d    e    r    s         }    )    ;    
-              i    f         (    r    e    s    .    s    t    a    t    u    s         =    =    =         4    0    1    )         {         l    o    g    o    u    t    (    )    ;         t    h    r    o    w         n    e    w         E    r    r    o    r    (    '    I    k    k    e         a    u    t    e    n    t    i    s    e    r    t    '    )    ;         }    
-              i    f         (    !    r    e    s    .    o    k    )         {    
-                        c    o    n    s    t         e    r    r         =         a    w    a    i    t         r    e    s    .    j    s    o    n    (    )    .    c    a    t    c    h    (    (    )         =    >         (    {    }    )    )    ;    
-                        t    h    r    o    w         n    e    w         E    r    r    o    r    (    e    r    r    .    d    e    t    a    i    l         |    |         `    F    e    i    l    :         $    {    r    e    s    .    s    t    a    t    u    s    }    `    )    ;    
-              }    
-              r    e    t    u    r    n         r    e    s    .    j    s    o    n    (    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         S    t    a    t    e         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    l    e    t         s    t    a    t    e         =         {    
-              m    e    s    s    a    g    e    s    :         [    ]    ,    
-              s    o    u    r    c    e    F    i    l    t    e    r    :         '    a    l    l    e    '    ,    
-              s    t    a    t    u    s    F    i    l    t    e    r    :         '    u    n    r    e    a    d    '    ,    
-              s    e    a    r    c    h    Q    u    e    r    y    :         '    '    ,    
-              s    t    a    t    s    :         {         r    e    a    d    :         0    ,         s    k    i    p    p    e    d    :         0         }    ,    
-              l    a    s    t    S    y    n    c    :         n    u    l    l    
-    }    ;    
-    
-    f    u    n    c    t    i    o    n         s    a    v    e    L    o    c    a    l    S    t    a    t    s    (    )         {    
-              l    o    c    a    l    S    t    o    r    a    g    e    .    s    e    t    I    t    e    m    (    '    s    t    a    t    s    '    ,         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    s    t    a    t    e    .    s    t    a    t    s    )    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         S    o    u    r    c    e         c    o    n    f    i    g         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    c    o    n    s    t         S    O    U    R    C    E    _    C    O    N    F    I    G         =         {    
-              s    p    o    n    d    :                                            {         c    o    l    o    r    :         '    #    1    8    5    F    A    5    '    ,         b    g    :         '    #    E    6    F    1    F    B    '    ,         d    a    r    k    B    g    :         '    #    0    A    1    E    3    5    '         }    ,    
-              s    k    o    l    e    m    e    l    d    i    n    g    :         {         c    o    l    o    r    :         '    #    6    B    3    F    A    0    '    ,         b    g    :         '    #    F    0    E    8    F    A    '    ,         d    a    r    k    B    g    :         '    #    2    A    1    0    4    0    '         }    ,    
-              s    h    o    w    b    i    e    :                                  {         c    o    l    o    r    :         '    #    B    A    7    5    1    7    '    ,         b    g    :         '    #    F    A    E    E    D    A    '    ,         d    a    r    k    B    g    :         '    #    2    D    1    A    0    5    '         }    ,    
-              w    h    a    t    s    a    p    p    :                             {         c    o    l    o    r    :         '    #    8    B    6    3    4    0    '    ,         b    g    :         '    #    F    5    E    D    E    3    '    ,         d    a    r    k    B    g    :         '    #    2    A    1    A    0    A    '         }    
-    }    ;    
-    
-    f    u    n    c    t    i    o    n         g    e    t    C    f    g    (    s    o    u    r    c    e    )         {    
-              c    o    n    s    t         c         =         S    O    U    R    C    E    _    C    O    N    F    I    G    [    s    o    u    r    c    e    ]         |    |         {         c    o    l    o    r    :         '    #    8    8    8    '    ,         b    g    :         '    #    F    0    F    0    F    0    '    ,         d    a    r    k    B    g    :         '    #    2    2    2    '         }    ;    
-              c    o    n    s    t         d    a    r    k         =         w    i    n    d    o    w    .    m    a    t    c    h    M    e    d    i    a    (    '    (    p    r    e    f    e    r    s    -    c    o    l    o    r    -    s    c    h    e    m    e    :         d    a    r    k    )    '    )    .    m    a    t    c    h    e    s    ;    
-              r    e    t    u    r    n         {         c    o    l    o    r    :         c    .    c    o    l    o    r    ,         b    g    C    o    l    o    r    :         d    a    r    k         ?         c    .    d    a    r    k    B    g         :         c    .    b    g         }    ;    
-    }    
-    
-    /    /         ─    ─    ─         V    i    s    n    i    n    g         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         s    h    o    w    L    o    g    i    n    (    )                        {         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    c    r    e    e    n    -    l    o    g    i    n    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    f    l    e    x    '    ;              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    c    r    e    e    n    -    a    p    p    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;         }    
-    f    u    n    c    t    i    o    n         s    h    o    w    A    p    p    (    )                                  {         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    c    r    e    e    n    -    l    o    g    i    n    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    c    r    e    e    n    -    a    p    p    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    f    l    e    x    '    ;         }    
-    f    u    n    c    t    i    o    n         s    h    o    w    A    u    t    h    E    r    r    o    r    (    m    s    g    )         {         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    a    u    t    h    -    e    r    r    o    r    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         m    s    g    ;         }    
-    
-    /    /         ─    ─    ─         I    n    n    l    o    g    g    i    n    g         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    l    o    g    i    n    '    )    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         a    s    y    n    c         (    )         =    >         {    
-              c    o    n    s    t         e    m    a    i    l                        =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    l    o    g    i    n    -    e    m    a    i    l    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ;    
-              c    o    n    s    t         p    a    s    s    w    o    r    d         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    l    o    g    i    n    -    p    a    s    s    w    o    r    d    '    )    .    v    a    l    u    e    ;    
-              i    f         (    !    e    m    a    i    l         |    |         !    p    a    s    s    w    o    r    d    )         r    e    t    u    r    n         s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    F    y    l    l         i    n    n         e    -    p    o    s    t         o    g         p    a    s    s    o    r    d    '    )    ;    
-              t    r    y         {    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    l    o    g    i    n    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         '    L    o    g    g    e    r         i    n    n    .    .    .    '    ;    
-                        c    o    n    s    t         d    a    t    a         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    a    u    t    h    /    l    o    g    i    n    '    ,         {    
-                                  m    e    t    h    o    d    :         '    P    O    S    T    '    ,    
-                                  b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         e    m    a    i    l    ,         p    a    s    s    w    o    r    d         }    )    
-                        }    )    ;    
-                        s    a    v    e    A    u    t    h    (    d    a    t    a    .    t    o    k    e    n    ,         d    a    t    a    .    u    s    e    r    )    ;    
-                        s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    '    )    ;    
-                        a    w    a    i    t         i    n    i    t    A    p    p    (    )    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        s    h    o    w    A    u    t    h    E    r    r    o    r    (    e    .    m    e    s    s    a    g    e         |    |         '    I    n    n    l    o    g    g    i    n    g         f    e    i    l    e    t    '    )    ;    
-              }         f    i    n    a    l    l    y         {    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    l    o    g    i    n    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         '    L    o    g    g         i    n    n    '    ;    
-              }    
-    }    )    ;    
-    
-    d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    s    h    o    w    -    r    e    g    i    s    t    e    r    '    )    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         (    )         =    >         {    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    l    o    g    i    n    -    f    o    r    m    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    r    e    g    i    s    t    e    r    -    f    o    r    m    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    f    l    e    x    '    ;    
-              s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    '    )    ;    
-    }    )    ;    
-    
-    d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    s    h    o    w    -    l    o    g    i    n    '    )    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         (    )         =    >         {    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    r    e    g    i    s    t    e    r    -    f    o    r    m    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    l    o    g    i    n    -    f    o    r    m    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    f    l    e    x    '    ;    
-              s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    '    )    ;    
-    }    )    ;    
-    
-    d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    r    e    g    i    s    t    e    r    '    )    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         a    s    y    n    c         (    )         =    >         {    
-              c    o    n    s    t         e    m    a    i    l                        =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    r    e    g    -    e    m    a    i    l    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ;    
-              c    o    n    s    t         n    a    m    e                             =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    r    e    g    -    n    a    m    e    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ;    
-              c    o    n    s    t         p    a    s    s    w    o    r    d         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    r    e    g    -    p    a    s    s    w    o    r    d    '    )    .    v    a    l    u    e    ;    
-              i    f         (    !    e    m    a    i    l         |    |         !    n    a    m    e         |    |         !    p    a    s    s    w    o    r    d    )         r    e    t    u    r    n         s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    F    y    l    l         i    n    n         a    l    l    e         f    e    l    t    '    )    ;    
-              i    f         (    p    a    s    s    w    o    r    d    .    l    e    n    g    t    h         <         8    )         r    e    t    u    r    n         s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    P    a    s    s    o    r    d         m    å         v    æ    r    e         m    i    n    s    t         8         t    e    g    n    '    )    ;    
-              t    r    y         {    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    r    e    g    i    s    t    e    r    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         '    R    e    g    i    s    t    r    e    r    e    r    .    .    .    '    ;    
-                        c    o    n    s    t         d    a    t    a         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    a    u    t    h    /    r    e    g    i    s    t    e    r    '    ,         {    
-                                  m    e    t    h    o    d    :         '    P    O    S    T    '    ,    
-                                  b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         e    m    a    i    l    ,         d    i    s    p    l    a    y    _    n    a    m    e    :         n    a    m    e    ,         p    a    s    s    w    o    r    d         }    )    
-                        }    )    ;    
-                        s    a    v    e    A    u    t    h    (    d    a    t    a    .    t    o    k    e    n    ,         d    a    t    a    .    u    s    e    r    )    ;    
-                        s    h    o    w    A    u    t    h    E    r    r    o    r    (    '    '    )    ;    
-                        a    w    a    i    t         i    n    i    t    A    p    p    (    )    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        s    h    o    w    A    u    t    h    E    r    r    o    r    (    e    .    m    e    s    s    a    g    e         |    |         '    R    e    g    i    s    t    r    e    r    i    n    g         f    e    i    l    e    t    '    )    ;    
-              }         f    i    n    a    l    l    y         {    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    r    e    g    i    s    t    e    r    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         '    R    e    g    i    s    t    r    e    r    '    ;    
-              }    
-    }    )    ;    
-    
-    /    /         ─    ─    ─         F    e    e    d         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         g    e    t    F    i    l    t    e    r    e    d    (    )         {    
-              c    o    n    s    t         q         =         s    t    a    t    e    .    s    e    a    r    c    h    Q    u    e    r    y    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    t    r    i    m    (    )    ;    
-              r    e    t    u    r    n         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         {    
-                        c    o    n    s    t         s    t    a    t    u    s    M    a    t    c    h         =         s    t    a    t    e    .    s    t    a    t    u    s    F    i    l    t    e    r         =    =    =         '    a    l    l    e    '         |    |         m    .    s    t    a    t    u    s         =    =    =         s    t    a    t    e    .    s    t    a    t    u    s    F    i    l    t    e    r    ;    
-                        c    o    n    s    t         s    o    u    r    c    e    M    a    t    c    h         =         s    t    a    t    e    .    s    o    u    r    c    e    F    i    l    t    e    r         =    =    =         '    a    l    l    e    '         |    |    
-                                  (    m    .    s    o    u    r    c    e         |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )         =    =    =         s    t    a    t    e    .    s    o    u    r    c    e    F    i    l    t    e    r    .    t    o    L    o    w    e    r    C    a    s    e    (    )    ;    
-                        i    f         (    !    s    t    a    t    u    s    M    a    t    c    h         |    |         !    s    o    u    r    c    e    M    a    t    c    h    )         r    e    t    u    r    n         f    a    l    s    e    ;    
-                        i    f         (    !    q    )         r    e    t    u    r    n         t    r    u    e    ;    
-                        r    e    t    u    r    n         (    
-                                  (    m    .    t    i    t    l    e              |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    i    n    c    l    u    d    e    s    (    q    )         |    |    
-                                  (    m    .    t    l    d    r                   |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    i    n    c    l    u    d    e    s    (    q    )         |    |    
-                                  (    m    .    b    o    d    y                   |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    i    n    c    l    u    d    e    s    (    q    )         |    |    
-                                  (    m    .    m    e    t    a    ?    .    s    e    n    d    e    r         |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    i    n    c    l    u    d    e    s    (    q    )         |    |    
-                                  (    m    .    m    e    t    a    ?    .    g    r    o    u    p              |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    i    n    c    l    u    d    e    s    (    q    )    
-                        )    ;    
-              }    )    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         r    e    n    d    e    r    F    e    e    d    (    )         {    
-              c    o    n    s    t         f    e    e    d         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    f    e    e    d    '    )    ;    
-              c    o    n    s    t         m    s    g    s         =         g    e    t    F    i    l    t    e    r    e    d    (    )    ;    
-              i    f         (    m    s    g    s    .    l    e    n    g    t    h         =    =    =         0    )         {    
-                        f    e    e    d    .    i    n    n    e    r    H    T    M    L         =         `    <    d    i    v         c    l    a    s    s    =    "    e    m    p    t    y    -    s    t    a    t    e    "    >    <    d    i    v         c    l    a    s    s    =    "    i    c    o    n    "    >    ✓    <    /    d    i    v    >    <    p    >    I    n    g    e    n         m    e    l    d    i    n    g    e    r    $    {    s    t    a    t    e    .    f    i    l    t    e    r         !    =    =         '    a    l    l    e    '         ?         '         i         d    e    n    n    e         k    a    t    e    g    o    r    i    e    n    '         :         '    '    }    .    <    /    p    >    <    /    d    i    v    >    `    ;    
-                        r    e    t    u    r    n    ;    
-              }    
-              f    e    e    d    .    i    n    n    e    r    H    T    M    L         =         m    s    g    s    .    m    a    p    (    m         =    >         r    e    n    d    e    r    C    a    r    d    (    m    )    )    .    j    o    i    n    (    '    '    )    ;    
-              m    s    g    s    .    f    o    r    E    a    c    h    (    m         =    >         a    t    t    a    c    h    C    a    r    d    E    v    e    n    t    s    (    m    .    i    d    )    )    ;    
-              u    p    d    a    t    e    B    a    d    g    e    (    )    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         r    e    n    d    e    r    C    a    r    d    (    m    )         {    
-              c    o    n    s    t         c    f    g         =         S    O    U    R    C    E    _    C    O    N    F    I    G    [    m    .    s    o    u    r    c    e    ]         |    |         {         c    o    l    o    r    :         '    #    8    8    8    '    ,         b    g    V    a    r    :         '    -    -    s    u    r    f    a    c    e    2    '         }    ;    
-              r    e    t    u    r    n         `    
-              <    d    i    v         c    l    a    s    s    =    "    c    a    r    d    "         i    d    =    "    c    a    r    d    -    $    {    m    .    i    d    }    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    
-                        <    d    i    v         c    l    a    s    s    =    "    s    w    i    p    e    -    h    i    n    t         s    w    i    p    e    -    h    i    n    t    -    o    k    "    >    L    e    s    t         ✓    <    /    d    i    v    >    
-                        <    d    i    v         c    l    a    s    s    =    "    s    w    i    p    e    -    h    i    n    t         s    w    i    p    e    -    h    i    n    t    -    s    k    i    p    "    >    S    k    j    u    l         ✕    <    /    d    i    v    >    
-                        <    d    i    v         c    l    a    s    s    =    "    c    a    r    d    -    h    e    a    d    e    r    "    >    
-                                  <    d    i    v         c    l    a    s    s    =    "    s    o    u    r    c    e    -    t    a    g    "    >    
-                                            <    d    i    v         c    l    a    s    s    =    "    s    o    u    r    c    e    -    d    o    t    "         s    t    y    l    e    =    "    b    a    c    k    g    r    o    u    n    d    :    $    {    c    f    g    .    c    o    l    o    r    }    "    >    <    /    d    i    v    >    
-                                            <    s    p    a    n         c    l    a    s    s    =    "    s    o    u    r    c    e    -    l    a    b    e    l    "         s    t    y    l    e    =    "    c    o    l    o    r    :    $    {    c    f    g    .    c    o    l    o    r    }    "    >    $    {    m    .    s    o    u    r    c    e    L    a    b    e    l    }         ·         $    {    c    a    t    e    g    o    r    y    L    a    b    e    l    (    m    )    }    <    /    s    p    a    n    >    
-                                  <    /    d    i    v    >    
-                                  <    d    i    v         s    t    y    l    e    =    "    d    i    s    p    l    a    y    :    f    l    e    x    ;    a    l    i    g    n    -    i    t    e    m    s    :    c    e    n    t    e    r    ;    g    a    p    :    6    p    x    ;    "    >    
-                                            $    {    s    t    a    t    e    .    s    t    a    t    u    s    F    i    l    t    e    r         !    =    =         '    u    n    r    e    a    d    '         ?         `    <    s    p    a    n         s    t    y    l    e    =    "    d    i    s    p    l    a    y    :    f    l    e    x    ;    a    l    i    g    n    -    i    t    e    m    s    :    c    e    n    t    e    r    ;    g    a    p    :    3    p    x    ;    f    o    n    t    -    s    i    z    e    :    1    0    p    x    ;    f    o    n    t    -    f    a    m    i    l    y    :    '    D    M         M    o    n    o    '    ,    m    o    n    o    s    p    a    c    e    ;    f    o    n    t    -    w    e    i    g    h    t    :    5    0    0    ;    c    o    l    o    r    :    $    {    m    .    s    t    a    t    u    s    =    =    =    '    r    e    a    d    '    ?    '    v    a    r    (    -    -    g    r    e    e    n    )    '    :    m    .    s    t    a    t    u    s    =    =    =    '    s    k    i    p    p    e    d    '    ?    '    v    a    r    (    -    -    r    e    d    )    '    :    '    #    B    A    7    5    1    7    '    }    "    >    <    s    p    a    n         s    t    y    l    e    =    "    w    i    d    t    h    :    7    p    x    ;    h    e    i    g    h    t    :    7    p    x    ;    b    o    r    d    e    r    -    r    a    d    i    u    s    :    5    0    %    ;    f    l    e    x    -    s    h    r    i    n    k    :    0    ;    b    a    c    k    g    r    o    u    n    d    :    $    {    m    .    s    t    a    t    u    s    =    =    =    '    r    e    a    d    '    ?    '    v    a    r    (    -    -    g    r    e    e    n    )    '    :    m    .    s    t    a    t    u    s    =    =    =    '    s    k    i    p    p    e    d    '    ?    '    v    a    r    (    -    -    r    e    d    )    '    :    '    #    B    A    7    5    1    7    '    }    "    >    <    /    s    p    a    n    >    $    {    m    .    s    t    a    t    u    s    =    =    =    '    r    e    a    d    '    ?    '    r    e    l    e    v    a    n    t    '    :    m    .    s    t    a    t    u    s    =    =    =    '    s    k    i    p    p    e    d    '    ?    '    i    g    n    o    r    e    r    t    '    :    '    n    y    '    }    <    /    s    p    a    n    >    `         :         '    '    }    
-                                            <    s    p    a    n         c    l    a    s    s    =    "    c    a    r    d    -    t    i    m    e    "    >    $    {    m    .    t    i    m    e    }    <    /    s    p    a    n    >    
-                                  <    /    d    i    v    >    
-                        <    /    d    i    v    >    
-                        <    d    i    v         c    l    a    s    s    =    "    c    a    r    d    -    t    i    t    l    e    "    >    $    {    m    .    s    o    u    r    c    e         =    =    =         '    w    h    a    t    s    a    p    p    '         &    &         m    .    m    e    t    a    ?    .    g    r    o    u    p         &    &         m    .    t    i    t    l    e    .    s    t    a    r    t    s    W    i    t    h    (    m    .    m    e    t    a    .    g    r    o    u    p         +         '    :         '    )    
-                                  ?         m    .    t    i    t    l    e    .    s    l    i    c    e    (    m    .    m    e    t    a    .    g    r    o    u    p    .    l    e    n    g    t    h         +         2    )    
-                                  :         m    .    t    i    t    l    e    }    <    /    d    i    v    >    
-                        <    d    i    v         c    l    a    s    s    =    "    t    l    d    r    "         s    t    y    l    e    =    "    b    a    c    k    g    r    o    u    n    d    :    v    a    r    (    $    {    c    f    g    .    b    g    V    a    r    }    )    "    >    
-                                  <    d    i    v         c    l    a    s    s    =    "    t    l    d    r    -    l    a    b    e    l    "         s    t    y    l    e    =    "    c    o    l    o    r    :    $    {    c    f    g    .    c    o    l    o    r    }    "    >    T    L    ;    D    R    <    /    d    i    v    >    
-                                  <    d    i    v         c    l    a    s    s    =    "    t    l    d    r    -    t    e    x    t    "         s    t    y    l    e    =    "    c    o    l    o    r    :    $    {    c    f    g    .    c    o    l    o    r    }    "    >    $    {    m    .    t    l    d    r    }    <    /    d    i    v    >    
-                        <    /    d    i    v    >    
-                        <    d    i    v         c    l    a    s    s    =    "    c    a    r    d    -    b    o    d    y    "         i    d    =    "    b    o    d    y    -    $    {    m    .    i    d    }    "    >    $    {    m    .    b    o    d    y    }    <    /    d    i    v    >    
-                        <    b    u    t    t    o    n         c    l    a    s    s    =    "    e    x    p    a    n    d    -    b    t    n    "         i    d    =    "    e    x    p    a    n    d    -    $    {    m    .    i    d    }    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "         s    t    y    l    e    =    "    c    o    l    o    r    :    $    {    c    f    g    .    c    o    l    o    r    }    "    >    L    e    s         h    e    l    e         m    e    l    d    i    n    g    e    n         ↓    <    /    b    u    t    t    o    n    >    
-                        <    d    i    v         c    l    a    s    s    =    "    c    a    r    d    -    a    c    t    i    o    n    s    "    >    
-                                  $    {    m    .    s    t    a    t    u    s         =    =    =         '    u    n    r    e    a    d    '    
-                                            ?         `    <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n         b    t    n    -    o    k    "         d    a    t    a    -    a    c    t    i    o    n    =    "    r    e    a    d    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    L    e    s    t         /         O    K    <    /    b    u    t    t    o    n    >    
-                                                           <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n         b    t    n    -    s    k    i    p    "         d    a    t    a    -    a    c    t    i    o    n    =    "    s    k    i    p    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    I    k    k    e         r    e    l    e    v    a    n    t    <    /    b    u    t    t    o    n    >    `    
-                                            :         m    .    s    t    a    t    u    s         =    =    =         '    s    k    i    p    p    e    d    '    
-                                            ?         `    <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n         b    t    n    -    o    k    "         s    t    y    l    e    =    "    f    l    e    x    :    1    "         d    a    t    a    -    a    c    t    i    o    n    =    "    r    e    a    d    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    R    e    l    e    v    a    n    t    <    /    b    u    t    t    o    n    >    
-                                                           <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n         b    t    n    -    s    k    i    p    "         d    a    t    a    -    a    c    t    i    o    n    =    "    u    n    r    e    a    d    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    ↩         N    y    <    /    b    u    t    t    o    n    >    `    
-                                            :         `    <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n         b    t    n    -    s    k    i    p    "         d    a    t    a    -    a    c    t    i    o    n    =    "    s    k    i    p    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    I    k    k    e         r    e    l    e    v    a    n    t    <    /    b    u    t    t    o    n    >    
-                                                           <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n         b    t    n    -    s    k    i    p    "         s    t    y    l    e    =    "    b    a    c    k    g    r    o    u    n    d    :    v    a    r    (    -    -    s    u    r    f    a    c    e    2    )    "         d    a    t    a    -    a    c    t    i    o    n    =    "    u    n    r    e    a    d    "         d    a    t    a    -    i    d    =    "    $    {    m    .    i    d    }    "    >    ↩         N    y    <    /    b    u    t    t    o    n    >    `    
-                                  }    
-                        <    /    d    i    v    >    
-              <    /    d    i    v    >    `    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         c    a    t    e    g    o    r    y    L    a    b    e    l    (    m    )         {    
-              c    o    n    s    t         c    a    t         =         (    m    .    c    a    t    e    g    o    r    y         |    |         '    '    )    .    t    o    L    o    w    e    r    C    a    s    e    (    )    ;    
-              /    /         F    o    r         W    h    a    t    s    A    p    p         v    i    s    e    r         v    i         g    r    u    p    p    e    n    a    v    n    e    t         f    r    a         m    e    t    a    
-              i    f         (    m    .    s    o    u    r    c    e         =    =    =         '    w    h    a    t    s    a    p    p    '         &    &         m    .    m    e    t    a    ?    .    g    r    o    u    p    )         r    e    t    u    r    n         m    .    m    e    t    a    .    g    r    o    u    p    ;    
-              r    e    t    u    r    n         {         s    k    o    l    e    :         '    S    k    o    l    e    '    ,         a    k    s    :         '    A    K    S    '    ,         i    d    r    e    t    t    :         '    S    p    o    n    d    '    ,         f    o    r    e    l    d    r    e    :         '    W    h    a    t    s    A    p    p    '    ,         w    h    a    t    s    a    p    p    :         '    W    h    a    t    s    A    p    p    '         }    [    c    a    t    ]         |    |         m    .    c    a    t    e    g    o    r    y         |    |         c    a    t    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         t    o    g    g    l    e    E    x    p    a    n    d    (    i    d    )         {    
-              c    o    n    s    t         b    o    d    y         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    `    b    o    d    y    -    $    {    i    d    }    `    )    ;    
-              c    o    n    s    t         b    t    n              =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    `    e    x    p    a    n    d    -    $    {    i    d    }    `    )    ;    
-              c    o    n    s    t         e    x    p    a    n    d    e    d         =         b    o    d    y    .    c    l    a    s    s    L    i    s    t    .    t    o    g    g    l    e    (    '    e    x    p    a    n    d    e    d    '    )    ;    
-              b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         e    x    p    a    n    d    e    d         ?         '    S    k    j    u    l         ↑    '         :         '    L    e    s         h    e    l    e         m    e    l    d    i    n    g    e    n         ↓    '    ;    
-    }    
-    
-    d    o    c    u    m    e    n    t    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         e         =    >         {    
-              c    o    n    s    t         b    t    n         =         e    .    t    a    r    g    e    t    .    c    l    o    s    e    s    t    (    '    [    d    a    t    a    -    a    c    t    i    o    n    ]    '    )    ;    
-              i    f         (    b    t    n    )         {    
-                        c    o    n    s    t         i    d         =         b    t    n    .    d    a    t    a    s    e    t    .    i    d    ,         a    c    t    i    o    n         =         b    t    n    .    d    a    t    a    s    e    t    .    a    c    t    i    o    n    ;    
-                        i    f         (    a    c    t    i    o    n         =    =    =         '    r    e    a    d    '    )                   m    a    r    k    R    e    a    d    (    i    d    )    ;    
-                        i    f         (    a    c    t    i    o    n         =    =    =         '    s    k    i    p    '    )                   m    a    r    k    S    k    i    p    p    e    d    (    i    d    )    ;    
-                        i    f         (    a    c    t    i    o    n         =    =    =         '    u    n    r    e    a    d    '    )         m    a    r    k    U    n    r    e    a    d    (    i    d    )    ;    
-              }    
-              c    o    n    s    t         e    x    p    a    n    d    B    t    n         =         e    .    t    a    r    g    e    t    .    c    l    o    s    e    s    t    (    '    .    e    x    p    a    n    d    -    b    t    n    [    d    a    t    a    -    i    d    ]    '    )    ;    
-              i    f         (    e    x    p    a    n    d    B    t    n    )         t    o    g    g    l    e    E    x    p    a    n    d    (    e    x    p    a    n    d    B    t    n    .    d    a    t    a    s    e    t    .    i    d    )    ;    
-    }    )    ;    
-    
-    /    /         ─    ─    ─         A    c    t    i    o    n    s         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         m    a    r    k    R    e    a    d    (    i    d    )         {    
-              c    o    n    s    t         m    s    g         =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    n    d    (    m         =    >         m    .    i    d         =    =    =         i    d    )    ;    
-              i    f         (    !    m    s    g         |    |         m    s    g    .    s    t    a    t    u    s         =    =    =         '    r    e    a    d    '    )         r    e    t    u    r    n    ;    
-              a    n    i    m    a    t    e    C    a    r    d    (    i    d    ,         '    r    i    g    h    t    '    ,         a    s    y    n    c         (    )         =    >         {    
-                        i    f         (    m    s    g    .    s    t    a    t    u    s         =    =    =         '    s    k    i    p    p    e    d    '    )         s    t    a    t    e    .    s    t    a    t    s    .    s    k    i    p    p    e    d         =         M    a    t    h    .    m    a    x    (    0    ,         s    t    a    t    e    .    s    t    a    t    s    .    s    k    i    p    p    e    d         -         1    )    ;    
-                        m    s    g    .    s    t    a    t    u    s         =         '    r    e    a    d    '    ;    
-                        s    t    a    t    e    .    s    t    a    t    s    .    r    e    a    d    +    +    ;    
-                        s    a    v    e    L    o    c    a    l    S    t    a    t    s    (    )    ;    
-                        r    e    n    d    e    r    F    e    e    d    (    )    ;         u    p    d    a    t    e    B    a    d    g    e    (    )    ;    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    `    /    m    e    s    s    a    g    e    s    /    $    {    i    d    }    `    ,         {         m    e    t    h    o    d    :         '    P    A    T    C    H    '    ,         b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         s    t    a    t    u    s    :         '    r    e    a    d    '         }    )         }    )    .    c    a    t    c    h    (    c    o    n    s    o    l    e    .    e    r    r    o    r    )    ;    
-              }    )    ;    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         m    a    r    k    S    k    i    p    p    e    d    (    i    d    )         {    
-              c    o    n    s    t         m    s    g         =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    n    d    (    m         =    >         m    .    i    d         =    =    =         i    d    )    ;    
-              i    f         (    !    m    s    g    )         r    e    t    u    r    n    ;    
-              a    n    i    m    a    t    e    C    a    r    d    (    i    d    ,         '    l    e    f    t    '    ,         a    s    y    n    c         (    )         =    >         {    
-                        i    f         (    m    s    g    .    s    t    a    t    u    s         =    =    =         '    r    e    a    d    '    )         s    t    a    t    e    .    s    t    a    t    s    .    r    e    a    d         =         M    a    t    h    .    m    a    x    (    0    ,         s    t    a    t    e    .    s    t    a    t    s    .    r    e    a    d         -         1    )    ;    
-                        m    s    g    .    s    t    a    t    u    s         =         '    s    k    i    p    p    e    d    '    ;    
-                        s    t    a    t    e    .    s    t    a    t    s    .    s    k    i    p    p    e    d    +    +    ;    
-                        s    a    v    e    L    o    c    a    l    S    t    a    t    s    (    )    ;    
-                        r    e    n    d    e    r    F    e    e    d    (    )    ;         u    p    d    a    t    e    B    a    d    g    e    (    )    ;    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    `    /    m    e    s    s    a    g    e    s    /    $    {    i    d    }    `    ,         {         m    e    t    h    o    d    :         '    P    A    T    C    H    '    ,         b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         s    t    a    t    u    s    :         '    s    k    i    p    p    e    d    '         }    )         }    )    .    c    a    t    c    h    (    c    o    n    s    o    l    e    .    e    r    r    o    r    )    ;    
-              }    )    ;    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         m    a    r    k    U    n    r    e    a    d    (    i    d    )         {    
-              c    o    n    s    t         m    s    g         =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    n    d    (    m         =    >         m    .    i    d         =    =    =         i    d    )    ;    
-              i    f         (    !    m    s    g    )         r    e    t    u    r    n    ;    
-              i    f         (    m    s    g    .    s    t    a    t    u    s         =    =    =         '    r    e    a    d    '    )                        s    t    a    t    e    .    s    t    a    t    s    .    r    e    a    d                        =         M    a    t    h    .    m    a    x    (    0    ,         s    t    a    t    e    .    s    t    a    t    s    .    r    e    a    d         -         1    )    ;    
-              i    f         (    m    s    g    .    s    t    a    t    u    s         =    =    =         '    s    k    i    p    p    e    d    '    )         s    t    a    t    e    .    s    t    a    t    s    .    s    k    i    p    p    e    d         =         M    a    t    h    .    m    a    x    (    0    ,         s    t    a    t    e    .    s    t    a    t    s    .    s    k    i    p    p    e    d         -         1    )    ;    
-              m    s    g    .    s    t    a    t    u    s         =         '    u    n    r    e    a    d    '    ;    
-              s    a    v    e    L    o    c    a    l    S    t    a    t    s    (    )    ;    
-              r    e    n    d    e    r    F    e    e    d    (    )    ;         u    p    d    a    t    e    B    a    d    g    e    (    )    ;    
-              a    w    a    i    t         a    p    i    F    e    t    c    h    (    `    /    m    e    s    s    a    g    e    s    /    $    {    i    d    }    `    ,         {         m    e    t    h    o    d    :         '    P    A    T    C    H    '    ,         b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         s    t    a    t    u    s    :         '    u    n    r    e    a    d    '         }    )         }    )    .    c    a    t    c    h    (    c    o    n    s    o    l    e    .    e    r    r    o    r    )    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         a    n    i    m    a    t    e    C    a    r    d    (    i    d    ,         d    i    r    ,         c    b    )         {    
-              c    o    n    s    t         c    a    r    d         =         d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    (    `    [    d    a    t    a    -    i    d    =    "    $    {    i    d    }    "    ]    .    c    a    r    d    `    )    ;    
-              i    f         (    !    c    a    r    d    )         r    e    t    u    r    n         c    b    (    )    ;    
-              c    a    r    d    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    d    i    r         =    =    =         '    r    i    g    h    t    '         ?         '    d    i    s    m    i    s    s    e    d    -    r    i    g    h    t    '         :         '    d    i    s    m    i    s    s    e    d    -    l    e    f    t    '    )    ;    
-              c    a    r    d    .    s    t    y    l    e    .    h    e    i    g    h    t         =         c    a    r    d    .    o    f    f    s    e    t    H    e    i    g    h    t         +         '    p    x    '    ;    
-              s    e    t    T    i    m    e    o    u    t    (    (    )         =    >         {         c    a    r    d    .    s    t    y    l    e    .    h    e    i    g    h    t         =         '    0    '    ;         c    a    r    d    .    s    t    y    l    e    .    m    a    r    g    i    n    B    o    t    t    o    m         =         '    0    '    ;         c    a    r    d    .    s    t    y    l    e    .    p    a    d    d    i    n    g         =         '    0    '    ;         c    a    r    d    .    s    t    y    l    e    .    o    v    e    r    f    l    o    w         =         '    h    i    d    d    e    n    '    ;         }    ,         2    8    0    )    ;    
-              s    e    t    T    i    m    e    o    u    t    (    c    b    ,         5    0    0    )    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         u    p    d    a    t    e    B    a    d    g    e    (    )         {    
-              c    o    n    s    t         u    n    r    e    a    d         =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         m    .    s    t    a    t    u    s         =    =    =         '    u    n    r    e    a    d    '    )    .    l    e    n    g    t    h    ;    
-              c    o    n    s    t         b    a    d    g    e         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    u    n    r    e    a    d    -    c    o    u    n    t    '    )    ;    
-              i    f         (    !    b    a    d    g    e    )         r    e    t    u    r    n    ;    
-              i    f         (    u    n    r    e    a    d         >         0    )         {    
-                        b    a    d    g    e    .    t    e    x    t    C    o    n    t    e    n    t         =         u    n    r    e    a    d         >         9         ?         '    9    +    '         :         u    n    r    e    a    d    ;    
-                        b    a    d    g    e    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    f    l    e    x    '    ;    
-              }         e    l    s    e         {    
-                        b    a    d    g    e    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;    
-              }    
-    }    
-    
-    /    /         ─    ─    ─         S    w    i    p    e         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         a    t    t    a    c    h    C    a    r    d    E    v    e    n    t    s    (    i    d    )         {    
-              c    o    n    s    t         c    a    r    d         =         d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    (    `    [    d    a    t    a    -    i    d    =    "    $    {    i    d    }    "    ]    .    c    a    r    d    `    )    ;    
-              i    f         (    !    c    a    r    d    )         r    e    t    u    r    n    ;    
-              l    e    t         s    t    a    r    t    X         =         0    ,         s    t    a    r    t    Y         =         0    ,         c    u    r    r    e    n    t    X         =         0    ,         d    r    a    g    g    i    n    g         =         f    a    l    s    e    ,         a    x    i    s         =         n    u    l    l    ;    
-              c    a    r    d    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    t    o    u    c    h    s    t    a    r    t    '    ,         e         =    >         {    
-                        s    t    a    r    t    X         =         e    .    t    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    X    ;         s    t    a    r    t    Y         =         e    .    t    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    Y    ;    
-                        d    r    a    g    g    i    n    g         =         t    r    u    e    ;         a    x    i    s         =         n    u    l    l    ;         c    a    r    d    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    s    w    i    p    i    n    g    '    )    ;    
-              }    ,         {         p    a    s    s    i    v    e    :         t    r    u    e         }    )    ;    
-              c    a    r    d    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    t    o    u    c    h    m    o    v    e    '    ,         e         =    >         {    
-                        i    f         (    !    d    r    a    g    g    i    n    g    )         r    e    t    u    r    n    ;    
-                        c    o    n    s    t         d    x         =         e    .    t    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    X         -         s    t    a    r    t    X    ,         d    y         =         e    .    t    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    Y         -         s    t    a    r    t    Y    ;    
-                        i    f         (    !    a    x    i    s    )         a    x    i    s         =         M    a    t    h    .    a    b    s    (    d    x    )         >         M    a    t    h    .    a    b    s    (    d    y    )         ?         '    x    '         :         '    y    '    ;    
-                        i    f         (    a    x    i    s         =    =    =         '    x    '    )         {    
-                                  e    .    p    r    e    v    e    n    t    D    e    f    a    u    l    t    (    )    ;         c    u    r    r    e    n    t    X         =         d    x    ;    
-                                  c    a    r    d    .    s    t    y    l    e    .    t    r    a    n    s    f    o    r    m         =         `    t    r    a    n    s    l    a    t    e    X    (    $    {    d    x    }    p    x    )         r    o    t    a    t    e    (    $    {    d    x         *         0    .    0    2    }    d    e    g    )    `    ;    
-                                  c    o    n    s    t         h    i    n    t    O    k         =         c    a    r    d    .    q    u    e    r    y    S    e    l    e    c    t    o    r    (    '    .    s    w    i    p    e    -    h    i    n    t    -    o    k    '    )    ,         h    i    n    t    S    k    i    p         =         c    a    r    d    .    q    u    e    r    y    S    e    l    e    c    t    o    r    (    '    .    s    w    i    p    e    -    h    i    n    t    -    s    k    i    p    '    )    ;    
-                                  i    f         (    d    x         >         3    0    )                                       {         h    i    n    t    O    k    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         M    a    t    h    .    m    i    n    (    (    d    x         -         3    0    )         /         6    0    ,         0    .    9    )    ;         h    i    n    t    S    k    i    p    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         0    ;         }    
-                                  e    l    s    e         i    f         (    d    x         <         -    3    0    )         {         h    i    n    t    S    k    i    p    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         M    a    t    h    .    m    i    n    (    (    -    d    x         -         3    0    )         /         6    0    ,         0    .    9    )    ;         h    i    n    t    O    k    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         0    ;         }    
-                                  e    l    s    e                                                                               {         h    i    n    t    O    k    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         0    ;         h    i    n    t    S    k    i    p    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         0    ;         }    
-                        }    
-              }    ,         {         p    a    s    s    i    v    e    :         f    a    l    s    e         }    )    ;    
-              c    a    r    d    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    t    o    u    c    h    e    n    d    '    ,         (    )         =    >         {    
-                        i    f         (    !    d    r    a    g    g    i    n    g    )         r    e    t    u    r    n    ;    
-                        d    r    a    g    g    i    n    g         =         f    a    l    s    e    ;         c    a    r    d    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    s    w    i    p    i    n    g    '    )    ;    
-                        i    f         (    a    x    i    s         =    =    =         '    x    '    )         {    
-                                  i    f         (    c    u    r    r    e    n    t    X         >         8    0    )         m    a    r    k    R    e    a    d    (    i    d    )    ;    
-                                  e    l    s    e         i    f         (    c    u    r    r    e    n    t    X         <         -    8    0    )         m    a    r    k    S    k    i    p    p    e    d    (    i    d    )    ;    
-                                  e    l    s    e         {    
-                                            c    a    r    d    .    s    t    y    l    e    .    t    r    a    n    s    f    o    r    m         =         '    '    ;    
-                                            c    a    r    d    .    q    u    e    r    y    S    e    l    e    c    t    o    r    (    '    .    s    w    i    p    e    -    h    i    n    t    -    o    k    '    )    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         0    ;    
-                                            c    a    r    d    .    q    u    e    r    y    S    e    l    e    c    t    o    r    (    '    .    s    w    i    p    e    -    h    i    n    t    -    s    k    i    p    '    )    .    s    t    y    l    e    .    o    p    a    c    i    t    y         =         0    ;    
-                                  }    
-                        }         e    l    s    e         {         c    a    r    d    .    s    t    y    l    e    .    t    r    a    n    s    f    o    r    m         =         '    '    ;         }    
-                        c    u    r    r    e    n    t    X         =         0    ;         a    x    i    s         =         n    u    l    l    ;    
-              }    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         F    i    l    t    e    r    -    t    a    b    s         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    #    s    t    a    t    u    s    -    f    i    l    t    e    r    s         .    f    i    l    t    e    r    -    b    t    n    '    )    .    f    o    r    E    a    c    h    (    b    t    n         =    >         {    
-              b    t    n    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         (    )         =    >         {    
-                        d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    #    s    t    a    t    u    s    -    f    i    l    t    e    r    s         .    f    i    l    t    e    r    -    b    t    n    '    )    .    f    o    r    E    a    c    h    (    b         =    >         b    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    a    c    t    i    v    e    '    )    )    ;    
-                        b    t    n    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    a    c    t    i    v    e    '    )    ;    
-                        s    t    a    t    e    .    s    t    a    t    u    s    F    i    l    t    e    r         =         b    t    n    .    d    a    t    a    s    e    t    .    s    t    a    t    u    s    ;    
-                        r    e    n    d    e    r    F    e    e    d    (    )    ;    
-              }    )    ;    
-    }    )    ;    
-    
-    d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    #    c    a    t    e    g    o    r    y    -    f    i    l    t    e    r    s         .    f    i    l    t    e    r    -    b    t    n    '    )    .    f    o    r    E    a    c    h    (    b    t    n         =    >         {    
-              b    t    n    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         (    )         =    >         {    
-                        d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    #    c    a    t    e    g    o    r    y    -    f    i    l    t    e    r    s         .    f    i    l    t    e    r    -    b    t    n    '    )    .    f    o    r    E    a    c    h    (    b         =    >         b    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    a    c    t    i    v    e    '    )    )    ;    
-                        b    t    n    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    a    c    t    i    v    e    '    )    ;    
-                        s    t    a    t    e    .    s    o    u    r    c    e    F    i    l    t    e    r         =         b    t    n    .    d    a    t    a    s    e    t    .    s    o    u    r    c    e    ;    
-                        r    e    n    d    e    r    F    e    e    d    (    )    ;    
-              }    )    ;    
-    }    )    ;    
-    
-    /    /         ─    ─    ─         S    ø    k         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    l    e    t         s    e    a    r    c    h    D    e    b    o    u    n    c    e         =         n    u    l    l    ;    
-    c    o    n    s    t         s    e    a    r    c    h    I    n    p    u    t         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    a    r    c    h    -    i    n    p    u    t    '    )    ;    
-    c    o    n    s    t         s    e    a    r    c    h    C    l    e    a    r         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    a    r    c    h    -    c    l    e    a    r    '    )    ;    
-    
-    f    u    n    c    t    i    o    n         c    l    e    a    r    S    e    a    r    c    h    (    )         {    
-              i    f         (    s    e    a    r    c    h    I    n    p    u    t    )         s    e    a    r    c    h    I    n    p    u    t    .    v    a    l    u    e         =         '    '    ;    
-              i    f         (    s    e    a    r    c    h    C    l    e    a    r    )         s    e    a    r    c    h    C    l    e    a    r    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;    
-              s    t    a    t    e    .    s    e    a    r    c    h    Q    u    e    r    y         =         '    '    ;    
-              r    e    n    d    e    r    F    e    e    d    (    )    ;    
-              i    f         (    s    e    a    r    c    h    I    n    p    u    t    )         s    e    a    r    c    h    I    n    p    u    t    .    f    o    c    u    s    (    )    ;    
-    }    
-    
-    i    f         (    s    e    a    r    c    h    I    n    p    u    t    )         {    
-              s    e    a    r    c    h    I    n    p    u    t    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    i    n    p    u    t    '    ,         e         =    >         {    
-                        c    l    e    a    r    T    i    m    e    o    u    t    (    s    e    a    r    c    h    D    e    b    o    u    n    c    e    )    ;    
-                        i    f         (    s    e    a    r    c    h    C    l    e    a    r    )         s    e    a    r    c    h    C    l    e    a    r    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         e    .    t    a    r    g    e    t    .    v    a    l    u    e         ?         '    b    l    o    c    k    '         :         '    n    o    n    e    '    ;    
-                        s    e    a    r    c    h    D    e    b    o    u    n    c    e         =         s    e    t    T    i    m    e    o    u    t    (    (    )         =    >         {    
-                                  s    t    a    t    e    .    s    e    a    r    c    h    Q    u    e    r    y         =         e    .    t    a    r    g    e    t    .    v    a    l    u    e    ;    
-                                  r    e    n    d    e    r    F    e    e    d    (    )    ;    
-                        }    ,         1    5    0    )    ;    
-              }    )    ;    
-              s    e    a    r    c    h    I    n    p    u    t    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    k    e    y    d    o    w    n    '    ,         e         =    >         {    
-                        i    f         (    e    .    k    e    y         =    =    =         '    E    s    c    a    p    e    '    )         c    l    e    a    r    S    e    a    r    c    h    (    )    ;    
-              }    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         N    a    v    i    g    a    s    j    o    n         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    .    n    a    v    -    b    t    n    '    )    .    f    o    r    E    a    c    h    (    b    t    n         =    >         {    
-              b    t    n    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    c    l    i    c    k    '    ,         (    )         =    >         {    
-                        c    o    n    s    t         v    i    e    w         =         b    t    n    .    d    a    t    a    s    e    t    .    v    i    e    w    ;    
-                        d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    .    n    a    v    -    b    t    n    '    )    .    f    o    r    E    a    c    h    (    b         =    >         b    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    a    c    t    i    v    e    '    )    )    ;    
-                        b    t    n    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    a    c    t    i    v    e    '    )    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    v    i    e    w    -    f    e    e    d    '    )    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         v    i    e    w         =    =    =         '    f    e    e    d    '         ?         '    f    l    e    x    '         :         '    n    o    n    e    '    ;    
-                        d    o    c    u    m    e    n    t    .    q    u    e    r    y    S    e    l    e    c    t    o    r    A    l    l    (    '    .    v    i    e    w    '    )    .    f    o    r    E    a    c    h    (    v         =    >         v    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    a    c    t    i    v    e    '    )    )    ;    
-                        i    f         (    v    i    e    w         !    =    =         '    f    e    e    d    '    )         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    `    v    i    e    w    -    $    {    v    i    e    w    }    `    )    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    a    c    t    i    v    e    '    )    ;    
-                        i    f         (    v    i    e    w         =    =    =         '    s    t    a    t    s    '    )         r    e    n    d    e    r    S    t    a    t    s    (    )    ;    
-                        i    f         (    v    i    e    w         =    =    =         '    s    e    t    t    i    n    g    s    '    )         l    o    a    d    S    e    t    t    i    n    g    s    (    )    ;    
-              }    )    ;    
-    }    )    ;    
-    
-    /    /         ─    ─    ─         M    a    n    u    e    l    l         s    y    n    k         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         m    a    n    u    a    l    S    y    n    c    (    )         {    
-              i    f         (    !    A    P    I    _    U    R    L    )         r    e    t    u    r    n    ;    
-              c    o    n    s    t         b    t    n         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    y    n    c    -    b    t    n    '    )    ;    
-              b    t    n    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    s    y    n    c    i    n    g    '    )    ;         b    t    n    .    d    i    s    a    b    l    e    d         =         t    r    u    e    ;    
-              t    r    y         {    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    s    y    n    c    '    ,         {         m    e    t    h    o    d    :         '    P    O    S    T    '         }    )    ;    
-                        c    o    n    s    t         d    a    t    a         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    m    e    s    s    a    g    e    s    '    )    ;    
-                        s    t    a    t    e    .    m    e    s    s    a    g    e    s         =         d    a    t    a    .    m    e    s    s    a    g    e    s    ;    
-                        s    t    a    t    e    .    l    a    s    t    S    y    n    c         =         d    a    t    a    .    l    a    s    t    _    s    y    n    c    ;    
-                        r    e    n    d    e    r    F    e    e    d    (    )    ;         u    p    d    a    t    e    B    a    d    g    e    (    )    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    l    a    s    t    -    s    y    n    c    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =    
-                                  n    e    w         D    a    t    e    (    )    .    t    o    L    o    c    a    l    e    T    i    m    e    S    t    r    i    n    g    (    '    n    o    -    N    O    '    ,         {         h    o    u    r    :         '    2    -    d    i    g    i    t    '    ,         m    i    n    u    t    e    :         '    2    -    d    i    g    i    t    '         }    )    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        c    o    n    s    o    l    e    .    e    r    r    o    r    (    '    S    y    n    k         f    e    i    l    e    t    :    '    ,         e    )    ;    
-              }         f    i    n    a    l    l    y         {    
-                        b    t    n    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    s    y    n    c    i    n    g    '    )    ;         b    t    n    .    d    i    s    a    b    l    e    d         =         f    a    l    s    e    ;    
-              }    
-    }    
-    
-    /    /         ─    ─    ─         S    t    a    t    i    s    t    i    k    k         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         r    e    n    d    e    r    S    t    a    t    s    (    )         {    
-              c    o    n    s    t         t    o    t    a    l                   =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    l    e    n    g    t    h    ;    
-              c    o    n    s    t         r    e    a    d                        =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         m    .    s    t    a    t    u    s         =    =    =         '    r    e    a    d    '    )    .    l    e    n    g    t    h    ;    
-              c    o    n    s    t         s    k    i    p    p    e    d         =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         m    .    s    t    a    t    u    s         =    =    =         '    s    k    i    p    p    e    d    '    )    .    l    e    n    g    t    h    ;    
-              c    o    n    s    t         u    n    r    e    a    d              =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         m    .    s    t    a    t    u    s         =    =    =         '    u    n    r    e    a    d    '    )    .    l    e    n    g    t    h    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    t    a    t    -    t    o    t    a    l    '    )    .    t    e    x    t    C    o    n    t    e    n    t                   =         t    o    t    a    l    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    t    a    t    -    r    e    a    d    '    )    .    t    e    x    t    C    o    n    t    e    n    t                        =         r    e    a    d    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    t    a    t    -    s    k    i    p    p    e    d    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         s    k    i    p    p    e    d    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    t    a    t    -    u    n    r    e    a    d    '    )    .    t    e    x    t    C    o    n    t    e    n    t              =         u    n    r    e    a    d    ;    
-              c    o    n    s    t         s    o    u    r    c    e    s         =         {    }    ;    
-              s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    f    o    r    E    a    c    h    (    m         =    >         {    
-                        i    f         (    !    s    o    u    r    c    e    s    [    m    .    s    o    u    r    c    e    ]    )         s    o    u    r    c    e    s    [    m    .    s    o    u    r    c    e    ]         =         {         l    a    b    e    l    :         m    .    s    o    u    r    c    e    L    a    b    e    l    ,         c    o    u    n    t    :         0         }    ;    
-                        s    o    u    r    c    e    s    [    m    .    s    o    u    r    c    e    ]    .    c    o    u    n    t    +    +    ;    
-              }    )    ;    
-              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    o    u    r    c    e    -    s    t    a    t    s    '    )    .    i    n    n    e    r    H    T    M    L         =         O    b    j    e    c    t    .    e    n    t    r    i    e    s    (    s    o    u    r    c    e    s    )    .    m    a    p    (    (    [    k    e    y    ,         v    a    l    ]    )         =    >         {    
-                        c    o    n    s    t         c         =         S    O    U    R    C    E    _    C    O    N    F    I    G    [    k    e    y    ]         |    |         {         c    o    l    o    r    :         '    #    8    8    8    '    ,         b    g    :         '    #    e    e    e    '    ,         d    a    r    k    B    g    :         '    #    3    3    3    '         }    ;    
-                        r    e    t    u    r    n         `    <    d    i    v         c    l    a    s    s    =    "    s    e    t    t    i    n    g    s    -    r    o    w    "    >    
-                                  <    d    i    v         c    l    a    s    s    =    "    s    e    t    t    i    n    g    s    -    r    o    w    -    l    e    f    t    "    >    
-                                            <    d    i    v         s    t    y    l    e    =    "    w    i    d    t    h    :    1    2    p    x    ;    h    e    i    g    h    t    :    1    2    p    x    ;    b    o    r    d    e    r    -    r    a    d    i    u    s    :    3    p    x    ;    b    a    c    k    g    r    o    u    n    d    :    $    {    c    .    c    o    l    o    r    }    ;    f    l    e    x    -    s    h    r    i    n    k    :    0    ;    "    >    <    /    d    i    v    >    
-                                            <    s    p    a    n         c    l    a    s    s    =    "    s    e    t    t    i    n    g    s    -    r    o    w    -    t    e    x    t    "    >    $    {    v    a    l    .    l    a    b    e    l    }    <    /    s    p    a    n    >    
-                                  <    /    d    i    v    >    
-                                  <    s    p    a    n         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    2    )    ;    f    o    n    t    -    f    a    m    i    l    y    :    '    D    M         M    o    n    o    '    ,    m    o    n    o    s    p    a    c    e    ;    "    >    $    {    v    a    l    .    c    o    u    n    t    }         m    e    l    d    i    n    g    e    r    <    /    s    p    a    n    >    
-                        <    /    d    i    v    >    `    ;    
-              }    )    .    j    o    i    n    (    '    '    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         I    n    n    s    t    i    l    l    i    n    g    e    r         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         l    o    a    d    S    e    t    t    i    n    g    s    (    )         {    
-              t    r    y         {    
-                        c    o    n    s    t         s         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    s    e    t    t    i    n    g    s    '    )    ;    
-                        /    /         S    p    o    n    d    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    s    p    o    n    d    -    u    s    e    r    '    )    .    v    a    l    u    e                        =         s    .    s    p    o    n    d    _    u    s    e    r    n    a    m    e         |    |         '    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    s    p    o    n    d    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d         =         !    !    s    .    s    p    o    n    d    _    e    n    a    b    l    e    d    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    p    o    n    d    -    p    w    -    s    t    a    t    u    s    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         s    .    s    p    o    n    d    _    h    a    s    _    p    a    s    s    w    o    r    d         ?         '    (    p    a    s    s    o    r    d         l    a    g    r    e    t    )    '         :         '    (    i    k    k    e         s    a    t    t    )    '    ;    
-                        /    /         E    -    p    o    s    t         1    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    h    o    s    t    '    )    .    v    a    l    u    e                                  =         s    .    e    m    a    i    l    _    1    _    h    o    s    t         |    |         '    i    m    a    p    .    o    n    e    .    c    o    m    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    u    s    e    r    '    )    .    v    a    l    u    e                                  =         s    .    e    m    a    i    l    _    1    _    u    s    e    r    n    a    m    e         |    |         '    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    f    r    o    m    '    )    .    v    a    l    u    e                                  =         s    .    e    m    a    i    l    _    1    _    f    r    o    m    _    f    i    l    t    e    r         |    |         '    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    s    u    b    j    e    c    t    '    )    .    v    a    l    u    e                   =         s    .    e    m    a    i    l    _    1    _    s    u    b    j    e    c    t    _    f    i    l    t    e    r         |    |         '    '    ;    
-    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    d    e    l    e    t    e    '    )    .    c    h    e    c    k    e    d              =         !    !    s    .    e    m    a    i    l    _    1    _    d    e    l    e    t    e    _    a    f    t    e    r    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d         =         !    !    s    .    e    m    a    i    l    _    1    _    e    n    a    b    l    e    d    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    e    1    -    p    w    -    s    t    a    t    u    s    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         s    .    e    m    a    i    l    _    1    _    h    a    s    _    p    a    s    s    w    o    r    d         ?         '    (    p    a    s    s    o    r    d         l    a    g    r    e    t    )    '         :         '    (    i    k    k    e         s    a    t    t    )    '    ;    
-                        /    /         E    -    p    o    s    t         2    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    h    o    s    t    '    )    .    v    a    l    u    e                                  =         s    .    e    m    a    i    l    _    2    _    h    o    s    t         |    |         '    i    m    a    p    .    o    n    e    .    c    o    m    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    u    s    e    r    '    )    .    v    a    l    u    e                                  =         s    .    e    m    a    i    l    _    2    _    u    s    e    r    n    a    m    e         |    |         '    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    f    r    o    m    '    )    .    v    a    l    u    e                                  =         s    .    e    m    a    i    l    _    2    _    f    r    o    m    _    f    i    l    t    e    r         |    |         '    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    s    u    b    j    e    c    t    '    )    .    v    a    l    u    e                   =         s    .    e    m    a    i    l    _    2    _    s    u    b    j    e    c    t    _    f    i    l    t    e    r         |    |         '    '    ;    
-    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    d    e    l    e    t    e    '    )    .    c    h    e    c    k    e    d              =         !    !    s    .    e    m    a    i    l    _    2    _    d    e    l    e    t    e    _    a    f    t    e    r    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d         =         !    !    s    .    e    m    a    i    l    _    2    _    e    n    a    b    l    e    d    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    e    2    -    p    w    -    s    t    a    t    u    s    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         s    .    e    m    a    i    l    _    2    _    h    a    s    _    p    a    s    s    w    o    r    d         ?         '    (    p    a    s    s    o    r    d         l    a    g    r    e    t    )    '         :         '    (    i    k    k    e         s    a    t    t    )    '    ;    
-                        /    /         W    h    a    t    s    A    p    p    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    w    a    -    f    i    l    t    e    r    '    )    .    v    a    l    u    e                   =         s    .    w    a    _    g    r    o    u    p    _    f    i    l    t    e    r         |    |         '    '    ;    
-    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    w    a    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d         =         !    !    s    .    w    a    _    e    n    a    b    l    e    d    ;    
-                        /    /         B    r    u    k    e    r    i    n    f    o    
-                        c    o    n    s    t         u    s    e    r         =         g    e    t    U    s    e    r    (    )    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    u    s    e    r    -    n    a    m    e    '    )    .    t    e    x    t    C    o    n    t    e    n    t              =         u    s    e    r    ?    .    d    i    s    p    l    a    y    _    n    a    m    e         |    |         '    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    u    s    e    r    -    e    m    a    i    l    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =         u    s    e    r    ?    .    e    m    a    i    l         |    |         '    '    ;    
-                        /    /         F    a    m    i    l    y         c    o    n    t    e    x    t    
-                        c    o    n    s    t         f    c         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    f    a    m    i    l    y    -    c    o    n    t    e    x    t    '    )    ;    
-                        i    f         (    f    c    )         f    c    .    v    a    l    u    e         =         s    .    f    a    m    i    l    y    _    c    o    n    t    e    x    t         |    |         '    '    ;    
-                        /    /         U    p    d    a    t    e         a    c    c    o    r    d    i    o    n         b    a    d    g    e    s    
-                        [    '    s    p    o    n    d    '    ,    '    e    1    '    ,    '    e    2    '    ,    '    w    a    '    ]    .    f    o    r    E    a    c    h    (    k         =    >         u    p    d    a    t    e    B    a    d    g    e    (    k    )    )    ;    
-                        i    n    i    t    P    u    s    h    S    e    t    t    i    n    g    s    (    )    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        c    o    n    s    o    l    e    .    e    r    r    o    r    (    '    K    u    n    n    e         i    k    k    e         l    a    s    t    e         i    n    n    s    t    i    l    l    i    n    g    e    r    :    '    ,         e    )    ;    
-              }    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         s    a    v    e    S    e    t    t    i    n    g    s    (    )         {    
-              c    o    n    s    t         b    t    n         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    s    a    v    e    -    s    e    t    t    i    n    g    s    '    )    ;    
-              b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    L    a    g    r    e    r    .    .    .    '    ;         b    t    n    .    d    i    s    a    b    l    e    d         =         t    r    u    e    ;    
-              t    r    y         {    
-                        c    o    n    s    t         u    p    d    a    t    e    s         =         {    
-                                  f    a    m    i    l    y    _    c    o    n    t    e    x    t    :         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    f    a    m    i    l    y    -    c    o    n    t    e    x    t    '    )    ?    .    v    a    l    u    e         |    |         '    '    ,    
-                                  s    p    o    n    d    _    u    s    e    r    n    a    m    e    :         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    s    p    o    n    d    -    u    s    e    r    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  s    p    o    n    d    _    e    n    a    b    l    e    d    :              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    s    p    o    n    d    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d    ,    
-                                  e    m    a    i    l    _    1    _    h    o    s    t    :                                                           d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    h    o    s    t    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  e    m    a    i    l    _    1    _    u    s    e    r    n    a    m    e    :                                       d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    u    s    e    r    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  e    m    a    i    l    _    1    _    f    r    o    m    _    f    i    l    t    e    r    :                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    f    r    o    m    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  e    m    a    i    l    _    1    _    s    u    b    j    e    c    t    _    f    i    l    t    e    r    :         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    s    u    b    j    e    c    t    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-    
-                                  e    m    a    i    l    _    1    _    d    e    l    e    t    e    _    a    f    t    e    r    :                   d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    d    e    l    e    t    e    '    )    .    c    h    e    c    k    e    d    ,    
-                                  e    m    a    i    l    _    1    _    e    n    a    b    l    e    d    :                                            d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d    ,    
-                                  e    m    a    i    l    _    2    _    h    o    s    t    :                                                           d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    h    o    s    t    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  e    m    a    i    l    _    2    _    u    s    e    r    n    a    m    e    :                                       d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    u    s    e    r    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  e    m    a    i    l    _    2    _    f    r    o    m    _    f    i    l    t    e    r    :                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    f    r    o    m    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-                                  e    m    a    i    l    _    2    _    s    u    b    j    e    c    t    _    f    i    l    t    e    r    :         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    s    u    b    j    e    c    t    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-    
-                                  e    m    a    i    l    _    2    _    d    e    l    e    t    e    _    a    f    t    e    r    :                   d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    d    e    l    e    t    e    '    )    .    c    h    e    c    k    e    d    ,    
-                                  e    m    a    i    l    _    2    _    e    n    a    b    l    e    d    :                                            d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d    ,    
-                                  w    a    _    g    r    o    u    p    _    f    i    l    t    e    r    :              d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    w    a    -    f    i    l    t    e    r    '    )    .    v    a    l    u    e    .    t    r    i    m    (    )    ,    
-    
-                                  w    a    _    e    n    a    b    l    e    d    :                                       d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    w    a    -    e    n    a    b    l    e    d    '    )    .    c    h    e    c    k    e    d    ,    
-                        }    ;    
-                        /    /         P    a    s    s    o    r    d         –         b    a    r    e         s    e    n    d         h    v    i    s         f    y    l    t         i    n    n    
-                        c    o    n    s    t         s    p    o    n    d    P    w         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    s    p    o    n    d    -    p    w    '    )    .    v    a    l    u    e    ;    
-                        i    f         (    s    p    o    n    d    P    w    )         u    p    d    a    t    e    s    .    s    p    o    n    d    _    p    a    s    s    w    o    r    d         =         s    p    o    n    d    P    w    ;    
-                        c    o    n    s    t         e    1    p    w         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    1    -    p    w    '    )    .    v    a    l    u    e    ;    
-                        i    f         (    e    1    p    w    )         u    p    d    a    t    e    s    .    e    m    a    i    l    _    1    _    p    a    s    s    w    o    r    d         =         e    1    p    w    ;    
-                        c    o    n    s    t         e    2    p    w         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    s    e    t    -    e    2    -    p    w    '    )    .    v    a    l    u    e    ;    
-                        i    f         (    e    2    p    w    )         u    p    d    a    t    e    s    .    e    m    a    i    l    _    2    _    p    a    s    s    w    o    r    d         =         e    2    p    w    ;    
-    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    s    e    t    t    i    n    g    s    '    ,         {         m    e    t    h    o    d    :         '    P    A    T    C    H    '    ,         b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    u    p    d    a    t    e    s    )         }    )    ;    
-                        b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    L    a    g    r    e    t         ✓    '    ;    
-                        s    e    t    T    i    m    e    o    u    t    (    (    )         =    >         {         b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    L    a    g    r    e         i    n    n    s    t    i    l    l    i    n    g    e    r    '    ;         b    t    n    .    d    i    s    a    b    l    e    d         =         f    a    l    s    e    ;         }    ,         2    0    0    0    )    ;    
-                        a    w    a    i    t         l    o    a    d    S    e    t    t    i    n    g    s    (    )    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    F    e    i    l         –         p    r    ø    v         i    g    j    e    n    '    ;    
-                        b    t    n    .    d    i    s    a    b    l    e    d         =         f    a    l    s    e    ;    
-                        c    o    n    s    o    l    e    .    e    r    r    o    r    (    e    )    ;    
-              }    
-    }    
-    
-    /    /         ─    ─    ─         I    n    i    t         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         i    n    i    t    A    p    p    (    )         {    
-              i    n    i    t    P    u    l    l    T    o    R    e    f    r    e    s    h    (    )    ;    
-              c    o    n    s    t         u    s    e    r         =         g    e    t    U    s    e    r    (    )    ;    
-              i    f         (    !    u    s    e    r    )         {         s    h    o    w    L    o    g    i    n    (    )    ;         r    e    t    u    r    n    ;         }    
-              /    /         A    u    t    o    -    r    e    g    i    s    t    r    e    r         p    u    s    h         h    v    i    s         t    i    l    l    a    t    e    l    s    e         a    l    l    e    r    e    d    e         e    r         g    i    t    t    
-              i    f         (    '    N    o    t    i    f    i    c    a    t    i    o    n    '         i    n         w    i    n    d    o    w         &    &         N    o    t    i    f    i    c    a    t    i    o    n    .    p    e    r    m    i    s    s    i    o    n         =    =    =         '    g    r    a    n    t    e    d    '    )         {    
-                        s    u    b    s    c    r    i    b    e    T    o    P    u    s    h    (    )    .    c    a    t    c    h    (    (    )         =    >         {    }    )    ;    
-              }    
-              c    o    n    s    t         n    a    m    e    E    l         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    u    s    e    r    -    d    i    s    p    l    a    y    -    n    a    m    e    '    )    ;    
-              i    f         (    n    a    m    e    E    l    )         n    a    m    e    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         u    s    e    r    .    d    i    s    p    l    a    y    _    n    a    m    e    ;    
-              /    /         S    e    t    t         i    n    i    t    i    a    l    e    r         i         a    v    a    t    a    r    
-              c    o    n    s    t         a    v    a    t    a    r         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    u    s    e    r    -    a    v    a    t    a    r    '    )    ;    
-              i    f         (    a    v    a    t    a    r         &    &         u    s    e    r    .    d    i    s    p    l    a    y    _    n    a    m    e    )         {    
-                        c    o    n    s    t         p    a    r    t    s         =         u    s    e    r    .    d    i    s    p    l    a    y    _    n    a    m    e    .    t    r    i    m    (    )    .    s    p    l    i    t    (    '         '    )    ;    
-                        c    o    n    s    t         i    n    i    t    i    a    l    s         =         p    a    r    t    s    .    l    e    n    g    t    h         >         1    
-                                  ?         p    a    r    t    s    [    0    ]    [    0    ]         +         p    a    r    t    s    [    p    a    r    t    s    .    l    e    n    g    t    h    -    1    ]    [    0    ]    
-                                  :         p    a    r    t    s    [    0    ]    .    s    u    b    s    t    r    i    n    g    (    0    ,         2    )    ;    
-                        a    v    a    t    a    r    .    t    e    x    t    C    o    n    t    e    n    t         =         i    n    i    t    i    a    l    s    .    t    o    U    p    p    e    r    C    a    s    e    (    )    ;    
-              }    
-              s    h    o    w    A    p    p    (    )    ;    
-              t    r    y         {    
-                        c    o    n    s    t         d    a    t    a         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    m    e    s    s    a    g    e    s    '    )    ;    
-                        s    t    a    t    e    .    m    e    s    s    a    g    e    s         =         d    a    t    a    .    m    e    s    s    a    g    e    s    ;    
-                        s    t    a    t    e    .    l    a    s    t    S    y    n    c         =         d    a    t    a    .    l    a    s    t    _    s    y    n    c    ;    
-                        s    t    a    t    e    .    s    t    a    t    s         =         {    
-                                  r    e    a    d    :                        d    a    t    a    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         m    .    s    t    a    t    u    s         =    =    =         '    r    e    a    d    '    )    .    l    e    n    g    t    h    ,    
-                                  s    k    i    p    p    e    d    :         d    a    t    a    .    m    e    s    s    a    g    e    s    .    f    i    l    t    e    r    (    m         =    >         m    .    s    t    a    t    u    s         =    =    =         '    s    k    i    p    p    e    d    '    )    .    l    e    n    g    t    h    
-                        }    ;    
-                        r    e    n    d    e    r    F    e    e    d    (    )    ;         u    p    d    a    t    e    B    a    d    g    e    (    )    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    l    a    s    t    -    s    y    n    c    '    )    .    t    e    x    t    C    o    n    t    e    n    t         =    
-                                  s    t    a    t    e    .    l    a    s    t    S    y    n    c    
-                                            ?         n    e    w         D    a    t    e    (    s    t    a    t    e    .    l    a    s    t    S    y    n    c    )    .    t    o    L    o    c    a    l    e    T    i    m    e    S    t    r    i    n    g    (    '    n    o    -    N    O    '    ,         {         h    o    u    r    :         '    2    -    d    i    g    i    t    '    ,         m    i    n    u    t    e    :         '    2    -    d    i    g    i    t    '         }    )    
-                                            :         '    –    '    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        c    o    n    s    o    l    e    .    e    r    r    o    r    (    '    K    u    n    n    e         i    k    k    e         l    a    s    t    e         m    e    l    d    i    n    g    e    r    :    '    ,         e    )    ;    
-              }    
-    }    
-    
-    /    /         S    t    a    r    t    
-    i    n    i    t    A    p    p    (    )    ;    
-    
-    /    /         ─    ─    ─         A    I         C    h    a    t         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    l    e    t         a    i    H    i    s    t    o    r    y         =         J    S    O    N    .    p    a    r    s    e    (    s    e    s    s    i    o    n    S    t    o    r    a    g    e    .    g    e    t    I    t    e    m    (    '    a    i    _    h    i    s    t    o    r    y    '    )         |    |         '    [    ]    '    )    ;    
-    
-    f    u    n    c    t    i    o    n         r    e    n    d    e    r    A    i    H    i    s    t    o    r    y    (    )         {    
-              c    o    n    s    t         c    o    n    t    a    i    n    e    r         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    a    i    -    m    e    s    s    a    g    e    s    '    )    ;    
-              i    f         (    !    c    o    n    t    a    i    n    e    r    )         r    e    t    u    r    n    ;    
-              i    f         (    a    i    H    i    s    t    o    r    y    .    l    e    n    g    t    h         =    =    =         0    )         {    
-                        c    o    n    t    a    i    n    e    r    .    i    n    n    e    r    H    T    M    L         =         `    
-                                  <    d    i    v         s    t    y    l    e    =    "    t    e    x    t    -    a    l    i    g    n    :    c    e    n    t    e    r    ;    p    a    d    d    i    n    g    :    2    0    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    3    )    ;    "    >    
-                                            <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    3    2    p    x    ;    m    a    r    g    i    n    -    b    o    t    t    o    m    :    8    p    x    ;    "    >    🤖    <    /    d    i    v    >    
-                                            <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    4    p    x    ;    "    >    S    p    ø    r         m    e    g         o    m         n    o    e         f    r    a         m    e    l    d    i    n    g    e    n    e         d    i    n    e    !    <    /    d    i    v    >    
-                                            <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    2    p    x    ;    m    a    r    g    i    n    -    t    o    p    :    8    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    3    )    ;    "    >    F    .    e    k    s    :         "    N    å    r         e    r         n    e    s    t    e         f    o    t    b    a    l    l    t    r    e    n    i    n    g    ?    "         e    l    l    e    r         "    H    v    a         s    k    j    e    r         d    e    n    n    e         h    e    l    g    e    n    ?    "    <    /    d    i    v    >    
-                                  <    /    d    i    v    >    `    ;    
-                        r    e    t    u    r    n    ;    
-              }    
-              c    o    n    t    a    i    n    e    r    .    i    n    n    e    r    H    T    M    L         =         a    i    H    i    s    t    o    r    y    .    m    a    p    (    m    s    g         =    >         `    
-                        <    d    i    v         s    t    y    l    e    =    "    d    i    s    p    l    a    y    :    f    l    e    x    ;    f    l    e    x    -    d    i    r    e    c    t    i    o    n    :    c    o    l    u    m    n    ;    g    a    p    :    2    p    x    ;    a    l    i    g    n    -    i    t    e    m    s    :    $    {    m    s    g    .    r    o    l    e    =    =    =    '    u    s    e    r    '    ?    '    f    l    e    x    -    e    n    d    '    :    '    f    l    e    x    -    s    t    a    r    t    '    }    "    >    
-                                  <    d    i    v         s    t    y    l    e    =    "    m    a    x    -    w    i    d    t    h    :    8    5    %    ;    p    a    d    d    i    n    g    :    1    0    p    x         1    4    p    x    ;    b    o    r    d    e    r    -    r    a    d    i    u    s    :    $    {    m    s    g    .    r    o    l    e    =    =    =    '    u    s    e    r    '    ?    '    1    6    p    x         1    6    p    x         4    p    x         1    6    p    x    '    :    '    1    6    p    x         1    6    p    x         1    6    p    x         4    p    x    '    }    ;    
-                                            b    a    c    k    g    r    o    u    n    d    :    $    {    m    s    g    .    r    o    l    e    =    =    =    '    u    s    e    r    '    ?    '    #    1    8    5    F    A    5    '    :    '    v    a    r    (    -    -    s    u    r    f    a    c    e    )    '    }    ;    
-                                            c    o    l    o    r    :    $    {    m    s    g    .    r    o    l    e    =    =    =    '    u    s    e    r    '    ?    '    w    h    i    t    e    '    :    '    v    a    r    (    -    -    t    e    x    t    )    '    }    ;    
-                                            b    o    r    d    e    r    :    $    {    m    s    g    .    r    o    l    e    =    =    =    '    u    s    e    r    '    ?    '    n    o    n    e    '    :    '    1    p    x         s    o    l    i    d         v    a    r    (    -    -    b    o    r    d    e    r    )    '    }    ;    
-                                            f    o    n    t    -    s    i    z    e    :    1    4    p    x    ;    l    i    n    e    -    h    e    i    g    h    t    :    1    .    6    ;    w    h    i    t    e    -    s    p    a    c    e    :    p    r    e    -    w    r    a    p    ;    "    >    
-                                            $    {    m    s    g    .    c    o    n    t    e    n    t    }    
-                                  <    /    d    i    v    >    
-                                  <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    0    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    3    )    ;    p    a    d    d    i    n    g    :    0         4    p    x    ;    "    >    $    {    m    s    g    .    r    o    l    e    =    =    =    '    u    s    e    r    '    ?    '    D    u    '    :    '    B    r    i    e    f         A    I    '    }    <    /    d    i    v    >    
-                        <    /    d    i    v    >    `    )    .    j    o    i    n    (    '    '    )    ;    
-              /    /         S    c    r    o    l    l         t    o         b    o    t    t    o    m    
-              c    o    n    t    a    i    n    e    r    .    s    c    r    o    l    l    T    o    p         =         c    o    n    t    a    i    n    e    r    .    s    c    r    o    l    l    H    e    i    g    h    t    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         f    i    n    d    R    e    l    e    v    a    n    t    M    e    s    s    a    g    e    s    (    q    u    e    r    y    )         {    
-              c    o    n    s    t         w    o    r    d    s         =         q    u    e    r    y    .    t    o    L    o    w    e    r    C    a    s    e    (    )    .    s    p    l    i    t    (    /    \    s    +    /    )    .    f    i    l    t    e    r    (    w         =    >         w    .    l    e    n    g    t    h         >         2    )    ;    
-              c    o    n    s    t         s    c    o    r    e    d         =         s    t    a    t    e    .    m    e    s    s    a    g    e    s    .    m    a    p    (    m         =    >         {    
-                        c    o    n    s    t         t    e    x    t         =         `    $    {    m    .    t    i    t    l    e    }         $    {    m    .    t    l    d    r    }         $    {    m    .    b    o    d    y    }         $    {    m    .    c    a    t    e    g    o    r    y    }         $    {    m    .    m    e    t    a    ?    .    g    r    o    u    p    |    |    '    '    }         $    {    m    .    m    e    t    a    ?    .    s    e    n    d    e    r    |    |    '    '    }    `    .    t    o    L    o    w    e    r    C    a    s    e    (    )    ;    
-                        c    o    n    s    t         s    c    o    r    e         =         w    o    r    d    s    .    r    e    d    u    c    e    (    (    s    ,         w    )         =    >         s         +         (    t    e    x    t    .    i    n    c    l    u    d    e    s    (    w    )         ?         1         :         0    )    ,         0    )    ;    
-                        r    e    t    u    r    n         {         .    .    .    m    ,         s    c    o    r    e         }    ;    
-              }    )    .    f    i    l    t    e    r    (    m         =    >         m    .    s    c    o    r    e         >         0    )    .    s    o    r    t    (    (    a    ,         b    )         =    >         b    .    s    c    o    r    e         -         a    .    s    c    o    r    e    )    .    s    l    i    c    e    (    0    ,         2    5    )    ;    
-              r    e    t    u    r    n         s    c    o    r    e    d    ;    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         s    e    n    d    A    i    Q    u    e    s    t    i    o    n    (    )         {    
-              c    o    n    s    t         i    n    p    u    t         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    a    i    -    i    n    p    u    t    '    )    ;    
-              c    o    n    s    t         s    e    n    d    B    t    n         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    a    i    -    s    e    n    d    '    )    ;    
-              c    o    n    s    t         q    u    e    s    t    i    o    n         =         i    n    p    u    t    ?    .    v    a    l    u    e    ?    .    t    r    i    m    (    )    ;    
-              i    f         (    !    q    u    e    s    t    i    o    n    )         r    e    t    u    r    n    ;    
-    
-              /    /         A    d    d         u    s    e    r         m    e    s    s    a    g    e    
-              a    i    H    i    s    t    o    r    y    .    p    u    s    h    (    {         r    o    l    e    :         '    u    s    e    r    '    ,         c    o    n    t    e    n    t    :         q    u    e    s    t    i    o    n         }    )    ;    
-              i    n    p    u    t    .    v    a    l    u    e         =         '    '    ;    
-              i    n    p    u    t    .    s    t    y    l    e    .    h    e    i    g    h    t         =         '    a    u    t    o    '    ;    
-              r    e    n    d    e    r    A    i    H    i    s    t    o    r    y    (    )    ;    
-              s    e    n    d    B    t    n    .    d    i    s    a    b    l    e    d         =         t    r    u    e    ;    
-              s    e    n    d    B    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    .    .    .    '    ;    
-    
-              /    /         A    d    d         t    h    i    n    k    i    n    g         i    n    d    i    c    a    t    o    r    
-              a    i    H    i    s    t    o    r    y    .    p    u    s    h    (    {         r    o    l    e    :         '    a    s    s    i    s    t    a    n    t    '    ,         c    o    n    t    e    n    t    :         '    ⏳         T    e    n    k    e    r    .    .    .    '         }    )    ;    
-              r    e    n    d    e    r    A    i    H    i    s    t    o    r    y    (    )    ;    
-    
-              t    r    y         {    
-                        /    /         G    e    t         f    a    m    i    l    y         c    o    n    t    e    x    t         f    r    o    m         s    e    t    t    i    n    g    s    
-                        c    o    n    s    t         s    e    t    t    i    n    g    s         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    s    e    t    t    i    n    g    s    '    )    .    c    a    t    c    h    (    (    )         =    >         (    {    }    )    )    ;    
-                        c    o    n    s    t         f    a    m    i    l    y    C    o    n    t    e    x    t         =         s    e    t    t    i    n    g    s    .    f    a    m    i    l    y    _    c    o    n    t    e    x    t         |    |         '    '    ;    
-                        c    o    n    s    t         a    u    t    o    C    o    n    t    e    x    t         =         s    e    t    t    i    n    g    s    .    a    i    _    l    e    a    r    n    e    d    _    c    o    n    t    e    x    t         |    |         '    '    ;    
-    
-                        /    /         F    i    n    d         r    e    l    e    v    a    n    t         m    e    s    s    a    g    e    s    
-                        c    o    n    s    t         r    e    l    e    v    a    n    t         =         f    i    n    d    R    e    l    e    v    a    n    t    M    e    s    s    a    g    e    s    (    q    u    e    s    t    i    o    n    )    ;    
-                        c    o    n    s    t         m    s    g    C    o    n    t    e    x    t         =         r    e    l    e    v    a    n    t    .    l    e    n    g    t    h         >         0    
-                                  ?         r    e    l    e    v    a    n    t    .    m    a    p    (    m         =    >         `    [    $    {    m    .    s    o    u    r    c    e    L    a    b    e    l    }         -         $    {    m    .    c    a    t    e    g    o    r    y    }         -         $    {    m    .    t    i    m    e    }    ]    
-    T    i    t    t    e    l    :         $    {    m    .    t    i    t    l    e    }    
-    $    {    m    .    t    l    d    r    }    `    )    .    j    o    i    n    (    '    
-    
-    '    )    
-                                  :         '    I    n    g    e    n         s    p    e    s    i    e    l    t         r    e    l    e    v    a    n    t    e         m    e    l    d    i    n    g    e    r         f    u    n    n    e    t         f    o    r         d    e    t    t    e         s    p    ø    r    s    m    å    l    e    t    .    '    ;    
-    
-                        c    o    n    s    t         s    y    s    t    e    m    P    r    o    m    p    t         =         `    D    u         e    r         e    n         h    j    e    l    p    s    o    m         f    a    m    i    l    i    e    a    s    s    i    s    t    e    n    t         s    o    m         h    j    e    l    p    e    r         m    e    d         å         f    i    n    n    e         i    n    f    o    r    m    a    s    j    o    n         f    r    a         f    a    m    i    l    i    e    n    s         m    e    l    d    i    n    g    e    r    .    
-    S    v    a    r         a    l    l    t    i    d         p    å         n    o    r    s    k    .         V    æ    r         k    o    n    k    r    e    t         o    g         p    r    e    s    i    s    .         H    v    i    s         d    u         i    k    k    e         f    i    n    n    e    r         s    v    a    r    e    t         i         m    e    l    d    i    n    g    e    n    e    ,         s    i         d    e    t         t    y    d    e    l    i    g    .    
-    I    k    k    e         f    i    n    n         o    p    p         i    n    f    o    r    m    a    s    j    o    n    .    
-    
-    $    {    f    a    m    i    l    y    C    o    n    t    e    x    t         ?         `    F    A    M    I    L    I    E    P    R    O    F    I    L    :    
-    $    {    f    a    m    i    l    y    C    o    n    t    e    x    t    }    
-    `         :         '    '    }    
-    $    {    a    u    t    o    C    o    n    t    e    x    t         ?         `    L    Æ    R    T         K    O    N    T    E    K    S    T    :    
-    $    {    a    u    t    o    C    o    n    t    e    x    t    }    
-    `         :         '    '    }    
-    
-    R    E    L    E    V    A    N    T    E         M    E    L    D    I    N    G    E    R    :    
-    $    {    m    s    g    C    o    n    t    e    x    t    }    `    ;    
-    
-                        c    o    n    s    t         d    a    t    a         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    a    i    /    c    h    a    t    '    ,         {    
-                                  m    e    t    h    o    d    :         '    P    O    S    T    '    ,    
-                                  b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {    
-                                            q    u    e    s    t    i    o    n    ,    
-                                            f    a    m    i    l    y    _    c    o    n    t    e    x    t    :         f    a    m    i    l    y    C    o    n    t    e    x    t    ,    
-                                            a    u    t    o    _    c    o    n    t    e    x    t    :         a    u    t    o    C    o    n    t    e    x    t    ,    
-                                            h    i    s    t    o    r    y    :         a    i    H    i    s    t    o    r    y    .    s    l    i    c    e    (    0    ,         -    1    )    
-                                  }    )    
-                        }    )    ;    
-                        c    o    n    s    t         a    n    s    w    e    r         =         d    a    t    a    .    a    n    s    w    e    r         |    |         '    B    e    k    l    a    g    e    r    ,         n    o    e         g    i    k    k         g    a    l    t    .    '    ;    
-    
-                        /    /         R    e    p    l    a    c    e         t    h    i    n    k    i    n    g         w    i    t    h         a    n    s    w    e    r    
-                        a    i    H    i    s    t    o    r    y    [    a    i    H    i    s    t    o    r    y    .    l    e    n    g    t    h         -         1    ]         =         {         r    o    l    e    :         '    a    s    s    i    s    t    a    n    t    '    ,         c    o    n    t    e    n    t    :         a    n    s    w    e    r         }    ;    
-                        s    e    s    s    i    o    n    S    t    o    r    a    g    e    .    s    e    t    I    t    e    m    (    '    a    i    _    h    i    s    t    o    r    y    '    ,         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    a    i    H    i    s    t    o    r    y    )    )    ;    
-                        r    e    n    d    e    r    A    i    H    i    s    t    o    r    y    (    )    ;    
-    
-                        /    /         A    u    t    o    -    l    e    a    r    n         c    o    n    t    e    x    t         f    r    o    m         q    u    e    s    t    i    o    n    
-                        l    e    a    r    n    C    o    n    t    e    x    t    F    r    o    m    Q    u    e    s    t    i    o    n    (    q    u    e    s    t    i    o    n    ,         a    n    s    w    e    r    )    ;    
-    
-              }         c    a    t    c    h         (    e    )         {    
-                        a    i    H    i    s    t    o    r    y    [    a    i    H    i    s    t    o    r    y    .    l    e    n    g    t    h         -         1    ]         =         {         r    o    l    e    :         '    a    s    s    i    s    t    a    n    t    '    ,         c    o    n    t    e    n    t    :         `    F    e    i    l    :         $    {    e    .    m    e    s    s    a    g    e    }    `         }    ;    
-                        r    e    n    d    e    r    A    i    H    i    s    t    o    r    y    (    )    ;    
-              }         f    i    n    a    l    l    y         {    
-                        s    e    n    d    B    t    n    .    d    i    s    a    b    l    e    d         =         f    a    l    s    e    ;    
-                        s    e    n    d    B    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    S    e    n    d    '    ;    
-              }    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         l    e    a    r    n    C    o    n    t    e    x    t    F    r    o    m    Q    u    e    s    t    i    o    n    (    q    u    e    s    t    i    o    n    ,         a    n    s    w    e    r    )         {    
-              t    r    y         {    
-                        c    o    n    s    t         l    e    a    r    n    D    a    t    a         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    a    i    /    l    e    a    r    n    '    ,         {    
-                                  m    e    t    h    o    d    :         '    P    O    S    T    '    ,    
-                                  b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         q    u    e    s    t    i    o    n    ,         a    n    s    w    e    r         }    )    
-                        }    )    ;    
-                        c    o    n    s    t         l    e    a    r    n    e    d         =         l    e    a    r    n    D    a    t    a    .    l    e    a    r    n    e    d    ?    .    t    r    i    m    (    )    ;    
-                        i    f         (    l    e    a    r    n    e    d         &    &         l    e    a    r    n    e    d    .    l    e    n    g    t    h         >         3    )         {    
-                                  c    o    n    s    t         s    e    t    t    i    n    g    s         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    s    e    t    t    i    n    g    s    '    )    .    c    a    t    c    h    (    (    )         =    >         (    {    }    )    )    ;    
-                                  c    o    n    s    t         e    x    i    s    t    i    n    g         =         s    e    t    t    i    n    g    s    .    a    i    _    l    e    a    r    n    e    d    _    c    o    n    t    e    x    t         |    |         '    '    ;    
-                                  i    f         (    !    e    x    i    s    t    i    n    g    .    i    n    c    l    u    d    e    s    (    l    e    a    r    n    e    d    )    )         {    
-                                            c    o    n    s    t         u    p    d    a    t    e    d         =         e    x    i    s    t    i    n    g         ?         `    $    {    e    x    i    s    t    i    n    g    }    
-    $    {    l    e    a    r    n    e    d    }    `         :         l    e    a    r    n    e    d    ;    
-                                            a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    s    e    t    t    i    n    g    s    '    ,         {         m    e    t    h    o    d    :         '    P    A    T    C    H    '    ,         b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {         a    i    _    l    e    a    r    n    e    d    _    c    o    n    t    e    x    t    :         u    p    d    a    t    e    d         }    )         }    )    ;    
-                                  }    
-                        }    
-              }         c    a    t    c    h         (    e    )         {         /    *         s    t    i    l    l    e         f    e    i    l         *    /         }    
-    }    
-    
-    /    /         E    n    t    e    r         s    e    n    d    e    r         m    e    l    d    i    n    g         (    S    h    i    f    t    +    E    n    t    e    r         =         n    y         l    i    n    j    e    )    
-    d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    a    i    -    i    n    p    u    t    '    )    ?    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    k    e    y    d    o    w    n    '    ,         e         =    >         {    
-              i    f         (    e    .    k    e    y         =    =    =         '    E    n    t    e    r    '         &    &         !    e    .    s    h    i    f    t    K    e    y    )         {    
-                        e    .    p    r    e    v    e    n    t    D    e    f    a    u    l    t    (    )    ;    
-                        s    e    n    d    A    i    Q    u    e    s    t    i    o    n    (    )    ;    
-              }    
-    }    )    ;    
-    
-    /    /         A    u    t    o    -    r    e    s    i    z    e         t    e    x    t    a    r    e    a    
-    d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    a    i    -    i    n    p    u    t    '    )    ?    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    i    n    p    u    t    '    ,         f    u    n    c    t    i    o    n    (    )         {    
-              t    h    i    s    .    s    t    y    l    e    .    h    e    i    g    h    t         =         '    a    u    t    o    '    ;    
-              t    h    i    s    .    s    t    y    l    e    .    h    e    i    g    h    t         =         M    a    t    h    .    m    i    n    (    t    h    i    s    .    s    c    r    o    l    l    H    e    i    g    h    t    ,         1    2    0    )         +         '    p    x    '    ;    
-    }    )    ;    
-    
-    /    /         ─    ─    ─         A    c    c    o    r    d    i    o    n         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         t    o    g    g    l    e    A    c    c    o    r    d    i    o    n    (    k    e    y    )         {    
-              c    o    n    s    t         b    o    d    y              =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    `    b    o    d    y    -    $    {    k    e    y    }    `    )    ;    
-              c    o    n    s    t         a    r    r    o    w         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    `    a    r    r    o    w    -    $    {    k    e    y    }    `    )    ;    
-              c    o    n    s    t         h    e    a    d    e    r         =         b    o    d    y    .    p    r    e    v    i    o    u    s    E    l    e    m    e    n    t    S    i    b    l    i    n    g    ;    
-              c    o    n    s    t         i    s    O    p    e    n         =         b    o    d    y    .    c    l    a    s    s    L    i    s    t    .    c    o    n    t    a    i    n    s    (    '    o    p    e    n    '    )    ;    
-              b    o    d    y    .    c    l    a    s    s    L    i    s    t    .    t    o    g    g    l    e    (    '    o    p    e    n    '    ,         !    i    s    O    p    e    n    )    ;    
-              a    r    r    o    w    .    c    l    a    s    s    L    i    s    t    .    t    o    g    g    l    e    (    '    o    p    e    n    '    ,         !    i    s    O    p    e    n    )    ;    
-              h    e    a    d    e    r    .    c    l    a    s    s    L    i    s    t    .    t    o    g    g    l    e    (    '    o    p    e    n    '    ,         !    i    s    O    p    e    n    )    ;    
-    }    
-    
-    f    u    n    c    t    i    o    n         u    p    d    a    t    e    B    a    d    g    e    (    k    e    y    )         {    
-              c    o    n    s    t         e    n    a    b    l    e    d         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    
-                        k    e    y         =    =    =         '    s    p    o    n    d    '         ?         '    s    e    t    -    s    p    o    n    d    -    e    n    a    b    l    e    d    '         :    
-                        k    e    y         =    =    =         '    e    1    '                        ?         '    s    e    t    -    e    1    -    e    n    a    b    l    e    d    '         :    
-                        k    e    y         =    =    =         '    e    2    '                        ?         '    s    e    t    -    e    2    -    e    n    a    b    l    e    d    '         :         '    s    e    t    -    w    a    -    e    n    a    b    l    e    d    '    
-              )    ?    .    c    h    e    c    k    e    d    ;    
-              c    o    n    s    t         b    a    d    g    e         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    `    b    a    d    g    e    -    $    {    k    e    y    }    `    )    ;    
-              i    f         (    !    b    a    d    g    e    )         r    e    t    u    r    n    ;    
-              b    a    d    g    e    .    t    e    x    t    C    o    n    t    e    n    t         =         e    n    a    b    l    e    d         ?         '    P    å    '         :         '    A    v    '    ;    
-              b    a    d    g    e    .    c    l    a    s    s    L    i    s    t    .    t    o    g    g    l    e    (    '    o    f    f    '    ,         !    e    n    a    b    l    e    d    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         W    h    a    t    s    A    p    p         Q    R         i         i    n    n    s    t    i    l    l    i    n    g    e    r         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    c    o    n    s    t         W    A    _    U    R    L         =         l    o    c    a    l    S    t    o    r    a    g    e    .    g    e    t    I    t    e    m    (    '    w    a    _    u    r    l    '    )         |    |         '    h    t    t    p    s    :    /    /    f    a    m    i    l    i    e    a    p    p    -    w    h    a    t    s    a    p    p    -    s    e    r    v    i    c    e    .    u    p    .    r    a    i    l    w    a    y    .    a    p    p    '    ;    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         l    o    a    d    W    a    Q    r    (    )         {    
-              c    o    n    s    t         c    o    n    t    e    n    t    E    l         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    w    a    -    q    r    -    c    o    n    t    e    n    t    '    )    ;    
-              c    o    n    s    t         s    t    a    t    u    s    E    l              =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    w    a    -    s    t    a    t    u    s    -    t    e    x    t    '    )    ;    
-              s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    H    e    n    t    e    r         s    t    a    t    u    s    .    .    .    '    ;    
-              c    o    n    t    e    n    t    E    l    .    i    n    n    e    r    H    T    M    L              =         '    '    ;    
-              t    r    y         {    
-                        c    o    n    s    t         r    e    s              =         a    w    a    i    t         f    e    t    c    h    (    `    $    {    W    A    _    U    R    L    }    /    `    ,         {         s    i    g    n    a    l    :         A    b    o    r    t    S    i    g    n    a    l    .    t    i    m    e    o    u    t    (    8    0    0    0    )         }    )    ;    
-                        c    o    n    s    t         d    a    t    a         =         a    w    a    i    t         r    e    s    .    j    s    o    n    (    )    ;    
-    
-                        c    o    n    s    t         b    t    n         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    w    a    -    q    r    '    )    ;    
-                        i    f         (    d    a    t    a    .    r    e    a    d    y    )         {    
-                                  s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    '    ;    
-                                  c    o    n    t    e    n    t    E    l    .    i    n    n    e    r    H    T    M    L              =         `    
-                                            <    d    i    v         c    l    a    s    s    =    "    q    r    -    c    o    n    n    e    c    t    e    d    "    >    ✓         W    h    a    t    s    A    p    p         e    r         t    i    l    k    o    b    l    e    t    <    /    d    i    v    >    
-                                            <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n    -    s    e    c    o    n    d    a    r    y    "         s    t    y    l    e    =    "    m    a    r    g    i    n    -    t    o    p    :    1    0    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    r    e    d    )    ;    b    o    r    d    e    r    -    c    o    l    o    r    :    v    a    r    (    -    -    r    e    d    )    "         o    n    c    l    i    c    k    =    "    l    o    g    o    u    t    W    h    a    t    s    A    p    p    (    )    "    >    
-                                                      K    o    b    l    e         f    r    a         W    h    a    t    s    A    p    p    
-                                            <    /    b    u    t    t    o    n    >    `    ;    
-                                  i    f         (    b    t    n    )         {         b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    O    p    p    d    a    t    e    r         s    t    a    t    u    s    '    ;         b    t    n    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    i    n    l    i    n    e    -    b    l    o    c    k    '    ;         }    
-                        }         e    l    s    e         i    f         (    d    a    t    a    .    h    a    s    Q    r    )         {    
-                                  s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    S    c    a    n         m    e    d         W    h    a    t    s    A    p    p         f    o    r         å         k    o    b    l    e         t    i    l    :    '    ;    
-                                  c    o    n    s    t         q    r    R    e    s         =         a    w    a    i    t         f    e    t    c    h    (    `    $    {    W    A    _    U    R    L    }    /    q    r    `    ,         {         s    i    g    n    a    l    :         A    b    o    r    t    S    i    g    n    a    l    .    t    i    m    e    o    u    t    (    8    0    0    0    )         }    )    ;    
-                                  c    o    n    s    t         h    t    m    l              =         a    w    a    i    t         q    r    R    e    s    .    t    e    x    t    (    )    ;    
-                                  c    o    n    s    t         m    a    t    c    h         =         h    t    m    l    .    m    a    t    c    h    (    /    s    r    c    =    "    (    d    a    t    a    :    i    m    a    g    e    \    /    p    n    g    ;    b    a    s    e    6    4    ,    [    ^    "    ]    +    )    "    /    )    ;    
-                                  i    f         (    m    a    t    c    h    )         {    
-                                            c    o    n    t    e    n    t    E    l    .    i    n    n    e    r    H    T    M    L         =         `    
-                                                      <    d    i    v         c    l    a    s    s    =    "    q    r    -    c    o    n    t    a    i    n    e    r    "    >    
-                                                                <    i    m    g         s    r    c    =    "    $    {    m    a    t    c    h    [    1    ]    }    "         a    l    t    =    "    Q    R    -    k    o    d    e    "         s    t    y    l    e    =    "    m    a    x    -    w    i    d    t    h    :    2    2    0    p    x    ;    b    o    r    d    e    r    -    r    a    d    i    u    s    :    1    2    p    x    ;    b    o    r    d    e    r    :    6    p    x         s    o    l    i    d         w    h    i    t    e    ;    d    i    s    p    l    a    y    :    b    l    o    c    k    ;    m    a    r    g    i    n    :    0         a    u    t    o    "    /    >    
-                                                                <    p         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    2    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    3    )    ;    m    a    r    g    i    n    -    t    o    p    :    8    p    x    ;    t    e    x    t    -    a    l    i    g    n    :    c    e    n    t    e    r    ;    "    >    W    h    a    t    s    A    p    p         →         I    n    n    s    t    i    l    l    i    n    g    e    r         →         T    i    l    k    o    b    l    e    d    e         e    n    h    e    t    e    r         →         K    o    b    l    e         t    i    l         e    n    h    e    t    <    /    p    >    
-                                                      <    /    d    i    v    >    `    ;    
-                                  }    
-                                  i    f         (    b    t    n    )         b    t    n    .    t    e    x    t    C    o    n    t    e    n    t         =         '    L    a    s    t         i    n    n         Q    R         p    å         n    y    t    t    '    ;    
-                        }         e    l    s    e         {    
-                                  s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    I    k    k    e         t    i    l    k    o    b    l    e    t    .    '    ;    
-                                  c    o    n    t    e    n    t    E    l    .    i    n    n    e    r    H    T    M    L         =         `    
-                                            <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    2    )    ;    m    a    r    g    i    n    -    b    o    t    t    o    m    :    1    2    p    x    ;    l    i    n    e    -    h    e    i    g    h    t    :    1    .    6    ;    "    >    
-                                                      Å    p    n    e         l    e    n    k    e    n         n    e    d    e    n    f    o    r         p    å         e    n         P    C         e    l    l    e    r         e    t         n    e    t    t    b    r    e    t    t    ,         o    g         s    c    a    n         Q    R    -    k    o    d    e    n         m    e    d         W    h    a    t    s    A    p    p         p    å         t    e    l    e    f    o    n    e    n         d    i    n    .    
-                                            <    /    d    i    v    >    
-                                            <    a         h    r    e    f    =    "    $    {    W    A    _    U    R    L    }    /    q    r    "         t    a    r    g    e    t    =    "    _    b    l    a    n    k    "         s    t    y    l    e    =    "    d    i    s    p    l    a    y    :    b    l    o    c    k    ;    p    a    d    d    i    n    g    :    1    2    p    x         1    6    p    x    ;    b    a    c    k    g    r    o    u    n    d    :    v    a    r    (    -    -    s    u    r    f    a    c    e    2    )    ;    b    o    r    d    e    r    :    1    p    x         s    o    l    i    d         v    a    r    (    -    -    b    o    r    d    e    r    2    )    ;    b    o    r    d    e    r    -    r    a    d    i    u    s    :    v    a    r    (    -    -    r    a    d    i    u    s    -    s    m    )    ;    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    #    1    8    5    F    A    5    ;    w    o    r    d    -    b    r    e    a    k    :    b    r    e    a    k    -    a    l    l    ;    t    e    x    t    -    d    e    c    o    r    a    t    i    o    n    :    n    o    n    e    ;    m    a    r    g    i    n    -    b    o    t    t    o    m    :    1    2    p    x    ;    "    >    
-                                                      $    {    W    A    _    U    R    L    }    /    q    r    
-                                            <    /    a    >    
-                                            <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n    -    s    e    c    o    n    d    a    r    y    "         o    n    c    l    i    c    k    =    "    l    o    a    d    W    a    Q    r    (    )    "    >    S    j    e    k    k         s    t    a    t    u    s         e    t    t    e    r         s    c    a    n    n    i    n    g    <    /    b    u    t    t    o    n    >    `    ;    
-                                  i    f         (    b    t    n    )         b    t    n    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;    
-                        }    
-              }         c    a    t    c    h         (    e    )         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         `    F    e    i    l    :         $    {    e    .    m    e    s    s    a    g    e    }    `    ;    
-              }    
-    }    
-    
-    /    /         ─    ─    ─         W    h    a    t    s    A    p    p         l    o    g    o    u    t         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         l    o    g    o    u    t    W    h    a    t    s    A    p    p    (    )         {    
-              i    f         (    !    c    o    n    f    i    r    m    (    '    E    r         d    u         s    i    k    k    e    r         p    å         a    t         d    u         v    i    l         k    o    b    l    e         f    r    a         W    h    a    t    s    A    p    p    ?         D    u         m    å         s    c    a    n    n    e         Q    R    -    k    o    d    e         p    å         n    y    t    t         f    o    r         å         k    o    b    l    e         t    i    l         i    g    j    e    n    .    '    )    )         r    e    t    u    r    n    ;    
-              c    o    n    s    t         c    o    n    t    e    n    t    E    l         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    w    a    -    q    r    -    c    o    n    t    e    n    t    '    )    ;    
-              c    o    n    s    t         s    t    a    t    u    s    E    l              =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    w    a    -    s    t    a    t    u    s    -    t    e    x    t    '    )    ;    
-              c    o    n    s    t         b    t    n                                       =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    w    a    -    q    r    '    )    ;    
-              t    r    y         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    K    o    b    l    e    r         f    r    a    .    .    .    '    ;    
-                        c    o    n    t    e    n    t    E    l    .    i    n    n    e    r    H    T    M    L              =         '    '    ;    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    w    h    a    t    s    a    p    p    /    l    o    g    o    u    t    '    ,         {         m    e    t    h    o    d    :         '    P    O    S    T    '         }    )    ;    
-                        /    /         V    i    s         i    n    s    t    r    u    k    s    j    o    n    e    r         f    o    r         å         k    o    b    l    e         t    i    l         p    å         n    y    t    t    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    I    k    k    e         t    i    l    k    o    b    l    e    t    .    '    ;    
-                        c    o    n    t    e    n    t    E    l    .    i    n    n    e    r    H    T    M    L         =         `    
-                                  <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    2    )    ;    m    a    r    g    i    n    -    b    o    t    t    o    m    :    1    2    p    x    ;    l    i    n    e    -    h    e    i    g    h    t    :    1    .    6    ;    "    >    
-                                            Å    p    n    e         l    e    n    k    e    n         n    e    d    e    n    f    o    r         p    å         e    n         P    C         e    l    l    e    r         e    t         n    e    t    t    b    r    e    t    t    ,         o    g         s    c    a    n         Q    R    -    k    o    d    e    n         m    e    d         W    h    a    t    s    A    p    p         p    å         t    e    l    e    f    o    n    e    n         d    i    n    .    
-                                  <    /    d    i    v    >    
-                                  <    a         h    r    e    f    =    "    $    {    W    A    _    U    R    L    }    /    q    r    "         t    a    r    g    e    t    =    "    _    b    l    a    n    k    "         s    t    y    l    e    =    "    d    i    s    p    l    a    y    :    b    l    o    c    k    ;    p    a    d    d    i    n    g    :    1    2    p    x         1    6    p    x    ;    b    a    c    k    g    r    o    u    n    d    :    v    a    r    (    -    -    s    u    r    f    a    c    e    2    )    ;    b    o    r    d    e    r    :    1    p    x         s    o    l    i    d         v    a    r    (    -    -    b    o    r    d    e    r    2    )    ;    b    o    r    d    e    r    -    r    a    d    i    u    s    :    v    a    r    (    -    -    r    a    d    i    u    s    -    s    m    )    ;    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    #    1    8    5    F    A    5    ;    w    o    r    d    -    b    r    e    a    k    :    b    r    e    a    k    -    a    l    l    ;    t    e    x    t    -    d    e    c    o    r    a    t    i    o    n    :    n    o    n    e    ;    m    a    r    g    i    n    -    b    o    t    t    o    m    :    1    2    p    x    ;    "    >    
-                                            $    {    W    A    _    U    R    L    }    /    q    r    
-                                  <    /    a    >    
-                                  <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n    -    s    e    c    o    n    d    a    r    y    "         o    n    c    l    i    c    k    =    "    l    o    a    d    W    a    Q    r    (    )    "    >    S    j    e    k    k         s    t    a    t    u    s         e    t    t    e    r         s    c    a    n    n    i    n    g    <    /    b    u    t    t    o    n    >    `    ;    
-                        i    f         (    b    t    n    )         b    t    n    .    s    t    y    l    e    .    d    i    s    p    l    a    y         =         '    n    o    n    e    '    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         `    F    e    i    l    :         $    {    e    .    m    e    s    s    a    g    e    }    `    ;    
-              }    
-    }    
-    
-    /    /         ─    ─    ─         P    u    l    l    -    t    o    -    r    e    f    r    e    s    h         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    f    u    n    c    t    i    o    n         i    n    i    t    P    u    l    l    T    o    R    e    f    r    e    s    h    (    )         {    
-              c    o    n    s    t         f    e    e    d    V    i    e    w         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    v    i    e    w    -    f    e    e    d    '    )    ;    
-              c    o    n    s    t         i    n    d    i    c    a    t    o    r         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    t    r    -    i    n    d    i    c    a    t    o    r    '    )    ;    
-              c    o    n    s    t         s    p    i    n    n    e    r                   =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    t    r    -    s    p    i    n    n    e    r    '    )    ;    
-              c    o    n    s    t         p    t    r    T    e    x    t                   =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    t    r    -    t    e    x    t    '    )    ;    
-              l    e    t         s    t    a    r    t    Y         =         0    ,         p    u    l    l    i    n    g         =         f    a    l    s    e    ,         t    r    i    g    g    e    r    e    d         =         f    a    l    s    e    ;    
-              c    o    n    s    t         T    H    R    E    S    H    O    L    D         =         8    0    ;    
-    
-              f    e    e    d    V    i    e    w    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    t    o    u    c    h    s    t    a    r    t    '    ,         e         =    >         {    
-                        c    o    n    s    t         f    e    e    d         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    f    e    e    d    '    )    ;    
-                        i    f         (    f    e    e    d    .    s    c    r    o    l    l    T    o    p         >         0    )         r    e    t    u    r    n    ;    
-                        s    t    a    r    t    Y         =         e    .    t    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    Y    ;    
-                        p    u    l    l    i    n    g         =         t    r    u    e    ;    
-                        t    r    i    g    g    e    r    e    d         =         f    a    l    s    e    ;    
-              }    ,         {         p    a    s    s    i    v    e    :         t    r    u    e         }    )    ;    
-    
-              f    e    e    d    V    i    e    w    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    t    o    u    c    h    m    o    v    e    '    ,         e         =    >         {    
-                        i    f         (    !    p    u    l    l    i    n    g    )         r    e    t    u    r    n    ;    
-                        c    o    n    s    t         d    y         =         e    .    t    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    Y         -         s    t    a    r    t    Y    ;    
-                        i    f         (    d    y         <    =         0    )         r    e    t    u    r    n    ;    
-                        c    o    n    s    t         p    r    o    g    r    e    s    s         =         M    a    t    h    .    m    i    n    (    d    y         /         T    H    R    E    S    H    O    L    D    ,         1    )    ;    
-                        i    n    d    i    c    a    t    o    r    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    v    i    s    i    b    l    e    '    )    ;    
-                        i    n    d    i    c    a    t    o    r    .    s    t    y    l    e    .    h    e    i    g    h    t         =         `    $    {    M    a    t    h    .    m    i    n    (    d    y         *         0    .    4    ,         4    4    )    }    p    x    `    ;    
-                        i    f         (    d    y         >         T    H    R    E    S    H    O    L    D         &    &         !    t    r    i    g    g    e    r    e    d    )         {    
-                                  p    t    r    T    e    x    t    .    t    e    x    t    C    o    n    t    e    n    t         =         '    S    l    i    p    p         f    o    r         å         o    p    p    d    a    t    e    r    e    '    ;    
-                                  s    p    i    n    n    e    r    .    s    t    y    l    e    .    b    o    r    d    e    r    T    o    p    C    o    l    o    r         =         '    v    a    r    (    -    -    g    r    e    e    n    )    '    ;    
-                        }         e    l    s    e         i    f         (    d    y         <    =         T    H    R    E    S    H    O    L    D    )         {    
-                                  p    t    r    T    e    x    t    .    t    e    x    t    C    o    n    t    e    n    t         =         '    D    r    a         n    e    d         f    o    r         å         o    p    p    d    a    t    e    r    e    '    ;    
-                                  s    p    i    n    n    e    r    .    s    t    y    l    e    .    b    o    r    d    e    r    T    o    p    C    o    l    o    r         =         '    v    a    r    (    -    -    t    e    x    t    2    )    '    ;    
-                        }    
-              }    ,         {         p    a    s    s    i    v    e    :         t    r    u    e         }    )    ;    
-    
-              f    e    e    d    V    i    e    w    .    a    d    d    E    v    e    n    t    L    i    s    t    e    n    e    r    (    '    t    o    u    c    h    e    n    d    '    ,         a    s    y    n    c         e         =    >         {    
-                        i    f         (    !    p    u    l    l    i    n    g    )         r    e    t    u    r    n    ;    
-                        p    u    l    l    i    n    g         =         f    a    l    s    e    ;    
-                        c    o    n    s    t         d    y         =         e    .    c    h    a    n    g    e    d    T    o    u    c    h    e    s    [    0    ]    .    c    l    i    e    n    t    Y         -         s    t    a    r    t    Y    ;    
-                        i    f         (    d    y         >         T    H    R    E    S    H    O    L    D    )         {    
-                                  s    p    i    n    n    e    r    .    c    l    a    s    s    L    i    s    t    .    a    d    d    (    '    s    p    i    n    n    i    n    g    '    )    ;    
-                                  p    t    r    T    e    x    t    .    t    e    x    t    C    o    n    t    e    n    t         =         '    O    p    p    d    a    t    e    r    e    r    .    .    .    '    ;    
-                                  a    w    a    i    t         m    a    n    u    a    l    S    y    n    c    (    )    ;    
-                                  s    p    i    n    n    e    r    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    s    p    i    n    n    i    n    g    '    )    ;    
-                        }    
-                        i    n    d    i    c    a    t    o    r    .    c    l    a    s    s    L    i    s    t    .    r    e    m    o    v    e    (    '    v    i    s    i    b    l    e    '    )    ;    
-                        i    n    d    i    c    a    t    o    r    .    s    t    y    l    e    .    h    e    i    g    h    t         =         '    0    '    ;    
-                        p    t    r    T    e    x    t    .    t    e    x    t    C    o    n    t    e    n    t         =         '    D    r    a         n    e    d         f    o    r         å         o    p    p    d    a    t    e    r    e    '    ;    
-              }    )    ;    
-    }    
-    
-    /    /         ─    ─    ─         P    u    s    h    -    v    a    r    s    l    e    r         ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    ─    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         r    e    g    i    s    t    e    r    S    e    r    v    i    c    e    W    o    r    k    e    r    (    )         {    
-              i    f         (    !    (    '    s    e    r    v    i    c    e    W    o    r    k    e    r    '         i    n         n    a    v    i    g    a    t    o    r    )         |    |         !    (    '    P    u    s    h    M    a    n    a    g    e    r    '         i    n         w    i    n    d    o    w    )    )         r    e    t    u    r    n    ;    
-              t    r    y         {    
-                        c    o    n    s    t         r    e    g         =         a    w    a    i    t         n    a    v    i    g    a    t    o    r    .    s    e    r    v    i    c    e    W    o    r    k    e    r    .    r    e    g    i    s    t    e    r    (    '    /    s    w    .    j    s    '    )    ;    
-                        a    w    a    i    t         n    a    v    i    g    a    t    o    r    .    s    e    r    v    i    c    e    W    o    r    k    e    r    .    r    e    a    d    y    ;    
-                        r    e    t    u    r    n         r    e    g    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        c    o    n    s    o    l    e    .    e    r    r    o    r    (    '    S    e    r    v    i    c    e         w    o    r    k    e    r         f    e    i    l    :    '    ,         e    )    ;    
-              }    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         s    u    b    s    c    r    i    b    e    T    o    P    u    s    h    (    )         {    
-              t    r    y         {    
-                        c    o    n    s    t         r    e    g         =         a    w    a    i    t         r    e    g    i    s    t    e    r    S    e    r    v    i    c    e    W    o    r    k    e    r    (    )    ;    
-                        i    f         (    !    r    e    g    )         r    e    t    u    r    n         f    a    l    s    e    ;    
-    
-                        /    /         H    e    n    t         V    A    P    I    D         p    u    b    l    i    c         k    e    y         f    r    a         b    a    c    k    e    n    d    
-                        c    o    n    s    t         {         p    u    b    l    i    c    K    e    y         }         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    p    u    s    h    /    v    a    p    i    d    -    k    e    y    '    )    ;    
-                        i    f         (    !    p    u    b    l    i    c    K    e    y    )         r    e    t    u    r    n         f    a    l    s    e    ;    
-    
-                        /    /         K    o    n    v    e    r    t    e    r         b    a    s    e    6    4    u    r    l         t    i    l         U    i    n    t    8    A    r    r    a    y    
-                        c    o    n    s    t         k    e    y         =         u    r    l    B    a    s    e    6    4    T    o    U    i    n    t    8    A    r    r    a    y    (    p    u    b    l    i    c    K    e    y    )    ;    
-    
-                        c    o    n    s    t         s    u    b         =         a    w    a    i    t         r    e    g    .    p    u    s    h    M    a    n    a    g    e    r    .    s    u    b    s    c    r    i    b    e    (    {    
-                                  u    s    e    r    V    i    s    i    b    l    e    O    n    l    y    :         t    r    u    e    ,    
-                                  a    p    p    l    i    c    a    t    i    o    n    S    e    r    v    e    r    K    e    y    :         k    e    y    
-                        }    )    ;    
-    
-                        /    /         L    a    g    r    e         a    b    o    n    n    e    m    e    n    t         i         b    a    c    k    e    n    d    
-                        c    o    n    s    t         s    u    b    J    s    o    n         =         s    u    b    .    t    o    J    S    O    N    (    )    ;    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    p    u    s    h    /    s    u    b    s    c    r    i    b    e    '    ,         {    
-                                  m    e    t    h    o    d    :         '    P    O    S    T    '    ,    
-                                  b    o    d    y    :         J    S    O    N    .    s    t    r    i    n    g    i    f    y    (    {    
-                                            e    n    d    p    o    i    n    t    :         s    u    b    J    s    o    n    .    e    n    d    p    o    i    n    t    ,    
-                                            k    e    y    s    :         s    u    b    J    s    o    n    .    k    e    y    s    
-                                  }    )    
-                        }    )    ;    
-    
-                        r    e    t    u    r    n         t    r    u    e    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        c    o    n    s    o    l    e    .    e    r    r    o    r    (    '    P    u    s    h    -    a    b    o    n    n    e    r    i    n    g         f    e    i    l    e    t    :    '    ,         e    )    ;    
-                        r    e    t    u    r    n         f    a    l    s    e    ;    
-              }    
-    }    
-    
-    f    u    n    c    t    i    o    n         u    r    l    B    a    s    e    6    4    T    o    U    i    n    t    8    A    r    r    a    y    (    b    a    s    e    6    4    S    t    r    i    n    g    )         {    
-              c    o    n    s    t         p    a    d    d    i    n    g         =         '    =    '    .    r    e    p    e    a    t    (    (    4         -         b    a    s    e    6    4    S    t    r    i    n    g    .    l    e    n    g    t    h         %         4    )         %         4    )    ;    
-              c    o    n    s    t         b    a    s    e    6    4              =         (    b    a    s    e    6    4    S    t    r    i    n    g         +         p    a    d    d    i    n    g    )    .    r    e    p    l    a    c    e    (    /    -    /    g    ,         '    +    '    )    .    r    e    p    l    a    c    e    (    /    _    /    g    ,         '    /    '    )    ;    
-              c    o    n    s    t         r    a    w         =         w    i    n    d    o    w    .    a    t    o    b    (    b    a    s    e    6    4    )    ;    
-              r    e    t    u    r    n         U    i    n    t    8    A    r    r    a    y    .    f    r    o    m    (    [    .    .    .    r    a    w    ]    .    m    a    p    (    c         =    >         c    .    c    h    a    r    C    o    d    e    A    t    (    0    )    )    )    ;    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         r    e    q    u    e    s    t    P    u    s    h    P    e    r    m    i    s    s    i    o    n    (    )         {    
-              i    f         (    !    (    '    N    o    t    i    f    i    c    a    t    i    o    n    '         i    n         w    i    n    d    o    w    )    )         r    e    t    u    r    n         f    a    l    s    e    ;    
-              i    f         (    N    o    t    i    f    i    c    a    t    i    o    n    .    p    e    r    m    i    s    s    i    o    n         =    =    =         '    g    r    a    n    t    e    d    '    )         {    
-                        r    e    t    u    r    n         s    u    b    s    c    r    i    b    e    T    o    P    u    s    h    (    )    ;    
-              }    
-              i    f         (    N    o    t    i    f    i    c    a    t    i    o    n    .    p    e    r    m    i    s    s    i    o    n         =    =    =         '    d    e    n    i    e    d    '    )         r    e    t    u    r    n         f    a    l    s    e    ;    
-              c    o    n    s    t         p    e    r    m    i    s    s    i    o    n         =         a    w    a    i    t         N    o    t    i    f    i    c    a    t    i    o    n    .    r    e    q    u    e    s    t    P    e    r    m    i    s    s    i    o    n    (    )    ;    
-              i    f         (    p    e    r    m    i    s    s    i    o    n         =    =    =         '    g    r    a    n    t    e    d    '    )         r    e    t    u    r    n         s    u    b    s    c    r    i    b    e    T    o    P    u    s    h    (    )    ;    
-              r    e    t    u    r    n         f    a    l    s    e    ;    
-    }    
-    
-    /    /         L    e    g    g         t    i    l         v    a    r    s    l    e    r    -    k    n    a    p    p         i         i    n    n    s    t    i    l    l    i    n    g    e    r         (    k    a    l    l    e    s         f    r    a         l    o    a    d    S    e    t    t    i    n    g    s    )    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         i    n    i    t    P    u    s    h    S    e    t    t    i    n    g    s    (    )         {    
-              /    /         F    j    e    r    n         e    v    e    n    t    u    e    l    l         t    i    d    l    i    g    e    r    e         p    u    s    h    -    s    e    k    s    j    o    n    
-              c    o    n    s    t         e    x    i    s    t    i    n    g         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    u    s    h    -    s    e    c    t    i    o    n    '    )    ;    
-              i    f         (    e    x    i    s    t    i    n    g    )         e    x    i    s    t    i    n    g    .    r    e    m    o    v    e    (    )    ;    
-    
-              c    o    n    s    t         s    a    v    e    B    t    n         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    s    a    v    e    -    s    e    t    t    i    n    g    s    '    )    ;    
-              i    f         (    !    s    a    v    e    B    t    n    )         r    e    t    u    r    n    ;    
-    
-              c    o    n    s    t         p    u    s    h    S    e    c    t    i    o    n         =         d    o    c    u    m    e    n    t    .    c    r    e    a    t    e    E    l    e    m    e    n    t    (    '    d    i    v    '    )    ;    
-              p    u    s    h    S    e    c    t    i    o    n    .    i    d         =         '    p    u    s    h    -    s    e    c    t    i    o    n    '    ;    
-              p    u    s    h    S    e    c    t    i    o    n    .    s    t    y    l    e    .    c    s    s    T    e    x    t         =         '    m    a    r    g    i    n    -    t    o    p    :    1    6    p    x    ;    p    a    d    d    i    n    g    -    t    o    p    :    1    6    p    x    ;    b    o    r    d    e    r    -    t    o    p    :    1    p    x         s    o    l    i    d         v    a    r    (    -    -    b    o    r    d    e    r    )    '    ;    
-    
-              c    o    n    s    t         h    a    s    N    o    t    i    f    i    c    a    t    i    o    n         =         '    N    o    t    i    f    i    c    a    t    i    o    n    '         i    n         w    i    n    d    o    w    ;    
-              c    o    n    s    t         h    a    s    S    W         =         '    s    e    r    v    i    c    e    W    o    r    k    e    r    '         i    n         n    a    v    i    g    a    t    o    r    ;    
-              c    o    n    s    t         i    s    S    t    a    n    d    a    l    o    n    e         =         w    i    n    d    o    w    .    m    a    t    c    h    M    e    d    i    a    (    '    (    d    i    s    p    l    a    y    -    m    o    d    e    :         s    t    a    n    d    a    l    o    n    e    )    '    )    .    m    a    t    c    h    e    s         |    |    
-                                                                                                                       w    i    n    d    o    w    .    n    a    v    i    g    a    t    o    r    .    s    t    a    n    d    a    l    o    n    e         =    =    =         t    r    u    e    ;    
-    
-              i    f         (    !    h    a    s    N    o    t    i    f    i    c    a    t    i    o    n         |    |         !    h    a    s    S    W    )         {    
-                        p    u    s    h    S    e    c    t    i    o    n    .    i    n    n    e    r    H    T    M    L         =         `    
-                                  <    d    i    v         c    l    a    s    s    =    "    f    i    e    l    d    -    l    a    b    e    l    "         s    t    y    l    e    =    "    m    a    r    g    i    n    -    b    o    t    t    o    m    :    8    p    x    ;    "    >    P    u    s    h    -    v    a    r    s    l    e    r    <    /    d    i    v    >    
-                                  <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    2    )    ;    "    >    
-                                            P    u    s    h    -    v    a    r    s    l    e    r         s    t    ø    t    t    e    s         i    k    k    e         i         d    e    n    n    e         n    e    t    t    l    e    s    e    r    e    n    .         L    e    g    g         t    i    l         a    p    p    e    n         p    å         h    j    e    m    s    k    j    e    r    m    e    n         i         S    a    f    a    r    i         f    o    r         å         a    k    t    i    v    e    r    e    .    
-                                  <    /    d    i    v    >    `    ;    
-              }         e    l    s    e         i    f         (    !    i    s    S    t    a    n    d    a    l    o    n    e    )         {    
-                        p    u    s    h    S    e    c    t    i    o    n    .    i    n    n    e    r    H    T    M    L         =         `    
-                                  <    d    i    v         c    l    a    s    s    =    "    f    i    e    l    d    -    l    a    b    e    l    "         s    t    y    l    e    =    "    m    a    r    g    i    n    -    b    o    t    t    o    m    :    8    p    x    ;    "    >    P    u    s    h    -    v    a    r    s    l    e    r    <    /    d    i    v    >    
-                                  <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    2    )    ;    "    >    
-                                            F    o    r         å         a    k    t    i    v    e    r    e         p    u    s    h    -    v    a    r    s    l    e    r         m    å         a    p    p    e    n         l    e    g    g    e    s         t    i    l         p    å         h    j    e    m    s    k    j    e    r    m    e    n    .    <    b    r    >    <    b    r    >    
-                                            S    a    f    a    r    i         →         D    e    l    -    k    n    a    p    p         →         "    L    e    g    g         t    i    l         p    å         h    j    e    m    s    k    j    e    r    m    "    
-                                  <    /    d    i    v    >    `    ;    
-              }         e    l    s    e         {    
-                        c    o    n    s    t         p    e    r    m         =         N    o    t    i    f    i    c    a    t    i    o    n    .    p    e    r    m    i    s    s    i    o    n    ;    
-                        p    u    s    h    S    e    c    t    i    o    n    .    i    n    n    e    r    H    T    M    L         =         `    
-                                  <    d    i    v         c    l    a    s    s    =    "    f    i    e    l    d    -    l    a    b    e    l    "         s    t    y    l    e    =    "    m    a    r    g    i    n    -    b    o    t    t    o    m    :    8    p    x    ;    "    >    P    u    s    h    -    v    a    r    s    l    e    r    <    /    d    i    v    >    
-                                  <    d    i    v         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    4    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    2    )    ;    m    a    r    g    i    n    -    b    o    t    t    o    m    :    1    2    p    x    ;    "    >    
-                                            $    {    p    e    r    m         =    =    =         '    g    r    a    n    t    e    d    '         ?         '    ✓         P    u    s    h    -    v    a    r    s    l    e    r         e    r         a    k    t    i    v    e    r    t    '         :         '    F    å         v    a    r    s    e    l         n    å    r         n    y    e         m    e    l    d    i    n    g    e    r         k    o    m    m    e    r         i    n    n    '    }    
-                                  <    /    d    i    v    >    
-                                  $    {    p    e    r    m         !    =    =         '    g    r    a    n    t    e    d    '    
-                                            ?         '    <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n    -    s    e    c    o    n    d    a    r    y    "         i    d    =    "    b    t    n    -    e    n    a    b    l    e    -    p    u    s    h    "         o    n    c    l    i    c    k    =    "    e    n    a    b    l    e    P    u    s    h    (    )    "    >    A    k    t    i    v    e    r         p    u    s    h    -    v    a    r    s    l    e    r    <    /    b    u    t    t    o    n    >    '    
-                                            :         '    <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n    -    s    e    c    o    n    d    a    r    y    "         o    n    c    l    i    c    k    =    "    t    e    s    t    P    u    s    h    (    )    "    >    S    e    n    d         t    e    s    t    v    a    r    s    e    l    <    /    b    u    t    t    o    n    >    <    b    u    t    t    o    n         c    l    a    s    s    =    "    b    t    n    -    s    e    c    o    n    d    a    r    y    "         o    n    c    l    i    c    k    =    "    r    e    s    e    t    P    u    s    h    (    )    "         s    t    y    l    e    =    "    m    a    r    g    i    n    -    t    o    p    :    8    p    x    ;    d    i    s    p    l    a    y    :    b    l    o    c    k    ;    w    i    d    t    h    :    1    0    0    %    ;    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    3    )    ;    "    >    N    u    l    l    s    t    i    l    l         p    u    s    h    -    t    i    l    k    o    b    l    i    n    g    <    /    b    u    t    t    o    n    >    '    
-                                  }    
-                                  <    d    i    v         i    d    =    "    p    u    s    h    -    s    t    a    t    u    s    "         s    t    y    l    e    =    "    f    o    n    t    -    s    i    z    e    :    1    3    p    x    ;    c    o    l    o    r    :    v    a    r    (    -    -    t    e    x    t    3    )    ;    m    a    r    g    i    n    -    t    o    p    :    8    p    x    ;    "    >    <    /    d    i    v    >    `    ;    
-              }    
-    
-              /    /         P    l    a    s    s    e    r         p    u    s    h    -    s    e    k    s    j    o    n    e    n         i    n    n    e         i         A    n    n    e    t    -    a    c    c    o    r    d    i    o    n    
-              c    o    n    s    t         p    l    a    c    e    h    o    l    d    e    r         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    u    s    h    -    s    e    c    t    i    o    n    -    p    l    a    c    e    h    o    l    d    e    r    '    )    ;    
-              i    f         (    p    l    a    c    e    h    o    l    d    e    r    )         {    
-                        p    l    a    c    e    h    o    l    d    e    r    .    r    e    p    l    a    c    e    W    i    t    h    (    p    u    s    h    S    e    c    t    i    o    n    )    ;    
-              }         e    l    s    e         {    
-                        s    a    v    e    B    t    n    .    p    a    r    e    n    t    N    o    d    e    .    i    n    s    e    r    t    B    e    f    o    r    e    (    p    u    s    h    S    e    c    t    i    o    n    ,         s    a    v    e    B    t    n    )    ;    
-              }    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         e    n    a    b    l    e    P    u    s    h    (    )         {    
-              c    o    n    s    t         s    t    a    t    u    s    E    l         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    u    s    h    -    s    t    a    t    u    s    '    )    ;    
-              s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    A    k    t    i    v    e    r    e    r    .    .    .    '    ;    
-              /    /         S    l    e    t    t         g    a    m    l    e         a    b    o    n    n    e    m    e    n    t    e    r         f    ø    r    s    t    
-              a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    p    u    s    h    /    a    l    l    '    ,         {         m    e    t    h    o    d    :         '    D    E    L    E    T    E    '         }    )    .    c    a    t    c    h    (    (    )         =    >         {    }    )    ;    
-              c    o    n    s    t         o    k         =         a    w    a    i    t         r    e    q    u    e    s    t    P    u    s    h    P    e    r    m    i    s    s    i    o    n    (    )    ;    
-              i    f         (    o    k    )         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    ✓         P    u    s    h    -    v    a    r    s    l    e    r         a    k    t    i    v    e    r    t    !    '    ;    
-                        d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    b    t    n    -    e    n    a    b    l    e    -    p    u    s    h    '    )    ?    .    r    e    m    o    v    e    (    )    ;    
-              }         e    l    s    e         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    K    u    n    n    e         i    k    k    e         a    k    t    i    v    e    r    e         p    u    s    h    -    v    a    r    s    l    e    r    '    ;    
-              }    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         r    e    s    e    t    P    u    s    h    (    )         {    
-              c    o    n    s    t         s    t    a    t    u    s    E    l         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    u    s    h    -    s    t    a    t    u    s    '    )    ;    
-              s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    N    u    l    l    s    t    i    l    l    e    r    .    .    .    '    ;    
-              t    r    y         {    
-                        /    /         S    l    e    t    t         a    l    l    e         g    a    m    l    e         a    b    o    n    n    e    m    e    n    t    e    r         i         D    B    
-                        a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    p    u    s    h    /    a    l    l    '    ,         {         m    e    t    h    o    d    :         '    D    E    L    E    T    E    '         }    )    ;    
-                        /    /         A    v    r    e    g    i    s    t    r    e    r         s    e    r    v    i    c    e         w    o    r    k    e    r         s    u    b    s    c    r    i    p    t    i    o    n    
-                        c    o    n    s    t         r    e    g         =         a    w    a    i    t         n    a    v    i    g    a    t    o    r    .    s    e    r    v    i    c    e    W    o    r    k    e    r    .    r    e    a    d    y    ;    
-                        c    o    n    s    t         s    u    b         =         a    w    a    i    t         r    e    g    .    p    u    s    h    M    a    n    a    g    e    r    .    g    e    t    S    u    b    s    c    r    i    p    t    i    o    n    (    )    ;    
-                        i    f         (    s    u    b    )         a    w    a    i    t         s    u    b    .    u    n    s    u    b    s    c    r    i    b    e    (    )    ;    
-                        /    /         R    e    -    r    e    g    i    s    t    r    e    r         m    e    d         n    y    e         n    ø    k    l    e    r    
-                        c    o    n    s    t         o    k         =         a    w    a    i    t         s    u    b    s    c    r    i    b    e    T    o    P    u    s    h    (    )    ;    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         o    k         ?         '    ✓         P    u    s    h         r    e    -    a    k    t    i    v    e    r    t    !    '         :         '    F    e    i    l         v    e    d         r    e    -    a    k    t    i    v    e    r    i    n    g    '    ;    
-              }         c    a    t    c    h         (    e    )         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         `    F    e    i    l    :         $    {    e    .    m    e    s    s    a    g    e    }    `    ;    
-              }    
-    }    
-    
-    a    s    y    n    c         f    u    n    c    t    i    o    n         t    e    s    t    P    u    s    h    (    )         {    
-              c    o    n    s    t         s    t    a    t    u    s    E    l         =         d    o    c    u    m    e    n    t    .    g    e    t    E    l    e    m    e    n    t    B    y    I    d    (    '    p    u    s    h    -    s    t    a    t    u    s    '    )    ;    
-              s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    S    e    n    d    e    r         t    e    s    t    .    .    .    '    ;    
-              t    r    y         {    
-                        c    o    n    s    t         r    e    s    u    l    t         =         a    w    a    i    t         a    p    i    F    e    t    c    h    (    '    /    p    u    s    h    /    t    e    s    t    '    ,         {         m    e    t    h    o    d    :         '    P    O    S    T    '         }    )    ;    
-                        i    f         (    r    e    s    u    l    t    .    s    e    n    t    _    t    o         =    =    =         0    )         {    
-                                  s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    I    n    g    e    n         e    n    h    e    t    e    r         r    e    g    i    s    t    r    e    r    t         –         p    r    ø    v         å         a    k    t    i    v    e    r    e         p    u    s    h         p    å         n    y    t    t    '    ;    
-                                  /    /         P    r    ø    v         å         r    e    -    r    e    g    i    s    t    r    e    r    e    
-                                  c    o    n    s    t         o    k         =         a    w    a    i    t         s    u    b    s    c    r    i    b    e    T    o    P    u    s    h    (    )    ;    
-                                  i    f         (    o    k    )         {    
-                                            s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         '    R    e    g    i    s    t    r    e    r    t    !         P    r    ø    v         t    e    s    t    v    a    r    s    e    l         i    g    j    e    n    .    '    ;    
-                                  }    
-                        }         e    l    s    e         {    
-                                  s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         `    ✓         T    e    s    t    v    a    r    s    e    l         s    e    n    d    t         t    i    l         $    {    r    e    s    u    l    t    .    s    e    n    t    _    t    o    }         e    n    h    e    t    (    e    r    )    !    `    ;    
-                        }    
-              }         c    a    t    c    h         (    e    )         {    
-                        s    t    a    t    u    s    E    l    .    t    e    x    t    C    o    n    t    e    n    t         =         `    F    e    i    l    :         $    {    e    .    m    e    s    s    a    g    e    }    `    ;    
-              }    
-    }    
-    
+// ─── Konfig ───────────────────────────────────────────────────────────────────
+
+const API_URL = localStorage.getItem('api_url') || 'https://familieapp-backend.up.railway.app';
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+function getToken() { return localStorage.getItem('auth_token'); }
+function getUser()  { return JSON.parse(localStorage.getItem('auth_user') || 'null'); }
+
+function saveAuth(token, user) {
+  localStorage.setItem('auth_token', token);
+  localStorage.setItem('auth_user', JSON.stringify(user));
+}
+
+function logout() {
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('auth_user');
+  showLogin();
+}
+
+// ─── API ──────────────────────────────────────────────────────────────────────
+
+async function apiFetch(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = getToken();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  if (res.status === 401) { logout(); throw new Error('Ikke autentisert'); }
+  if (!res.ok) {
+const err = await res.json().catch(() => ({}));
+throw new Error(err.detail || `Feil: ${res.status}`);
+  }
+  return res.json();
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+
+let state = {
+  messages: [],
+  sourceFilter: 'alle',
+  statusFilter: 'unread',
+  searchQuery: '',
+  stats: { read: 0, skipped: 0 },
+  lastSync: null
+};
+
+function saveLocalStats() {
+  localStorage.setItem('stats', JSON.stringify(state.stats));
+}
+
+// ─── Source config ────────────────────────────────────────────────────────────
+
+const SOURCE_CONFIG = {
+  spond:{ color: '#185FA5', bg: '#E6F1FB', darkBg: '#0A1E35' },
+  skolemelding: { color: '#6B3FA0', bg: '#F0E8FA', darkBg: '#2A1040' },
+  showbie:  { color: '#BA7517', bg: '#FAEEDA', darkBg: '#2D1A05' },
+  whatsapp: { color: '#8B6340', bg: '#F5EDE3', darkBg: '#2A1A0A' }
+};
+
+function getCfg(source) {
+  const c = SOURCE_CONFIG[source] || { color: '#888', bg: '#F0F0F0', darkBg: '#222' };
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return { color: c.color, bgColor: dark ? c.darkBg : c.bg };
+}
+
+// ─── Visning ──────────────────────────────────────────────────────────────────
+
+function showLogin(){ document.getElementById('screen-login').style.display = 'flex';  document.getElementById('screen-app').style.display = 'none'; }
+function showApp()  { document.getElementById('screen-login').style.display = 'none';  document.getElementById('screen-app').style.display = 'flex'; }
+function showAuthError(msg) { document.getElementById('auth-error').textContent = msg; }
+
+// ─── Innlogging ───────────────────────────────────────────────────────────────
+
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const email= document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) return showAuthError('Fyll inn e-post og passord');
+  try {
+document.getElementById('btn-login').textContent = 'Logger inn...';
+const data = await apiFetch('/auth/login', {
+  method: 'POST',
+  body: JSON.stringify({ email, password })
+});
+saveAuth(data.token, data.user);
+showAuthError('');
+await initApp();
+  } catch (e) {
+showAuthError(e.message || 'Innlogging feilet');
+  } finally {
+document.getElementById('btn-login').textContent = 'Logg inn';
+  }
+});
+
+document.getElementById('btn-show-register').addEventListener('click', () => {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'flex';
+  showAuthError('');
+});
+
+document.getElementById('btn-show-login').addEventListener('click', () => {
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'flex';
+  showAuthError('');
+});
+
+document.getElementById('btn-register').addEventListener('click', async () => {
+  const email= document.getElementById('reg-email').value.trim();
+  const name = document.getElementById('reg-name').value.trim();
+  const password = document.getElementById('reg-password').value;
+  if (!email || !name || !password) return showAuthError('Fyll inn alle felt');
+  if (password.length < 8) return showAuthError('Passord må være minst 8 tegn');
+  try {
+document.getElementById('btn-register').textContent = 'Registrerer...';
+const data = await apiFetch('/auth/register', {
+  method: 'POST',
+  body: JSON.stringify({ email, display_name: name, password })
+});
+saveAuth(data.token, data.user);
+showAuthError('');
+await initApp();
+  } catch (e) {
+showAuthError(e.message || 'Registrering feilet');
+  } finally {
+document.getElementById('btn-register').textContent = 'Registrer';
+  }
+});
+
+// ─── Feed ─────────────────────────────────────────────────────────────────────
+
+function getFiltered() {
+  const q = state.searchQuery.toLowerCase().trim();
+  return state.messages.filter(m => {
+const statusMatch = state.statusFilter === 'alle' || m.status === state.statusFilter;
+const sourceMatch = state.sourceFilter === 'alle' ||
+  (m.source || '').toLowerCase() === state.sourceFilter.toLowerCase();
+if (!statusMatch || !sourceMatch) return false;
+if (!q) return true;
+return (
+  (m.title  || '').toLowerCase().includes(q) ||
+  (m.tldr   || '').toLowerCase().includes(q) ||
+  (m.body   || '').toLowerCase().includes(q) ||
+  (m.meta?.sender || '').toLowerCase().includes(q) ||
+  (m.meta?.group  || '').toLowerCase().includes(q)
+);
+  });
+}
+
+function renderFeed() {
+  const feed = document.getElementById('feed');
+  const msgs = getFiltered();
+  if (msgs.length === 0) {
+feed.innerHTML = `<div class="empty-state"><div class="icon">✓</div><p>Ingen meldinger${state.filter !== 'alle' ? ' i denne kategorien' : ''}.</p></div>`;
+return;
+  }
+  feed.innerHTML = msgs.map(m => renderCard(m)).join('');
+  msgs.forEach(m => attachCardEvents(m.id));
+  updateBadge();
+}
+
+function renderCard(m) {
+  const cfg = getCfg(m.source);
+  const statusColor = m.status==='read' ? '#2D6A4F' : m.status==='skipped' ? '#A32D2D' : '#8B6340';
+  const statusLabel = m.status==='read' ? 'relevant' : m.status==='skipped' ? 'ignorert' : 'ny';
+  const title = m.source === 'whatsapp' && m.meta?.group && m.title.startsWith(m.meta.group + ': ')
+    ? m.title.slice(m.meta.group.length + 2) : m.title;
+  const checkSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>`;
+  const crossSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+  return `
+  <div class="card" id="card-${m.id}" data-id="${m.id}">
+    <div class="swipe-hint swipe-hint-ok">✓ Relevant</div>
+    <div class="swipe-hint swipe-hint-skip">✕ Ignorer</div>
+    <div class="card-header">
+      <div class="source-tag">
+        <div class="source-dot" style="background:${cfg.color}"></div>
+        <span class="source-label" style="color:${cfg.color}">${m.sourceLabel} · ${categoryLabel(m)}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+        <span style="display:flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;font-weight:500;color:${statusColor}">
+          <span style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${statusColor}"></span>${statusLabel}
+        </span>
+        <span class="card-time">${m.time}</span>
+      </div>
+    </div>
+    <div class="card-title">${title}</div>
+    <div class="tldr" style="background:${cfg.bgColor};border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;">
+      <div class="tldr-label" style="color:${cfg.color}">TL;DR</div>
+      <div class="tldr-text" style="color:${cfg.color}">${m.tldr}</div>
+    </div>
+    <div class="card-body" id="body-${m.id}">${m.body}</div>
+    <button class="expand-btn" id="expand-${m.id}" data-id="${m.id}" style="color:${cfg.color}">Les hele meldingen ↓</button>
+    <div class="card-actions">
+      ${m.status === 'unread'
+        ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}" style="display:flex;align-items:center;justify-content:center;">${checkSvg}Relevant</button>
+           <button class="btn btn-skip-red" data-action="skip" data-id="${m.id}" style="display:flex;align-items:center;justify-content:center;">${crossSvg}Ikke relevant</button>`
+        : m.status === 'skipped'
+        ? `<button class="btn btn-ok" style="flex:1;display:flex;align-items:center;justify-content:center;" data-action="read" data-id="${m.id}">${checkSvg}Relevant</button>
+           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
+        : `<button class="btn btn-skip-red" data-action="skip" data-id="${m.id}" style="display:flex;align-items:center;justify-content:center;">${crossSvg}Ikke relevant</button>
+           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
+      }
+    </div>
+  </div>`;
+}
+
+function categoryLabel(m) {
+  const cat = (m.category || '').toLowerCase();
+  // For WhatsApp viser vi gruppenavnet fra meta
+  if (m.source === 'whatsapp' && m.meta?.group) return m.meta.group;
+  return { skole: 'Skole', aks: 'AKS', idrett: 'Spond', foreldre: 'WhatsApp', whatsapp: 'WhatsApp' }[cat] || m.category || cat;
+}
+
+function toggleExpand(id) {
+  const body = document.getElementById(`body-${id}`);
+  const btn  = document.getElementById(`expand-${id}`);
+  const expanded = body.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Skjul ↑' : 'Les hele meldingen ↓';
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-action]');
+  if (btn) {
+const id = btn.dataset.id, action = btn.dataset.action;
+if (action === 'read')   markRead(id);
+if (action === 'skip')   markSkipped(id);
+if (action === 'unread') markUnread(id);
+  }
+  const expandBtn = e.target.closest('.expand-btn[data-id]');
+  if (expandBtn) toggleExpand(expandBtn.dataset.id);
+});
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
+
+async function markRead(id) {
+  const msg = state.messages.find(m => m.id === id);
+  if (!msg || msg.status === 'read') return;
+  animateCard(id, 'right', async () => {
+if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
+msg.status = 'read';
+state.stats.read++;
+saveLocalStats();
+renderFeed(); updateBadge();
+await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'read' }) }).catch(console.error);
+  });
+}
+
+async function markSkipped(id) {
+  const msg = state.messages.find(m => m.id === id);
+  if (!msg) return;
+  animateCard(id, 'left', async () => {
+if (msg.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
+msg.status = 'skipped';
+state.stats.skipped++;
+saveLocalStats();
+renderFeed(); updateBadge();
+await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'skipped' }) }).catch(console.error);
+  });
+}
+
+async function markUnread(id) {
+  const msg = state.messages.find(m => m.id === id);
+  if (!msg) return;
+  if (msg.status === 'read')state.stats.read= Math.max(0, state.stats.read - 1);
+  if (msg.status === 'skipped') state.stats.skipped = Math.max(0, state.stats.skipped - 1);
+  msg.status = 'unread';
+  saveLocalStats();
+  renderFeed(); updateBadge();
+  await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'unread' }) }).catch(console.error);
+}
+
+function animateCard(id, dir, cb) {
+  const card = document.querySelector(`[data-id="${id}"].card`);
+  if (!card) return cb();
+  card.classList.add(dir === 'right' ? 'dismissed-right' : 'dismissed-left');
+  card.style.height = card.offsetHeight + 'px';
+  setTimeout(() => { card.style.height = '0'; card.style.marginBottom = '0'; card.style.padding = '0'; card.style.overflow = 'hidden'; }, 280);
+  setTimeout(cb, 500);
+}
+
+function updateBadge() {
+  const unread = state.messages.filter(m => m.status === 'unread').length;
+  const badge = document.getElementById('unread-count');
+  if (!badge) return;
+  if (unread > 0) {
+badge.textContent = unread > 9 ? '9+' : unread;
+badge.style.display = 'flex';
+  } else {
+badge.style.display = 'none';
+  }
+}
+
+// ─── Swipe ────────────────────────────────────────────────────────────────────
+
+function attachCardEvents(id) {
+  const card = document.querySelector(`[data-id="${id}"].card`);
+  if (!card) return;
+  let startX = 0, startY = 0, currentX = 0, dragging = false, axis = null;
+  card.addEventListener('touchstart', e => {
+startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+dragging = true; axis = null; card.classList.add('swiping');
+  }, { passive: true });
+  card.addEventListener('touchmove', e => {
+if (!dragging) return;
+const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
+if (!axis) axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+if (axis === 'x') {
+  e.preventDefault(); currentX = dx;
+  card.style.transform = `translateX(${dx}px) rotate(${dx * 0.02}deg)`;
+  const hintOk = card.querySelector('.swipe-hint-ok'), hintSkip = card.querySelector('.swipe-hint-skip');
+  if (dx > 30)   { hintOk.style.opacity = Math.min((dx - 30) / 60, 0.9); hintSkip.style.opacity = 0; }
+  else if (dx < -30) { hintSkip.style.opacity = Math.min((-dx - 30) / 60, 0.9); hintOk.style.opacity = 0; }
+  else   { hintOk.style.opacity = 0; hintSkip.style.opacity = 0; }
+}
+  }, { passive: false });
+  card.addEventListener('touchend', () => {
+if (!dragging) return;
+dragging = false; card.classList.remove('swiping');
+if (axis === 'x') {
+  if (currentX > 80) markRead(id);
+  else if (currentX < -80) markSkipped(id);
+  else {
+card.style.transform = '';
+card.querySelector('.swipe-hint-ok').style.opacity = 0;
+card.querySelector('.swipe-hint-skip').style.opacity = 0;
+  }
+} else { card.style.transform = ''; }
+currentX = 0; axis = null;
+  });
+}
+
+// ─── Filter-tabs ──────────────────────────────────────────────────────────────
+
+document.querySelectorAll('#status-filters .filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+document.querySelectorAll('#status-filters .filter-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+state.statusFilter = btn.dataset.status;
+renderFeed();
+  });
+});
+
+document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+document.querySelectorAll('#category-filters .filter-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+state.sourceFilter = btn.dataset.source;
+renderFeed();
+  });
+});
+
+// ─── Søk ─────────────────────────────────────────────────────────────────────────
+
+let searchDebounce = null;
+const searchInput = document.getElementById('search-input');
+const searchClear = document.getElementById('search-clear');
+
+function clearSearch() {
+  if (searchInput) searchInput.value = '';
+  if (searchClear) searchClear.style.display = 'none';
+  state.searchQuery = '';
+  renderFeed();
+  if (searchInput) searchInput.focus();
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', e => {
+clearTimeout(searchDebounce);
+if (searchClear) searchClear.style.display = e.target.value ? 'block' : 'none';
+searchDebounce = setTimeout(() => {
+  state.searchQuery = e.target.value;
+  renderFeed();
+}, 150);
+  });
+  searchInput.addEventListener('keydown', e => {
+if (e.key === 'Escape') clearSearch();
+  });
+}
+
+// ─── Navigasjon ───────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+const view = btn.dataset.view;
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById('view-feed').style.display = view === 'feed' ? 'flex' : 'none';
+document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+if (view !== 'feed') document.getElementById(`view-${view}`).classList.add('active');
+if (view === 'stats') renderStats();
+if (view === 'settings') loadSettings();
+  });
+});
+
+// ─── Manuell synk ─────────────────────────────────────────────────────────────
+
+async function manualSync() {
+  if (!API_URL) return;
+  const btn = document.getElementById('sync-btn');
+  btn.classList.add('syncing'); btn.disabled = true;
+  try {
+await apiFetch('/sync', { method: 'POST' });
+const data = await apiFetch('/messages');
+state.messages = data.messages;
+state.lastSync = data.last_sync;
+renderFeed(); updateBadge();
+document.getElementById('last-sync').textContent =
+  new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+console.error('Synk feilet:', e);
+  } finally {
+btn.classList.remove('syncing'); btn.disabled = false;
+  }
+}
+
+// ─── Statistikk ───────────────────────────────────────────────────────────────
+
+function renderStats() {
+  const total   = state.messages.length;
+  const read= state.messages.filter(m => m.status === 'read').length;
+  const skipped = state.messages.filter(m => m.status === 'skipped').length;
+  const unread  = state.messages.filter(m => m.status === 'unread').length;
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-read').textContent= read;
+  document.getElementById('stat-skipped').textContent = skipped;
+  document.getElementById('stat-unread').textContent  = unread;
+  const sources = {};
+  state.messages.forEach(m => {
+if (!sources[m.source]) sources[m.source] = { label: m.sourceLabel, count: 0 };
+sources[m.source].count++;
+  });
+  document.getElementById('source-stats').innerHTML = Object.entries(sources).map(([key, val]) => {
+const c = SOURCE_CONFIG[key] || { color: '#888', bg: '#eee', darkBg: '#333' };
+return `<div class="settings-row">
+  <div class="settings-row-left">
+<div style="width:12px;height:12px;border-radius:3px;background:${c.color};flex-shrink:0;"></div>
+<span class="settings-row-text">${val.label}</span>
+  </div>
+  <span style="font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;">${val.count} meldinger</span>
+</div>`;
+  }).join('');
+}
+
+// ─── Innstillinger ────────────────────────────────────────────────────────────
+
+async function loadSettings() {
+  try {
+const s = await apiFetch('/settings');
+// Spond
+document.getElementById('set-spond-user').value= s.spond_username || '';
+document.getElementById('set-spond-enabled').checked = !!s.spond_enabled;
+document.getElementById('spond-pw-status').textContent = s.spond_has_password ? '(passord lagret)' : '(ikke satt)';
+// E-post 1
+document.getElementById('set-e1-host').value  = s.email_1_host || 'imap.one.com';
+document.getElementById('set-e1-user').value  = s.email_1_username || '';
+document.getElementById('set-e1-from').value  = s.email_1_from_filter || '';
+document.getElementById('set-e1-subject').value   = s.email_1_subject_filter || '';
+
+document.getElementById('set-e1-delete').checked  = !!s.email_1_delete_after;
+document.getElementById('set-e1-enabled').checked = !!s.email_1_enabled;
+document.getElementById('e1-pw-status').textContent = s.email_1_has_password ? '(passord lagret)' : '(ikke satt)';
+// E-post 2
+document.getElementById('set-e2-host').value  = s.email_2_host || 'imap.one.com';
+document.getElementById('set-e2-user').value  = s.email_2_username || '';
+document.getElementById('set-e2-from').value  = s.email_2_from_filter || '';
+document.getElementById('set-e2-subject').value   = s.email_2_subject_filter || '';
+
+document.getElementById('set-e2-delete').checked  = !!s.email_2_delete_after;
+document.getElementById('set-e2-enabled').checked = !!s.email_2_enabled;
+document.getElementById('e2-pw-status').textContent = s.email_2_has_password ? '(passord lagret)' : '(ikke satt)';
+// WhatsApp
+document.getElementById('set-wa-filter').value   = s.wa_group_filter || '';
+
+document.getElementById('set-wa-enabled').checked = !!s.wa_enabled;
+// Brukerinfo
+const user = getUser();
+document.getElementById('set-user-name').textContent  = user?.display_name || '';
+document.getElementById('set-user-email').textContent = user?.email || '';
+// Family context
+const fc = document.getElementById('set-family-context');
+if (fc) fc.value = s.family_context || '';
+// Update accordion badges
+['spond','e1','e2','wa'].forEach(k => updateBadge(k));
+initPushSettings();
+  } catch (e) {
+console.error('Kunne ikke laste innstillinger:', e);
+  }
+}
+
+async function saveSettings() {
+  const btn = document.getElementById('btn-save-settings');
+  btn.textContent = 'Lagrer...'; btn.disabled = true;
+  try {
+const updates = {
+  family_context: document.getElementById('set-family-context')?.value || '',
+  spond_username: document.getElementById('set-spond-user').value.trim(),
+  spond_enabled:  document.getElementById('set-spond-enabled').checked,
+  email_1_host:   document.getElementById('set-e1-host').value.trim(),
+  email_1_username:   document.getElementById('set-e1-user').value.trim(),
+  email_1_from_filter:document.getElementById('set-e1-from').value.trim(),
+  email_1_subject_filter: document.getElementById('set-e1-subject').value.trim(),
+
+  email_1_delete_after:   document.getElementById('set-e1-delete').checked,
+  email_1_enabled:document.getElementById('set-e1-enabled').checked,
+  email_2_host:   document.getElementById('set-e2-host').value.trim(),
+  email_2_username:   document.getElementById('set-e2-user').value.trim(),
+  email_2_from_filter:document.getElementById('set-e2-from').value.trim(),
+  email_2_subject_filter: document.getElementById('set-e2-subject').value.trim(),
+
+  email_2_delete_after:   document.getElementById('set-e2-delete').checked,
+  email_2_enabled:document.getElementById('set-e2-enabled').checked,
+  wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
+
+  wa_enabled:   document.getElementById('set-wa-enabled').checked,
+};
+// Passord – bare send hvis fylt inn
+const spondPw = document.getElementById('set-spond-pw').value;
+if (spondPw) updates.spond_password = spondPw;
+const e1pw = document.getElementById('set-e1-pw').value;
+if (e1pw) updates.email_1_password = e1pw;
+const e2pw = document.getElementById('set-e2-pw').value;
+if (e2pw) updates.email_2_password = e2pw;
+
+await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
+btn.textContent = 'Lagret ✓';
+setTimeout(() => { btn.textContent = 'Lagre innstillinger'; btn.disabled = false; }, 2000);
+await loadSettings();
+  } catch (e) {
+btn.textContent = 'Feil – prøv igjen';
+btn.disabled = false;
+console.error(e);
+  }
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+
+async function initApp() {
+  initPullToRefresh();
+  const user = getUser();
+  if (!user) { showLogin(); return; }
+  // Auto-registrer push hvis tillatelse allerede er gitt
+  if ('Notification' in window && Notification.permission === 'granted') {
+subscribeToPush().catch(() => {});
+  }
+  const nameEl = document.getElementById('user-display-name');
+  if (nameEl) nameEl.textContent = user.display_name;
+  // Sett initialer i avatar
+  const avatar = document.getElementById('user-avatar');
+  if (avatar && user.display_name) {
+const parts = user.display_name.trim().split(' ');
+const initials = parts.length > 1
+  ? parts[0][0] + parts[parts.length-1][0]
+  : parts[0].substring(0, 2);
+avatar.textContent = initials.toUpperCase();
+  }
+  showApp();
+  try {
+const data = await apiFetch('/messages');
+state.messages = data.messages;
+state.lastSync = data.last_sync;
+state.stats = {
+  read:data.messages.filter(m => m.status === 'read').length,
+  skipped: data.messages.filter(m => m.status === 'skipped').length
+};
+renderFeed(); updateBadge();
+document.getElementById('last-sync').textContent =
+  state.lastSync
+? new Date(state.lastSync).toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })
+: '–';
+  } catch (e) {
+console.error('Kunne ikke laste meldinger:', e);
+  }
+}
+
+// Start
+initApp();
+
+// ─── AI Chat ─────────────────────────────────────────────────────────────────
+
+let aiHistory = JSON.parse(sessionStorage.getItem('ai_history') || '[]');
+
+function renderAiHistory() {
+  const container = document.getElementById('ai-messages');
+  if (!container) return;
+  if (aiHistory.length === 0) {
+container.innerHTML = `
+  <div style="text-align:center;padding:20px;color:var(--text3);">
+<div style="font-size:32px;margin-bottom:8px;">🤖</div>
+<div style="font-size:14px;">Spør meg om noe fra meldingene dine!</div>
+<div style="font-size:12px;margin-top:8px;color:var(--text3);">F.eks: "Når er neste fotballtrening?" eller "Hva skjer denne helgen?"</div>
+  </div>`;
+return;
+  }
+  container.innerHTML = aiHistory.map(msg => `
+<div style="display:flex;flex-direction:column;gap:2px;align-items:${msg.role==='user'?'flex-end':'flex-start'}">
+  <div style="max-width:85%;padding:10px 14px;border-radius:${msg.role==='user'?'16px 16px 4px 16px':'16px 16px 16px 4px'};
+background:${msg.role==='user'?'#185FA5':'var(--surface)'};
+color:${msg.role==='user'?'white':'var(--text)'};
+border:${msg.role==='user'?'none':'1px solid var(--border)'};
+font-size:14px;line-height:1.6;white-space:pre-wrap;">
+${msg.content}
+  </div>
+  <div style="font-size:10px;color:var(--text3);padding:0 4px;">${msg.role==='user'?'Du':'Brief AI'}</div>
+</div>`).join('');
+  // Scroll to bottom
+  container.scrollTop = container.scrollHeight;
+}
+
+function findRelevantMessages(query) {
+  const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+  const scored = state.messages.map(m => {
+const text = `${m.title} ${m.tldr} ${m.body} ${m.category} ${m.meta?.group||''} ${m.meta?.sender||''}`.toLowerCase();
+const score = words.reduce((s, w) => s + (text.includes(w) ? 1 : 0), 0);
+return { ...m, score };
+  }).filter(m => m.score > 0).sort((a, b) => b.score - a.score).slice(0, 25);
+  return scored;
+}
+
+async function sendAiQuestion() {
+  const input = document.getElementById('ai-input');
+  const sendBtn = document.getElementById('ai-send');
+  const question = input?.value?.trim();
+  if (!question) return;
+
+  // Add user message
+  aiHistory.push({ role: 'user', content: question });
+  input.value = '';
+  input.style.height = 'auto';
+  renderAiHistory();
+  sendBtn.disabled = true;
+  sendBtn.textContent = '...';
+
+  // Add thinking indicator
+  aiHistory.push({ role: 'assistant', content: '⏳ Tenker...' });
+  renderAiHistory();
+
+  try {
+// Get family context from settings
+const settings = await apiFetch('/settings').catch(() => ({}));
+const familyContext = settings.family_context || '';
+const autoContext = settings.ai_learned_context || '';
+
+// Find relevant messages
+const relevant = findRelevantMessages(question);
+const msgContext = relevant.length > 0
+  ? relevant.map(m => `[${m.sourceLabel} - ${m.category} - ${m.time}]
+Tittel: ${m.title}
+${m.tldr}`).join('
+
+')
+  : 'Ingen spesielt relevante meldinger funnet for dette spørsmålet.';
+
+const systemPrompt = `Du er en hjelpsom familieassistent som hjelper med å finne informasjon fra familiens meldinger.
+Svar alltid på norsk. Vær konkret og presis. Hvis du ikke finner svaret i meldingene, si det tydelig.
+Ikke finn opp informasjon.
+
+${familyContext ? `FAMILIEPROFIL:
+${familyContext}
+` : ''}
+${autoContext ? `LÆRT KONTEKST:
+${autoContext}
+` : ''}
+
+RELEVANTE MELDINGER:
+${msgContext}`;
+
+const data = await apiFetch('/ai/chat', {
+  method: 'POST',
+  body: JSON.stringify({
+question,
+family_context: familyContext,
+auto_context: autoContext,
+history: aiHistory.slice(0, -1)
+  })
+});
+const answer = data.answer || 'Beklager, noe gikk galt.';
+
+// Replace thinking with answer
+aiHistory[aiHistory.length - 1] = { role: 'assistant', content: answer };
+sessionStorage.setItem('ai_history', JSON.stringify(aiHistory));
+renderAiHistory();
+
+// Auto-learn context from question
+learnContextFromQuestion(question, answer);
+
+  } catch (e) {
+aiHistory[aiHistory.length - 1] = { role: 'assistant', content: `Feil: ${e.message}` };
+renderAiHistory();
+  } finally {
+sendBtn.disabled = false;
+sendBtn.textContent = 'Send';
+  }
+}
+
+async function learnContextFromQuestion(question, answer) {
+  try {
+const learnData = await apiFetch('/ai/learn', {
+  method: 'POST',
+  body: JSON.stringify({ question, answer })
+});
+const learned = learnData.learned?.trim();
+if (learned && learned.length > 3) {
+  const settings = await apiFetch('/settings').catch(() => ({}));
+  const existing = settings.ai_learned_context || '';
+  if (!existing.includes(learned)) {
+const updated = existing ? `${existing}
+${learned}` : learned;
+await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ ai_learned_context: updated }) });
+  }
+}
+  } catch (e) { /* stille feil */ }
+}
+
+// Enter sender melding (Shift+Enter = ny linje)
+document.getElementById('ai-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+e.preventDefault();
+sendAiQuestion();
+  }
+});
+
+// Auto-resize textarea
+document.getElementById('ai-input')?.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// ─── Accordion ────────────────────────────────────────────────────────────────
+
+function toggleAccordion(key) {
+  const body  = document.getElementById(`body-${key}`);
+  const arrow = document.getElementById(`arrow-${key}`);
+  const header = body.previousElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+
+function updateBadge(key) {
+  const enabled = document.getElementById(
+key === 'spond' ? 'set-spond-enabled' :
+key === 'e1'? 'set-e1-enabled' :
+key === 'e2'? 'set-e2-enabled' : 'set-wa-enabled'
+  )?.checked;
+  const badge = document.getElementById(`badge-${key}`);
+  if (!badge) return;
+  badge.textContent = enabled ? 'På' : 'Av';
+  badge.classList.toggle('off', !enabled);
+}
+
+// ─── WhatsApp QR i innstillinger ──────────────────────────────────────────────
+
+const WA_URL = localStorage.getItem('wa_url') || 'https://familieapp-whatsapp-service.up.railway.app';
+
+async function loadWaQr() {
+  const contentEl = document.getElementById('wa-qr-content');
+  const statusEl  = document.getElementById('wa-status-text');
+  statusEl.textContent = 'Henter status...';
+  contentEl.innerHTML  = '';
+  try {
+const res  = await fetch(`${WA_URL}/`, { signal: AbortSignal.timeout(8000) });
+const data = await res.json();
+
+const btn = document.getElementById('btn-wa-qr');
+if (data.ready) {
+  statusEl.textContent = '';
+  contentEl.innerHTML  = `
+<div class="qr-connected">✓ WhatsApp er tilkoblet</div>
+<button class="btn-secondary" style="margin-top:10px;color:var(--red);border-color:var(--red)" onclick="logoutWhatsApp()">
+  Koble fra WhatsApp
+</button>`;
+  if (btn) { btn.textContent = 'Oppdater status'; btn.style.display = 'inline-block'; }
+} else if (data.hasQr) {
+  statusEl.textContent = 'Scan med WhatsApp for å koble til:';
+  const qrRes = await fetch(`${WA_URL}/qr`, { signal: AbortSignal.timeout(8000) });
+  const html  = await qrRes.text();
+  const match = html.match(/src="(data:image\/png;base64,[^"]+)"/);
+  if (match) {
+contentEl.innerHTML = `
+  <div class="qr-container">
+<img src="${match[1]}" alt="QR-kode" style="max-width:220px;border-radius:12px;border:6px solid white;display:block;margin:0 auto"/>
+<p style="font-size:12px;color:var(--text3);margin-top:8px;text-align:center;">WhatsApp → Innstillinger → Tilkoblede enheter → Koble til enhet</p>
+  </div>`;
+  }
+  if (btn) btn.textContent = 'Last inn QR på nytt';
+} else {
+  statusEl.textContent = 'Ikke tilkoblet.';
+  contentEl.innerHTML = `
+<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6;">
+  Åpne lenken nedenfor på en PC eller et nettbrett, og scan QR-koden med WhatsApp på telefonen din.
+</div>
+<a href="${WA_URL}/qr" target="_blank" style="display:block;padding:12px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;color:#185FA5;word-break:break-all;text-decoration:none;margin-bottom:12px;">
+  ${WA_URL}/qr
+</a>
+<button class="btn-secondary" onclick="loadWaQr()">Sjekk status etter scanning</button>`;
+  if (btn) btn.style.display = 'none';
+}
+  } catch (e) {
+statusEl.textContent = `Feil: ${e.message}`;
+  }
+}
+
+// ─── WhatsApp logout ──────────────────────────────────────────────────────────
+
+async function logoutWhatsApp() {
+  if (!confirm('Er du sikker på at du vil koble fra WhatsApp? Du må scanne QR-kode på nytt for å koble til igjen.')) return;
+  const contentEl = document.getElementById('wa-qr-content');
+  const statusEl  = document.getElementById('wa-status-text');
+  const btn   = document.getElementById('btn-wa-qr');
+  try {
+statusEl.textContent = 'Kobler fra...';
+contentEl.innerHTML  = '';
+await apiFetch('/whatsapp/logout', { method: 'POST' });
+// Vis instruksjoner for å koble til på nytt
+statusEl.textContent = 'Ikke tilkoblet.';
+contentEl.innerHTML = `
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6;">
+Åpne lenken nedenfor på en PC eller et nettbrett, og scan QR-koden med WhatsApp på telefonen din.
+  </div>
+  <a href="${WA_URL}/qr" target="_blank" style="display:block;padding:12px 16px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;color:#185FA5;word-break:break-all;text-decoration:none;margin-bottom:12px;">
+${WA_URL}/qr
+  </a>
+  <button class="btn-secondary" onclick="loadWaQr()">Sjekk status etter scanning</button>`;
+if (btn) btn.style.display = 'none';
+  } catch (e) {
+statusEl.textContent = `Feil: ${e.message}`;
+  }
+}
+
+// ─── Pull-to-refresh ──────────────────────────────────────────────────────────
+
+function initPullToRefresh() {
+  const feedView = document.getElementById('view-feed');
+  const indicator = document.getElementById('ptr-indicator');
+  const spinner   = document.getElementById('ptr-spinner');
+  const ptrText   = document.getElementById('ptr-text');
+  let startY = 0, pulling = false, triggered = false;
+  const THRESHOLD = 80;
+
+  feedView.addEventListener('touchstart', e => {
+const feed = document.getElementById('feed');
+if (feed.scrollTop > 0) return;
+startY = e.touches[0].clientY;
+pulling = true;
+triggered = false;
+  }, { passive: true });
+
+  feedView.addEventListener('touchmove', e => {
+if (!pulling) return;
+const dy = e.touches[0].clientY - startY;
+if (dy <= 0) return;
+const progress = Math.min(dy / THRESHOLD, 1);
+indicator.classList.add('visible');
+indicator.style.height = `${Math.min(dy * 0.4, 44)}px`;
+if (dy > THRESHOLD && !triggered) {
+  ptrText.textContent = 'Slipp for å oppdatere';
+  spinner.style.borderTopColor = 'var(--green)';
+} else if (dy <= THRESHOLD) {
+  ptrText.textContent = 'Dra ned for å oppdatere';
+  spinner.style.borderTopColor = 'var(--text2)';
+}
+  }, { passive: true });
+
+  feedView.addEventListener('touchend', async e => {
+if (!pulling) return;
+pulling = false;
+const dy = e.changedTouches[0].clientY - startY;
+if (dy > THRESHOLD) {
+  spinner.classList.add('spinning');
+  ptrText.textContent = 'Oppdaterer...';
+  await manualSync();
+  spinner.classList.remove('spinning');
+}
+indicator.classList.remove('visible');
+indicator.style.height = '0';
+ptrText.textContent = 'Dra ned for å oppdatere';
+  });
+}
+
+// ─── Push-varsler ─────────────────────────────────────────────────────────────
+
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+const reg = await navigator.serviceWorker.register('/sw.js');
+await navigator.serviceWorker.ready;
+return reg;
+  } catch (e) {
+console.error('Service worker feil:', e);
+  }
+}
+
+async function subscribeToPush() {
+  try {
+const reg = await registerServiceWorker();
+if (!reg) return false;
+
+// Hent VAPID public key fra backend
+const { publicKey } = await apiFetch('/push/vapid-key');
+if (!publicKey) return false;
+
+// Konverter base64url til Uint8Array
+const key = urlBase64ToUint8Array(publicKey);
+
+const sub = await reg.pushManager.subscribe({
+  userVisibleOnly: true,
+  applicationServerKey: key
+});
+
+// Lagre abonnement i backend
+const subJson = sub.toJSON();
+await apiFetch('/push/subscribe', {
+  method: 'POST',
+  body: JSON.stringify({
+endpoint: subJson.endpoint,
+keys: subJson.keys
+  })
+});
+
+return true;
+  } catch (e) {
+console.error('Push-abonnering feilet:', e);
+return false;
+  }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = window.atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+async function requestPushPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') {
+return subscribeToPush();
+  }
+  if (Notification.permission === 'denied') return false;
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') return subscribeToPush();
+  return false;
+}
+
+// Legg til varsler-knapp i innstillinger (kalles fra loadSettings)
+async function initPushSettings() {
+  // Fjern eventuell tidligere push-seksjon
+  const existing = document.getElementById('push-section');
+  if (existing) existing.remove();
+
+  const saveBtn = document.getElementById('btn-save-settings');
+  if (!saveBtn) return;
+
+  const pushSection = document.createElement('div');
+  pushSection.id = 'push-section';
+  pushSection.style.cssText = 'margin-top:16px;padding-top:16px;border-top:1px solid var(--border)';
+
+  const hasNotification = 'Notification' in window;
+  const hasSW = 'serviceWorker' in navigator;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+   window.navigator.standalone === true;
+
+  if (!hasNotification || !hasSW) {
+pushSection.innerHTML = `
+  <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+  <div style="font-size:13px;color:var(--text2);">
+Push-varsler støttes ikke i denne nettleseren. Legg til appen på hjemskjermen i Safari for å aktivere.
+  </div>`;
+  } else if (!isStandalone) {
+pushSection.innerHTML = `
+  <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+  <div style="font-size:13px;color:var(--text2);">
+For å aktivere push-varsler må appen legges til på hjemskjermen.<br><br>
+Safari → Del-knapp → "Legg til på hjemskjerm"
+  </div>`;
+  } else {
+const perm = Notification.permission;
+pushSection.innerHTML = `
+  <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+  <div style="font-size:14px;color:var(--text2);margin-bottom:12px;">
+${perm === 'granted' ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
+  </div>
+  ${perm !== 'granted'
+? '<button class="btn-secondary" id="btn-enable-push" onclick="enablePush()">Aktiver push-varsler</button>'
+: '<button class="btn-secondary" onclick="testPush()">Send testvarsel</button><button class="btn-secondary" onclick="resetPush()" style="margin-top:8px;display:block;width:100%;font-size:13px;color:var(--text3);">Nullstill push-tilkobling</button>'
+  }
+  <div id="push-status" style="font-size:13px;color:var(--text3);margin-top:8px;"></div>`;
+  }
+
+  // Plasser push-seksjonen inne i Annet-accordion
+  const placeholder = document.getElementById('push-section-placeholder');
+  if (placeholder) {
+placeholder.replaceWith(pushSection);
+  } else {
+saveBtn.parentNode.insertBefore(pushSection, saveBtn);
+  }
+}
+
+async function enablePush() {
+  const statusEl = document.getElementById('push-status');
+  statusEl.textContent = 'Aktiverer...';
+  // Slett gamle abonnementer først
+  await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
+  const ok = await requestPushPermission();
+  if (ok) {
+statusEl.textContent = '✓ Push-varsler aktivert!';
+document.getElementById('btn-enable-push')?.remove();
+  } else {
+statusEl.textContent = 'Kunne ikke aktivere push-varsler';
+  }
+}
+
+async function resetPush() {
+  const statusEl = document.getElementById('push-status');
+  statusEl.textContent = 'Nullstiller...';
+  try {
+// Slett alle gamle abonnementer i DB
+await apiFetch('/push/all', { method: 'DELETE' });
+// Avregistrer service worker subscription
+const reg = await navigator.serviceWorker.ready;
+const sub = await reg.pushManager.getSubscription();
+if (sub) await sub.unsubscribe();
+// Re-registrer med nye nøkler
+const ok = await subscribeToPush();
+statusEl.textContent = ok ? '✓ Push re-aktivert!' : 'Feil ved re-aktivering';
+  } catch (e) {
+statusEl.textContent = `Feil: ${e.message}`;
+  }
+}
+
+async function testPush() {
+  const statusEl = document.getElementById('push-status');
+  statusEl.textContent = 'Sender test...';
+  try {
+const result = await apiFetch('/push/test', { method: 'POST' });
+if (result.sent_to === 0) {
+  statusEl.textContent = 'Ingen enheter registrert – prøv å aktivere push på nytt';
+  // Prøv å re-registrere
+  const ok = await subscribeToPush();
+  if (ok) {
+statusEl.textContent = 'Registrert! Prøv testvarsel igjen.';
+  }
+} else {
+  statusEl.textContent = `✓ Testvarsel sendt til ${result.sent_to} enhet(er)!`;
+}
+  } catch (e) {
+statusEl.textContent = `Feil: ${e.message}`;
+  }
+}
