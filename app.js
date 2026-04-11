@@ -640,7 +640,7 @@ if (historyFrom) {
   }
 }
 // Update accordion badges
-['spond','e1','e2','wa'].forEach(k => updateBadge(k));
+['spond','e1','e2','wa'].forEach(k => updateSourceBadge(k));
 initPushSettings();
   } catch (e) {
 console.error('Kunne ikke laste innstillinger:', e);
@@ -957,7 +957,7 @@ function toggleAccordion(key) {
   header.classList.toggle('open', !isOpen);
 }
 
-function updateBadge(key) {
+function updateSourceBadge(key) {
   const enabled = document.getElementById(
 key === 'spond' ? 'set-spond-enabled' :
 key === 'e1'? 'set-e1-enabled' :

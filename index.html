@@ -212,17 +212,17 @@
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
           <button id="sync-btn" onclick="manualSync()" style="background:none;border:none;cursor:pointer;padding:6px 10px;color:var(--text2);display:flex;align-items:center;min-height:44px;position:relative;" title="Hent nye meldinger">
-            <svg id="sync-icon" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.7">
-              <!-- Database i midten, mindre -->
-              <ellipse cx="14" cy="13" rx="3.5" ry="1.5"/>
-              <path d="M10.5 13v2.2c0 .83 1.57 1.5 3.5 1.5s3.5-.67 3.5-1.5V13"/>
-              <path d="M10.5 15.2v2.2c0 .83 1.57 1.5 3.5 1.5s3.5-.67 3.5-1.5v-2.2"/>
-              <!-- Pil topp-venstre, mer avstand -->
-              <path d="M3 11A11 11 0 0114 3" stroke-linecap="round"/>
-              <polyline points="1,9 3,11 5,9" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Pil bunn-høyre, mer avstand -->
-              <path d="M25 17A11 11 0 0114 25" stroke-linecap="round"/>
-              <polyline points="27,19 25,17 23,19" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg id="sync-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+              <!-- Database i midten -->
+              <ellipse cx="16" cy="14" rx="5" ry="2"/>
+              <path d="M11 14v3c0 1.1 2.24 2 5 2s5-.9 5-2v-3"/>
+              <path d="M11 17v3c0 1.1 2.24 2 5 2s5-.9 5-2v-3"/>
+              <!-- Pil topp-venstre -->
+              <path d="M3 13A13 13 0 0116 3" stroke-linecap="round"/>
+              <polyline points="1,11 3,13 5,11" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Pil bunn-høyre -->
+              <path d="M29 19A13 13 0 0116 29" stroke-linecap="round"/>
+              <polyline points="31,21 29,19 27,21" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span id="unread-count" style="display:none;position:absolute;top:4px;right:2px;background:#A32D2D;color:white;font-size:10px;font-weight:500;min-width:16px;height:16px;border-radius:8px;padding:0 4px;display:none;align-items:center;justify-content:center;font-family:'DM Mono',monospace;"></span>
           </button>
