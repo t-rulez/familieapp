@@ -888,10 +888,12 @@ async function fetchHistory() {
 
     const d = result.details || {};
     const lines = [];
-    if (d.spond > 0)  lines.push(`✓ Spond: ${d.spond} meldinger`);
-    if (d.email1 > 0) lines.push(`✓ Skolemelding: ${d.email1} meldinger`);
-    if (d.email2 > 0) lines.push(`✓ Showbie: ${d.email2} meldinger`);
+    if (d.spond > 0)    lines.push(`✓ Spond: ${d.spond} meldinger`);
+    if (d.email1 > 0)   lines.push(`✓ ${d.email1_label || 'Skolemelding'}: ${d.email1} meldinger`);
+    if (d.email2 > 0)   lines.push(`✓ ${d.email2_label || 'Showbie'}: ${d.email2} meldinger`);
     if (d.whatsapp > 0) lines.push(`✓ WhatsApp: ${d.whatsapp} meldinger`);
+    if (d.spond === 0 && d.email1 === 0 && d.email2 === 0 && d.whatsapp === 0 && !d.errors?.length)
+      lines.push('Ingen nye meldinger funnet');
     if (d.errors?.length > 0) d.errors.forEach(e => lines.push(`⚠ ${e}`));
 
     statusEl.innerHTML = lines.length > 0
