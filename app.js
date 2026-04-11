@@ -159,12 +159,14 @@ return;
 
 function renderCard(m) {
   const cfg = getCfg(m.source);
-  const statusColor = m.status==='read' ? '#2D6A4F' : m.status==='skipped' ? '#A32D2D' : '#8B6340';
+  const statusColor = m.status==='read' ? '#2D6A4F' : m.status==='skipped' ? '#A32D2D' : '#E8A800';
   const statusLabel = m.status==='read' ? 'relevant' : m.status==='skipped' ? 'ignorert' : 'ny';
   const title = m.source === 'whatsapp' && m.meta?.group && m.title.startsWith(m.meta.group + ': ')
     ? m.title.slice(m.meta.group.length + 2) : m.title;
-  const checkSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg>`;
-  const crossSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+  // Uniformelle sirkel-ikoner
+  const checkSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>`;
+  const crossSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+  const unreadSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
   return `
   <div class="card" id="card-${m.id}" data-id="${m.id}">
     <div class="swipe-hint swipe-hint-ok">✓ Relevant</div>
@@ -190,13 +192,13 @@ function renderCard(m) {
     <button class="expand-btn" id="expand-${m.id}" data-id="${m.id}" style="color:${cfg.color}">Les hele meldingen ↓</button>
     <div class="card-actions">
       ${m.status === 'unread'
-        ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}" style="display:flex;align-items:center;justify-content:center;">${checkSvg}Relevant</button>
-           <button class="btn btn-skip-red" data-action="skip" data-id="${m.id}" style="display:flex;align-items:center;justify-content:center;">${crossSvg}Ikke relevant</button>`
+        ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}">${checkSvg}Sett til relevant</button>
+           <button class="btn btn-skip-red" data-action="skip" data-id="${m.id}">${crossSvg}Sett til ikke relevant</button>`
         : m.status === 'skipped'
-        ? `<button class="btn btn-ok" style="flex:1;display:flex;align-items:center;justify-content:center;" data-action="read" data-id="${m.id}">${checkSvg}Relevant</button>
-           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
-        : `<button class="btn btn-skip-red" data-action="skip" data-id="${m.id}" style="display:flex;align-items:center;justify-content:center;">${crossSvg}Ikke relevant</button>
-           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">↩ Ny</button>`
+        ? `<button class="btn btn-ok" data-action="read" data-id="${m.id}">${checkSvg}Sett til relevant</button>
+           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">${unreadSvg}Sett til ulest</button>`
+        : `<button class="btn btn-skip-red" data-action="skip" data-id="${m.id}">${crossSvg}Sett til ikke relevant</button>
+           <button class="btn btn-skip" data-action="unread" data-id="${m.id}">${unreadSvg}Sett til ulest</button>`
       }
     </div>
   </div>`;
