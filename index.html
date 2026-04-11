@@ -22,8 +22,8 @@
       --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
       --green:#2D6A4F;--green-bg:#D8F3DC;
       --red:#A32D2D;--red-bg:#FCEBEB;
-      --spond-bg:#E6F1FB;--skolemelding-bg:#D8F3DC;
-      --showbie-bg:#FAEEDA;--whatsapp-bg:#FBEAF0;
+      --spond-bg:#E6F1FB;--skolemelding-bg:#F0E8FA;
+      --showbie-bg:#FAEEDA;--whatsapp-bg:#F5EDE3;
       --radius:16px;--radius-sm:10px;
       --font:'DM Sans',sans-serif;
     }
@@ -75,7 +75,7 @@
     .filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
     .filters::-webkit-scrollbar{display:none}
     .filter-btn{flex-shrink:0;padding:6px 11px;border-radius:20px;font-size:12px;font-family:var(--font);cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);white-space:nowrap;min-height:32px}
-    .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .filter-btn.active{background:var(--src-color,var(--text));color:white;border-color:var(--src-color,var(--text))}
 
     /* Feed */
     .feed{flex:1;padding:8px 16px calc(60px + env(safe-area-inset-bottom,0px));overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);}
@@ -102,8 +102,9 @@
     .expand-btn{background:none;border:none;font-size:13px;cursor:pointer;padding:0;font-family:var(--font);margin-bottom:12px;min-height:44px;display:flex;align-items:center}
     .card-actions{display:flex;gap:8px;margin-top:12px}
     .btn{flex:1;padding:8px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;font-family:var(--font);cursor:pointer;border:none;min-height:36px}
-    .btn-ok{background:var(--green-bg);color:var(--green)}
-    .btn-skip{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+    .btn-ok{background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;}
+    .btn-skip{background:var(--surface2);color:var(--text2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+    .btn-skip-red{background:var(--red-bg);color:var(--red);border-color:var(--red-bg)}
     .swipe-hint{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;border-radius:var(--radius);opacity:0;pointer-events:none;transition:opacity 0.1s}
     .swipe-hint-ok{background:var(--green-bg);color:var(--green)}
     .swipe-hint-skip{background:var(--red-bg);color:var(--red)}
@@ -225,10 +226,10 @@
       </div>
       <div class="filters" id="category-filters">
         <button class="filter-btn active" data-source="alle">Alle</button>
-        <button class="filter-btn" data-source="skolemelding">Skole</button>
-        <button class="filter-btn" data-source="showbie">Showbie</button>
-        <button class="filter-btn" data-source="spond">Spond</button>
-        <button class="filter-btn" data-source="whatsapp">WhatsApp</button>
+        <button class="filter-btn" data-source="skolemelding" style="--src-color:#6B3FA0">Skole</button>
+        <button class="filter-btn" data-source="showbie" style="--src-color:#BA7517">Showbie</button>
+        <button class="filter-btn" data-source="spond" style="--src-color:#185FA5">Spond</button>
+        <button class="filter-btn" data-source="whatsapp" style="--src-color:#8B6340">WhatsApp</button>
       </div>
     </div>
     <div style="padding:0 16px 10px;">
@@ -278,7 +279,7 @@
     <div class="settings-section">
       <div class="accordion-header" onclick="toggleAccordion('spond')">
         <div class="accordion-title">
-          <span style="font-size:16px;">🟢</span> Spond
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#185FA5;vertical-align:middle;margin-right:2px;"></span> Spond
           <span class="accordion-badge off" id="badge-spond">Av</span>
         </div>
         <span class="accordion-arrow" id="arrow-spond">▼</span>
@@ -297,7 +298,7 @@
     <div class="settings-section">
       <div class="accordion-header" onclick="toggleAccordion('e1')">
         <div class="accordion-title">
-          <span style="font-size:16px;">🟩</span> Skolemelding
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#6B3FA0;vertical-align:middle;margin-right:2px;"></span> Skolemelding
           <span class="accordion-badge off" id="badge-e1">Av</span>
         </div>
         <span class="accordion-arrow" id="arrow-e1">▼</span>
@@ -320,7 +321,7 @@
     <div class="settings-section">
       <div class="accordion-header" onclick="toggleAccordion('e2')">
         <div class="accordion-title">
-          <span style="font-size:16px;">🟨</span> Showbie
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#BA7517;vertical-align:middle;margin-right:2px;"></span> Showbie
           <span class="accordion-badge off" id="badge-e2">Av</span>
         </div>
         <span class="accordion-arrow" id="arrow-e2">▼</span>
@@ -343,7 +344,7 @@
     <div class="settings-section">
       <div class="accordion-header" onclick="toggleAccordion('wa')">
         <div class="accordion-title">
-          <span style="font-size:16px;">🟪</span> WhatsApp
+          <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#8B6340;vertical-align:middle;margin-right:2px;"></span> WhatsApp
           <span class="accordion-badge off" id="badge-wa">Av</span>
         </div>
         <span class="accordion-arrow" id="arrow-wa">▼</span>

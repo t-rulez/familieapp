@@ -51,11 +51,17 @@ function saveLocalStats() {
 // ─── Source config ────────────────────────────────────────────────────────────
 
 const SOURCE_CONFIG = {
-  spond:        { color: '#185FA5', bgVar: '--spond-bg' },
-  skolemelding: { color: '#2D6A4F', bgVar: '--skolemelding-bg' },
-  showbie:      { color: '#BA7517', bgVar: '--showbie-bg' },
-  whatsapp:     { color: '#993556', bgVar: '--whatsapp-bg' }
+  spond:        { color: '#185FA5', bg: '#E6F1FB', darkBg: '#0A1E35' },
+  skolemelding: { color: '#6B3FA0', bg: '#F0E8FA', darkBg: '#2A1040' },
+  showbie:      { color: '#BA7517', bg: '#FAEEDA', darkBg: '#2D1A05' },
+  whatsapp:     { color: '#8B6340', bg: '#F5EDE3', darkBg: '#2A1A0A' }
 };
+
+function getCfg(source) {
+  const c = SOURCE_CONFIG[source] || { color: '#888', bg: '#F0F0F0', darkBg: '#222' };
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return { color: c.color, bgColor: dark ? c.darkBg : c.bg };
+}
 
 // ─── Visning ──────────────────────────────────────────────────────────────────
 
@@ -415,14 +421,16 @@ function renderStats() {
     if (!sources[m.source]) sources[m.source] = { label: m.sourceLabel, count: 0 };
     sources[m.source].count++;
   });
-  document.getElementById('source-stats').innerHTML = Object.entries(sources).map(([key, val]) => `
-    <div class="settings-row">
+  document.getElementById('source-stats').innerHTML = Object.entries(sources).map(([key, val]) => {
+    const c = SOURCE_CONFIG[key] || { color: '#888', bg: '#eee', darkBg: '#333' };
+    return `<div class="settings-row">
       <div class="settings-row-left">
-        <div style="width:10px;height:10px;border-radius:50%;background:${SOURCE_CONFIG[key]?.color||'#888'};flex-shrink:0;"></div>
+        <div style="width:12px;height:12px;border-radius:3px;background:${c.color};flex-shrink:0;"></div>
         <span class="settings-row-text">${val.label}</span>
       </div>
       <span style="font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;">${val.count} meldinger</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ─── Innstillinger ────────────────────────────────────────────────────────────
