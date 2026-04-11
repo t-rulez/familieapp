@@ -379,14 +379,24 @@ if (e.key === 'Escape') clearSearch();
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-const view = btn.dataset.view;
-document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-btn.classList.add('active');
-document.getElementById('view-feed').style.display = view === 'feed' ? 'flex' : 'none';
-document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-if (view !== 'feed') document.getElementById(`view-${view}`).classList.add('active');
-if (view === 'stats') renderStats();
-if (view === 'settings') loadSettings();
+    const view = btn.dataset.view;
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Hide all views
+    document.getElementById('view-feed').style.display = 'none';
+    document.getElementById('view-ai').style.display = 'none';
+    document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.style.display = 'none'; });
+    if (view === 'feed') {
+      document.getElementById('view-feed').style.display = 'flex';
+    } else if (view === 'ai') {
+      document.getElementById('view-ai').style.display = 'flex';
+      renderAiHistory();
+    } else {
+      const el = document.getElementById(`view-${view}`);
+      if (el) { el.style.display = 'block'; el.classList.add('active'); }
+    }
+    if (view === 'stats') renderStats();
+    if (view === 'settings') loadSettings();
   });
 });
 
@@ -552,6 +562,7 @@ const initials = parts.length > 1
 avatar.textContent = initials.toUpperCase();
   }
   showApp();
+  loadAiHistory();
   try {
 const data = await apiFetch('/messages');
 state.messages = data.messages;
@@ -575,7 +586,27 @@ initApp();
 
 // ─── AI Chat ─────────────────────────────────────────────────────────────────
 
-let aiHistory = JSON.parse(sessionStorage.getItem('ai_history') || '[]');
+let aiHistory = [];
+
+async function loadAiHistory() {
+  try {
+    const data = await apiFetch('/ai/history');
+    aiHistory = data.history || [];
+  } catch (e) {
+    aiHistory = [];
+  }
+  renderAiHistory();
+}
+
+async function saveAiHistory() {
+  saveAiHistory();
+  try {
+    await apiFetch('/ai/history', {
+      method: 'POST',
+      body: JSON.stringify({ history: aiHistory.slice(-50) })
+    });
+  } catch (e) { /* stille feil */ }
+}
 
 function renderAiHistory() {
   const container = document.getElementById('ai-messages');
@@ -652,7 +683,7 @@ const answer = data.answer || 'Beklager, noe gikk galt.';
 
 // Replace thinking with answer
 aiHistory[aiHistory.length - 1] = { role: 'assistant', content: answer };
-sessionStorage.setItem('ai_history', JSON.stringify(aiHistory));
+saveAiHistory();
 renderAiHistory();
 
 // Auto-learn context from question
