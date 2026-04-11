@@ -297,11 +297,7 @@ function updateBadge() {
     filterBadge.textContent = unread > 99 ? '99+' : unread;
     filterBadge.style.display = unread > 0 ? 'inline-block' : 'none';
   }
-  const alleBadge = document.getElementById('alle-badge');
-  if (alleBadge) {
-    alleBadge.textContent = unread > 99 ? '99+' : unread;
-    alleBadge.style.display = unread > 0 ? 'inline-block' : 'none';
-  }
+
 }
 
 function updateBadgeAfterAction() {
