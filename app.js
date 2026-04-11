@@ -638,31 +638,8 @@ const settings = await apiFetch('/settings').catch(() => ({}));
 const familyContext = settings.family_context || '';
 const autoContext = settings.ai_learned_context || '';
 
-// Find relevant messages
-const relevant = findRelevantMessages(question);
-const msgContext = relevant.length > 0
-  ? relevant.map(m => `[${m.sourceLabel} - ${m.category} - ${m.time}]
-Tittel: ${m.title}
-${m.tldr}`).join('
 
-')
-  : 'Ingen spesielt relevante meldinger funnet for dette spørsmålet.';
-
-const systemPrompt = `Du er en hjelpsom familieassistent som hjelper med å finne informasjon fra familiens meldinger.
-Svar alltid på norsk. Vær konkret og presis. Hvis du ikke finner svaret i meldingene, si det tydelig.
-Ikke finn opp informasjon.
-
-${familyContext ? `FAMILIEPROFIL:
-${familyContext}
-` : ''}
-${autoContext ? `LÆRT KONTEKST:
-${autoContext}
-` : ''}
-
-RELEVANTE MELDINGER:
-${msgContext}`;
-
-const data = await apiFetch('/ai/chat', {
+    const data = await apiFetch('/ai/chat', {
   method: 'POST',
   body: JSON.stringify({
 question,
