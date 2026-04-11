@@ -160,7 +160,7 @@ return;
 function renderCard(m) {
   const cfg = getCfg(m.source);
   const statusColor = m.status==='read' ? '#2D6A4F' : m.status==='skipped' ? '#A32D2D' : '#E8A800';
-  const statusLabel = m.status==='read' ? 'relevant' : m.status==='skipped' ? 'ignorert' : 'ny';
+  const statusLabel = m.status==='read' ? 'relevant' : m.status==='skipped' ? 'ignorert' : 'ulest';
   const title = m.source === 'whatsapp' && m.meta?.group && m.title.startsWith(m.meta.group + ': ')
     ? m.title.slice(m.meta.group.length + 2) : m.title;
   // Uniformelle sirkel-ikoner
@@ -427,28 +427,138 @@ btn.classList.remove('syncing'); btn.disabled = false;
 
 function renderStats() {
   const total   = state.messages.length;
-  const read= state.messages.filter(m => m.status === 'read').length;
+  const read    = state.messages.filter(m => m.status === 'read').length;
   const skipped = state.messages.filter(m => m.status === 'skipped').length;
   const unread  = state.messages.filter(m => m.status === 'unread').length;
   document.getElementById('stat-total').textContent   = total;
-  document.getElementById('stat-read').textContent= read;
+  document.getElementById('stat-read').textContent    = read;
   document.getElementById('stat-skipped').textContent = skipped;
   document.getElementById('stat-unread').textContent  = unread;
+
+  // Kildefordeling
   const sources = {};
   state.messages.forEach(m => {
-if (!sources[m.source]) sources[m.source] = { label: m.sourceLabel, count: 0 };
-sources[m.source].count++;
+    if (!sources[m.source]) sources[m.source] = { label: m.sourceLabel, count: 0 };
+    sources[m.source].count++;
   });
   document.getElementById('source-stats').innerHTML = Object.entries(sources).map(([key, val]) => {
-const c = SOURCE_CONFIG[key] || { color: '#888', bg: '#eee', darkBg: '#333' };
-return `<div class="settings-row">
-  <div class="settings-row-left">
-<div style="width:12px;height:12px;border-radius:3px;background:${c.color};flex-shrink:0;"></div>
-<span class="settings-row-text">${val.label}</span>
-  </div>
-  <span style="font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;">${val.count} meldinger</span>
-</div>`;
+    const c = SOURCE_CONFIG[key] || { color: '#888', bg: '#eee', darkBg: '#333' };
+    return `<div class="settings-row">
+      <div class="settings-row-left">
+        <div style="width:12px;height:12px;border-radius:3px;background:${c.color};flex-shrink:0;"></div>
+        <span class="settings-row-text">${val.label}</span>
+      </div>
+      <span style="font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;">${val.count} meldinger</span>
+    </div>`;
   }).join('');
+
+  renderDailyChart();
+}
+
+function renderDailyChart() {
+  const canvas = document.getElementById('daily-chart');
+  if (!canvas) return;
+
+  const sourceKeys = ['spond', 'skolemelding', 'showbie', 'whatsapp'];
+  const byDay = {};
+
+  state.messages.forEach(m => {
+    if (!m.timestamp) return;
+    const day = m.timestamp.substring(0, 10);
+    if (!byDay[day]) byDay[day] = { spond: 0, skolemelding: 0, showbie: 0, whatsapp: 0 };
+    const src = (m.source || '').toLowerCase();
+    if (byDay[day][src] !== undefined) byDay[day][src]++;
+  });
+
+  const days = Object.keys(byDay).sort().slice(-30);
+  if (days.length === 0) return;
+
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const textColor = dark ? '#9B9B94' : '#6B6B65';
+  const gridColor = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+
+  const labels = days.map(d => {
+    const dt = new Date(d + 'T12:00:00');
+    return dt.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
+  });
+
+  const allDatasets = [
+    { label: 'Spond',        data: days.map(d => byDay[d].spond || 0),       color: '#185FA5' },
+    { label: 'Skole',        data: days.map(d => byDay[d].skolemelding || 0), color: '#6B3FA0' },
+    { label: 'Showbie',      data: days.map(d => byDay[d].showbie || 0),      color: '#D4650A' },
+    { label: 'WhatsApp',     data: days.map(d => byDay[d].whatsapp || 0),     color: '#8B6340' },
+  ].filter(ds => ds.data.some(v => v > 0));
+
+  const containerW = canvas.parentElement.clientWidth - 32;
+  const barW = Math.max(6, Math.min(24, containerW / days.length - 3));
+  canvas.width = Math.max(containerW, days.length * (barW + 3));
+  canvas.height = 200;
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const padL = 30, padR = 8, padT = 10, padB = 50;
+  const chartW = canvas.width - padL - padR;
+  const chartH = canvas.height - padT - padB;
+
+  const maxVal = Math.max(...days.map(d => sourceKeys.reduce((s, k) => s + (byDay[d][k] || 0), 0)));
+  if (maxVal === 0) return;
+
+  // Grid
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + chartH - (chartH * i / 4);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + chartW, y); ctx.stroke();
+    ctx.fillStyle = textColor;
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.round(maxVal * i / 4), padL - 4, y + 3);
+  }
+
+  // Stablede søyler
+  const barSlot = chartW / days.length;
+  days.forEach((day, i) => {
+    const x = padL + i * barSlot + (barSlot - barW) / 2;
+    let yBottom = padT + chartH;
+    allDatasets.forEach(ds => {
+      const val = ds.data[i];
+      if (!val) return;
+      const h = Math.max(1, val * (chartH / maxVal));
+      yBottom -= h;
+      ctx.fillStyle = ds.color;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, yBottom, barW, h, [2, 2, 0, 0]);
+      else ctx.rect(x, yBottom, barW, h);
+      ctx.fill();
+    });
+
+    // X-akse labels
+    const step = Math.max(1, Math.ceil(days.length / 12));
+    if (i % step === 0) {
+      ctx.fillStyle = textColor;
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.save();
+      ctx.translate(x + barW / 2, padT + chartH + 12);
+      ctx.rotate(-Math.PI / 5);
+      ctx.fillText(labels[i], 0, 0);
+      ctx.restore();
+    }
+  });
+
+  // Legend
+  let lx = padL;
+  const ly = canvas.height - 4;
+  allDatasets.forEach(ds => {
+    ctx.fillStyle = ds.color;
+    ctx.fillRect(lx, ly - 8, 9, 9);
+    ctx.fillStyle = textColor;
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(ds.label, lx + 12, ly);
+    lx += ctx.measureText(ds.label).width + 24;
+  });
 }
 
 // ─── Innstillinger ────────────────────────────────────────────────────────────
@@ -732,6 +842,49 @@ document.getElementById('ai-input')?.addEventListener('input', function() {
   this.style.height = 'auto';
   this.style.height = Math.min(this.scrollHeight, 120) + 'px';
 });
+
+// ─── Historisk henting ───────────────────────────────────────────────────────
+
+async function fetchHistory() {
+  const btn = document.getElementById('btn-fetch-history');
+  const statusEl = document.getElementById('history-status');
+  const fromDate = document.getElementById('set-history-from')?.value || '2026-01-01';
+
+  btn.disabled = true;
+  btn.textContent = 'Henter...';
+  statusEl.textContent = '⏳ Henter historiske meldinger – dette kan ta litt tid...';
+
+  try {
+    const result = await apiFetch('/fetch-history', {
+      method: 'POST',
+      body: JSON.stringify({ from_date: fromDate })
+    });
+
+    const d = result.details || {};
+    const lines = [];
+    if (d.spond > 0)  lines.push(`✓ Spond: ${d.spond} meldinger`);
+    if (d.email1 > 0) lines.push(`✓ Skolemelding: ${d.email1} meldinger`);
+    if (d.email2 > 0) lines.push(`✓ Showbie: ${d.email2} meldinger`);
+    if (d.whatsapp > 0) lines.push(`✓ WhatsApp: ${d.whatsapp} meldinger`);
+    if (d.errors?.length > 0) d.errors.forEach(e => lines.push(`⚠ ${e}`));
+
+    statusEl.innerHTML = lines.length > 0
+      ? `Totalt ${result.total} meldinger hentet:<br>${lines.join('<br>')}`
+      : 'Ingen nye meldinger funnet.';
+
+    // Oppdater feed
+    if (result.total > 0) {
+      const data = await apiFetch('/messages');
+      state.messages = data.messages;
+      renderFeed(); updateBadge();
+    }
+  } catch (e) {
+    statusEl.textContent = `Feil: ${e.message}`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Hent historiske meldinger';
+  }
+}
 
 // ─── Accordion ────────────────────────────────────────────────────────────────
 

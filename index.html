@@ -219,7 +219,7 @@
         </div>
       </div>
       <div class="filters" id="status-filters">
-        <button class="filter-btn active" data-status="unread" style="--src-color:#E8A800">Nye</button>
+        <button class="filter-btn active" data-status="unread" style="--src-color:#E8A800">Ulest</button>
         <button class="filter-btn" data-status="read" style="--src-color:#2D6A4F">Relevant</button>
         <button class="filter-btn" data-status="skipped" style="--src-color:#A32D2D">Ikke relevant</button>
         <button class="filter-btn" data-status="alle">Alle</button>
@@ -257,7 +257,11 @@
       <div class="stat-card"><div class="stat-num" id="stat-skipped">0</div><div class="stat-label">Ikke relevant</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-unread">0</div><div class="stat-label">Ulest</div></div>
     </div>
-    <div class="settings-label">Kildefordeling</div>
+    <div class="settings-label" style="margin-top:20px;">Meldinger per dag</div>
+    <div style="background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:16px;overflow-x:auto;">
+      <canvas id="daily-chart" height="180"></canvas>
+    </div>
+    <div class="settings-label" style="margin-top:20px;">Kildefordeling</div>
     <div class="settings-card" id="source-stats"></div>
   </div>
 
@@ -381,6 +385,18 @@
             style="resize:vertical;line-height:1.5;"></textarea>
           <div style="font-size:12px;color:var(--text3);margin-top:4px;">Hjelper AI-assistenten å forstå hvem som er hvem i familien.</div>
         </div>
+        <!-- Historisk henting -->
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
+        <div class="field-label" style="margin-bottom:10px;">Hent historiske meldinger</div>
+        <div class="field-group">
+          <label class="field-label">Hent fra dato</label>
+          <input class="settings-input" type="date" id="set-history-from" value="2026-01-01"/>
+        </div>
+        <button class="btn-secondary" id="btn-fetch-history" onclick="fetchHistory()">
+          Hent historiske meldinger
+        </button>
+        <div id="history-status" style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6;"></div>
+
         <div id="push-section-placeholder"></div>
       </div>
     </div>
