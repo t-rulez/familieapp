@@ -148,6 +148,11 @@ return (
 function renderFeed() {
   const feed = document.getElementById('feed');
   const msgs = getFiltered();
+  // Oppdater meldingsteller
+  const countEl = document.getElementById('feed-count');
+  if (countEl) countEl.textContent = msgs.length > 0 ? `${msgs.length} meldinger` : '';
+  // Oppdater badge
+  updateBadge();
   if (msgs.length === 0) {
 feed.innerHTML = `<div class="empty-state"><div class="icon">✓</div><p>Ingen meldinger${state.filter !== 'alle' ? ' i denne kategorien' : ''}.</p></div>`;
 return;
