@@ -542,21 +542,6 @@ async function initApp() {
   }
 }
 
-// Fix iOS PWA viewport height bug
-// Samme effekt som å rotere skjermen - tvinger riktig høyde
-function fixViewportHeight() {
-  const vh = window.innerHeight;
-  document.documentElement.style.setProperty('--real-vh', `${vh}px`);
-  const app = document.getElementById('screen-app');
-  if (app) app.style.height = vh + 'px';
-}
-
-fixViewportHeight();
-window.addEventListener('resize', fixViewportHeight);
-window.addEventListener('orientationchange', () => {
-  setTimeout(fixViewportHeight, 300);
-});
-
 // Start
 initApp();
 
