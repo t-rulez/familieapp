@@ -280,13 +280,17 @@ function animateCard(id, dir, cb) {
 
 function updateBadge() {
   const unread = state.messages.filter(m => m.status === 'unread').length;
+  // Badge på synk-knapp
   const badge = document.getElementById('unread-count');
-  if (!badge) return;
-  if (unread > 0) {
-badge.textContent = unread > 9 ? '9+' : unread;
-badge.style.display = 'flex';
-  } else {
-badge.style.display = 'none';
+  if (badge) {
+    badge.textContent = unread > 9 ? '9+' : unread;
+    badge.style.display = unread > 0 ? 'flex' : 'none';
+  }
+  // Badge på Ulest filterknapp
+  const filterBadge = document.getElementById('unread-badge');
+  if (filterBadge) {
+    filterBadge.textContent = unread > 99 ? '99+' : unread;
+    filterBadge.style.display = unread > 0 ? 'inline-block' : 'none';
   }
 }
 
@@ -599,6 +603,17 @@ document.getElementById('set-user-email').textContent = user?.email || '';
 // Family context
 const fc = document.getElementById('set-family-context');
 if (fc) fc.value = s.family_context || '';
+// Maks 3 måneder tilbake for historisk henting
+const historyFrom = document.getElementById('set-history-from');
+if (historyFrom) {
+  const minDate = new Date();
+  minDate.setMonth(minDate.getMonth() - 3);
+  historyFrom.min = minDate.toISOString().substring(0, 10);
+  historyFrom.max = new Date().toISOString().substring(0, 10);
+  if (!historyFrom.value || historyFrom.value < historyFrom.min) {
+    historyFrom.value = historyFrom.min;
+  }
+}
 // Update accordion badges
 ['spond','e1','e2','wa'].forEach(k => updateBadge(k));
 initPushSettings();
