@@ -291,11 +291,16 @@ function updateBadge() {
     badge.textContent = unread > 9 ? '9+' : unread;
     badge.style.display = unread > 0 ? 'flex' : 'none';
   }
-  // Badge på Ulest filterknapp
+  // Badge på Ulest og Alle filterknapp
   const filterBadge = document.getElementById('unread-badge');
   if (filterBadge) {
     filterBadge.textContent = unread > 99 ? '99+' : unread;
     filterBadge.style.display = unread > 0 ? 'inline-block' : 'none';
+  }
+  const alleBadge = document.getElementById('alle-badge');
+  if (alleBadge) {
+    alleBadge.textContent = unread > 99 ? '99+' : unread;
+    alleBadge.style.display = unread > 0 ? 'inline-block' : 'none';
   }
 }
 
