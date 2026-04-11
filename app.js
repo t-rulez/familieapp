@@ -39,6 +39,7 @@ let state = {
   messages: [],
   sourceFilter: 'alle',
   statusFilter: 'unread',
+  searchQuery: '',
   stats: { read: 0, skipped: 0 },
   lastSync: null
 };
@@ -121,11 +122,20 @@ document.getElementById('btn-register').addEventListener('click', async () => {
 // ─── Feed ─────────────────────────────────────────────────────────────────────
 
 function getFiltered() {
+  const q = state.searchQuery.toLowerCase().trim();
   return state.messages.filter(m => {
     const statusMatch = state.statusFilter === 'alle' || m.status === state.statusFilter;
     const sourceMatch = state.sourceFilter === 'alle' ||
       (m.source || '').toLowerCase() === state.sourceFilter.toLowerCase();
-    return statusMatch && sourceMatch;
+    if (!statusMatch || !sourceMatch) return false;
+    if (!q) return true;
+    return (
+      (m.title  || '').toLowerCase().includes(q) ||
+      (m.tldr   || '').toLowerCase().includes(q) ||
+      (m.body   || '').toLowerCase().includes(q) ||
+      (m.meta?.sender || '').toLowerCase().includes(q) ||
+      (m.meta?.group  || '').toLowerCase().includes(q)
+    );
   });
 }
 
@@ -320,6 +330,29 @@ document.querySelectorAll('#category-filters .filter-btn').forEach(btn => {
   });
 });
 
+// ─── Søk ─────────────────────────────────────────────────────────────────────────
+
+let searchDebounce = null;
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+  searchInput.addEventListener('input', e => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => {
+      state.searchQuery = e.target.value;
+      renderFeed();
+    }, 150);
+  });
+  // Clear search on ESC
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      searchInput.value = '';
+      state.searchQuery = '';
+      renderFeed();
+      searchInput.blur();
+    }
+  });
+}
+
 // ─── Navigasjon ───────────────────────────────────────────────────────────────
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -508,6 +541,21 @@ async function initApp() {
     console.error('Kunne ikke laste meldinger:', e);
   }
 }
+
+// Fix iOS PWA viewport height bug
+// Samme effekt som å rotere skjermen - tvinger riktig høyde
+function fixViewportHeight() {
+  const vh = window.innerHeight;
+  document.documentElement.style.setProperty('--real-vh', `${vh}px`);
+  const app = document.getElementById('screen-app');
+  if (app) app.style.height = vh + 'px';
+}
+
+fixViewportHeight();
+window.addEventListener('resize', fixViewportHeight);
+window.addEventListener('orientationchange', () => {
+  setTimeout(fixViewportHeight, 300);
+});
 
 // Start
 initApp();

@@ -38,7 +38,7 @@
     html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overscroll-behavior:none;margin:0;padding:0;}
 
     /* ── Login ── */
-    #screen-login{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+    #screen-login{min-height:var(--real-vh, 100dvh);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
     .login-card{width:100%;max-width:360px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:28px}
     .login-logo{font-size:28px;font-weight:500;letter-spacing:-0.5px;margin-bottom:6px}
     .login-sub{font-size:14px;color:var(--text2);margin-bottom:24px}
@@ -54,7 +54,7 @@
     #login-form{display:flex;flex-direction:column}
 
     /* ── App ── */
-    #screen-app{display:none;flex-direction:column;max-width:430px;margin:0 auto;height:100dvh;}
+    #screen-app{display:none;flex-direction:column;max-width:430px;margin:0 auto;height:var(--real-vh, 100dvh);}
 
     /* Pull to refresh */
     .ptr-indicator{height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:height 0.2s;color:var(--text2);font-size:13px}
@@ -109,7 +109,7 @@
     .swipe-hint-skip{background:var(--red-bg);color:var(--red)}
 
     /* Bottom nav */
-    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:10;}
+    .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:10;padding-bottom:env(safe-area-inset-bottom);}
     .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;background:none;border:none;cursor:pointer;color:var(--text3);font-family:var(--font);font-size:10px;}
     .nav-icon{width:20px;height:20px}
     .nav-btn.active{color:var(--text)}
@@ -229,6 +229,12 @@
         <button class="filter-btn" data-source="showbie">Showbie</button>
         <button class="filter-btn" data-source="spond">Spond</button>
         <button class="filter-btn" data-source="whatsapp">WhatsApp</button>
+      </div>
+    </div>
+    <div style="padding:0 16px 10px;">
+      <div style="position:relative;">
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" id="search-input" placeholder="Søk i meldinger..." style="width:100%;padding:9px 12px 9px 36px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:15px;-webkit-appearance:none;outline:none;" />
       </div>
     </div>
     <div class="ptr-indicator" id="ptr-indicator">
