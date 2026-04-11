@@ -212,13 +212,16 @@
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
           <button id="sync-btn" onclick="manualSync()" style="background:none;border:none;cursor:pointer;padding:8px;color:var(--text2);display:flex;align-items:center;min-height:44px;position:relative;" title="Hent nye meldinger">
-            <svg id="sync-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-              <!-- Database-sylinder -->
-              <ellipse cx="12" cy="6" rx="7" ry="2.5"/>
-              <path d="M5 6v5c0 1.38 3.13 2.5 7 2.5s7-1.12 7-2.5V6"/>
-              <!-- Synk-piler ut fra database -->
-              <path d="M19 14v3h-3M5 14v3h3" stroke-linecap="round"/>
-              <path d="M19 17a4 4 0 01-7 0M5 17a4 4 0 007 0" stroke-linecap="round"/>
+            <svg id="sync-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <!-- Database -->
+              <ellipse cx="12" cy="8" rx="5" ry="2"/>
+              <path d="M7 8v3c0 1.1 2.24 2 5 2s5-.9 5-2V8"/>
+              <path d="M7 11v3c0 1.1 2.24 2 5 2s5-.9 5-2v-3"/>
+              <!-- Synk-piler som snurrer rundt -->
+              <path d="M4 12a8 8 0 018-8" stroke-linecap="round"/>
+              <path d="M4 12l-2-2m2 2l2-2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M20 12a8 8 0 01-8 8" stroke-linecap="round"/>
+              <path d="M20 12l2 2m-2-2l-2 2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span id="unread-count" style="display:none;position:absolute;top:4px;right:2px;background:#A32D2D;color:white;font-size:10px;font-weight:500;min-width:16px;height:16px;border-radius:8px;padding:0 4px;display:none;align-items:center;justify-content:center;font-family:'DM Mono',monospace;"></span>
           </button>
@@ -226,7 +229,7 @@
         </div>
       </div>
       <div class="filters" id="status-filters">
-        <button class="filter-btn active" data-status="unread" style="--src-color:#E8A800;position:relative;">Ulest<span id="unread-badge" style="display:none;position:absolute;top:-5px;right:-5px;background:#A32D2D;color:white;font-size:10px;font-weight:600;min-width:16px;height:16px;border-radius:8px;padding:0 4px;line-height:16px;font-family:'DM Mono',monospace;"></span></button>
+        <button class="filter-btn active" data-status="unread" style="--src-color:#E8A800;position:relative;">Ulest<span id="unread-badge" style="display:none;position:absolute;top:-6px;right:-6px;background:#A32D2D;color:white;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;padding:0 4px;line-height:17px;text-align:center;font-family:'DM Mono',monospace;border:2px solid var(--bg);"></span></button>
         <button class="filter-btn" data-status="read" style="--src-color:#2D6A4F">Relevant</button>
         <button class="filter-btn" data-status="skipped" style="--src-color:#A32D2D">Ikke relevant</button>
         <button class="filter-btn" data-status="alle">Alle</button>

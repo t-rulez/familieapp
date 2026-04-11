@@ -294,6 +294,12 @@ function updateBadge() {
   }
 }
 
+function updateBadgeAfterAction() {
+  // Kall updateBadge etter enhver statusendring
+  updateBadge();
+  renderFeed();
+}
+
 // ─── Swipe ────────────────────────────────────────────────────────────────────
 
 function attachCardEvents(id) {
@@ -713,7 +719,14 @@ avatar.textContent = initials.toUpperCase();
     const todayStr = new Date().toISOString().substring(0, 10);
     historyInput.min = minStr;
     historyInput.max = todayStr;
-    historyInput.value = minStr;
+    if (!historyInput.value || historyInput.value < minStr) {
+      historyInput.value = minStr;
+    }
+    // Hindre verdier utenfor grensen ved input
+    historyInput.addEventListener('change', () => {
+      if (historyInput.value < minStr) historyInput.value = minStr;
+      if (historyInput.value > todayStr) historyInput.value = todayStr;
+    });
   }
   try {
 const data = await apiFetch('/messages');
