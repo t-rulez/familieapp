@@ -413,17 +413,31 @@ async function manualSync() {
   const btn = document.getElementById('sync-btn');
   btn.classList.add('syncing'); btn.disabled = true;
   try {
-await apiFetch('/sync', { method: 'POST' });
-const data = await apiFetch('/messages');
-state.messages = data.messages;
-state.lastSync = data.last_sync;
-renderFeed(); updateBadge();
-document.getElementById('last-sync').textContent =
-  new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+    // Send since-parameter – henter bare nye meldinger siden sist
+    const since = state.lastSync || null;
+    await apiFetch('/sync', { method: 'POST', body: JSON.stringify({ since }) });
+    // Hent oppdatert meldingsliste fra cache
+    const data = await apiFetch('/messages');
+    state.messages = data.messages;
+    state.lastSync = new Date().toISOString();
+    renderFeed(); updateBadge();
+    document.getElementById('last-sync').textContent =
+      new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
   } catch (e) {
-console.error('Synk feilet:', e);
+    console.error('Synk feilet:', e);
   } finally {
-btn.classList.remove('syncing'); btn.disabled = false;
+    btn.classList.remove('syncing'); btn.disabled = false;
+  }
+}
+
+// Pull-to-refresh henter bare fra cache (ingen API-kall til Spond)
+async function refreshFromCache() {
+  try {
+    const data = await apiFetch('/messages');
+    state.messages = data.messages;
+    renderFeed(); updateBadge();
+  } catch (e) {
+    console.error('Cache-oppdatering feilet:', e);
   }
 }
 
@@ -1057,7 +1071,7 @@ const dy = e.changedTouches[0].clientY - startY;
 if (dy > THRESHOLD) {
   spinner.classList.add('spinning');
   ptrText.textContent = 'Oppdaterer...';
-  await manualSync();
+  await refreshFromCache();
   spinner.classList.remove('spinning');
 }
 indicator.classList.remove('visible');
