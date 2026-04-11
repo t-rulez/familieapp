@@ -908,7 +908,7 @@ async function fetchHistory() {
     statusEl.textContent = `Feil: ${e.message}`;
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Hent historiske meldinger';
+    btn.textContent = 'Hent';
   }
 }
 
