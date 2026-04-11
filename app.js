@@ -167,7 +167,9 @@ function renderCard(m) {
         <span class="card-time">${m.time}</span>
       </div>
     </div>
-    <div class="card-title">${m.title}</div>
+    <div class="card-title">${m.source === 'whatsapp' && m.meta?.group && m.title.startsWith(m.meta.group + ': ')
+      ? m.title.slice(m.meta.group.length + 2)
+      : m.title}</div>
     <div class="tldr" style="background:var(${cfg.bgVar})">
       <div class="tldr-label" style="color:${cfg.color}">TL;DR</div>
       <div class="tldr-text" style="color:${cfg.color}">${m.tldr}</div>
