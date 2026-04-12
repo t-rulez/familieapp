@@ -855,6 +855,19 @@ return { ...m, score };
   return scored;
 }
 
+function sendAiShortcut(topic) {
+  const prompts = {
+    'i dag': 'Hva skjer i dag? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.',
+    'i morgen': 'Hva skjer i morgen? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.',
+    'neste 5 dager': 'Hva skjer de neste 5 dagene? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.'
+  };
+  const input = document.getElementById('ai-input');
+  if (input) {
+    input.value = prompts[topic] || topic;
+    sendAiQuestion();
+  }
+}
+
 async function sendAiQuestion() {
   const input = document.getElementById('ai-input');
   const sendBtn = document.getElementById('ai-send');

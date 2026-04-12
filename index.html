@@ -431,6 +431,11 @@
     </div>
     <div id="ai-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;padding-bottom:8px;"></div>
     <div style="padding:10px 16px calc(4px + env(safe-area-inset-bottom,0px)) 16px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;">
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <button onclick="sendAiShortcut('i dag')" style="flex:1;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">I dag</button>
+        <button onclick="sendAiShortcut('i morgen')" style="flex:1;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">I morgen</button>
+        <button onclick="sendAiShortcut('neste 5 dager')" style="flex:1;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">Neste 5 dager</button>
+      </div>
       <div style="display:flex;gap:8px;align-items:flex-end;">
         <textarea id="ai-input" placeholder="Spør om noe fra meldingene dine..." rows="1"
           style="flex:1;padding:10px 14px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;resize:none;outline:none;line-height:1.4;max-height:120px;overflow-y:auto;"></textarea>
@@ -452,7 +457,7 @@
       AI
     </button>
     <button class="nav-btn active" data-view="feed" style="position:relative;">
-      <span id="feed-nav-badge" style="display:none;position:absolute;top:4px;right:12px;background:#A32D2D;color:white;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:8px;padding:0 3px;line-height:15px;text-align:center;font-family:'DM Mono',monospace;border:2px solid var(--bg);z-index:1;"></span>
+      <span id="feed-nav-badge" style="display:none;position:absolute;top:2px;right:8px;background:#A32D2D;color:white;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 4px;line-height:18px;text-align:center;font-family:'DM Mono',monospace;border:2px solid var(--bg);z-index:1;"></span>
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Feed
     </button>
