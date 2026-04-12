@@ -297,6 +297,11 @@ function updateBadge() {
     filterBadge.textContent = unread > 99 ? '99+' : unread;
     filterBadge.style.display = unread > 0 ? 'inline-block' : 'none';
   }
+  const feedNavBadge = document.getElementById('feed-nav-badge');
+  if (feedNavBadge) {
+    feedNavBadge.textContent = unread > 99 ? '99+' : unread;
+    feedNavBadge.style.display = unread > 0 ? 'block' : 'none';
+  }
 
 }
 
@@ -754,21 +759,18 @@ console.error('Kunne ikke laste meldinger:', e);
 
 // Naviger til ulest-feed og refresh fra cache
 async function navigateToUnread() {
-  // 1. Bytt til feed-tab
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  // 1. Klikk feed-tab (bruker eksisterende event-handler)
   const feedBtn = document.querySelector('.nav-btn[data-view="feed"]');
-  if (feedBtn) feedBtn.classList.add('active');
-  document.getElementById('view-feed').style.display = 'flex';
-  document.getElementById('view-ai').style.display = 'none';
-  document.querySelectorAll('.view').forEach(v => { v.style.display = 'none'; v.classList.remove('active'); });
+  if (feedBtn) feedBtn.click();
 
   // 2. Sett ulest-filter
+  await new Promise(r => setTimeout(r, 50)); // Vent på tab-bytte
   document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
   const ulestBtn = document.querySelector('.filter-btn[data-status="unread"]');
   if (ulestBtn) ulestBtn.classList.add('active');
   state.filter = 'unread';
 
-  // 3. Refresh fra cache
+  // 3. Refresh fra cache og render
   await refreshFromCache();
 }
 
