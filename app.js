@@ -752,38 +752,42 @@ console.error('Kunne ikke laste meldinger:', e);
   }
 }
 
+// Naviger til ulest-feed og refresh fra cache
+async function navigateToUnread() {
+  // 1. Bytt til feed-tab
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const feedBtn = document.querySelector('.nav-btn[data-view="feed"]');
+  if (feedBtn) feedBtn.classList.add('active');
+  document.getElementById('view-feed').style.display = 'flex';
+  document.getElementById('view-ai').style.display = 'none';
+  document.querySelectorAll('.view').forEach(v => { v.style.display = 'none'; v.classList.remove('active'); });
+
+  // 2. Sett ulest-filter
+  document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
+  const ulestBtn = document.querySelector('.filter-btn[data-status="unread"]');
+  if (ulestBtn) ulestBtn.classList.add('active');
+  state.filter = 'unread';
+
+  // 3. Refresh fra cache
+  await refreshFromCache();
+}
+
 // Lytt på meldinger fra service worker (notifikasjonsklikk)
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', e => {
     if (e.data?.type === 'NAVIGATE' && e.data?.filter === 'unread') {
-      // Sett ulest-filter aktivt
-      document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
-      const ulestBtn = document.querySelector('.filter-btn[data-status="unread"]');
-      if (ulestBtn) ulestBtn.classList.add('active');
-      state.filter = 'unread';
-      renderFeed(); updateBadge();
-      // Naviger til feed-fanen
-      document.querySelector('[data-view="feed"]')?.click();
+      navigateToUnread();
     }
   });
 }
 
 // Sjekk URL-parameter ved oppstart
 const _urlParams = new URLSearchParams(window.location.search);
-if (_urlParams.get('filter') === 'unread') {
-  // Vil bli håndtert etter initApp()
-}
 
 // Start
 initApp().then(() => {
   if (_urlParams.get('filter') === 'unread') {
-    document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
-    const ulestBtn = document.querySelector('.filter-btn[data-status="unread"]');
-    if (ulestBtn) ulestBtn.classList.add('active');
-    state.filter = 'unread';
-    renderFeed(); updateBadge();
-    document.querySelector('[data-view="feed"]')?.click();
-    // Rens URL uten reload
+    navigateToUnread();
     window.history.replaceState({}, '', '/');
   }
 });
