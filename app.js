@@ -752,8 +752,41 @@ console.error('Kunne ikke laste meldinger:', e);
   }
 }
 
+// Lytt på meldinger fra service worker (notifikasjonsklikk)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type === 'NAVIGATE' && e.data?.filter === 'unread') {
+      // Sett ulest-filter aktivt
+      document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
+      const ulestBtn = document.querySelector('.filter-btn[data-status="unread"]');
+      if (ulestBtn) ulestBtn.classList.add('active');
+      state.filter = 'unread';
+      renderFeed(); updateBadge();
+      // Naviger til feed-fanen
+      document.querySelector('[data-view="feed"]')?.click();
+    }
+  });
+}
+
+// Sjekk URL-parameter ved oppstart
+const _urlParams = new URLSearchParams(window.location.search);
+if (_urlParams.get('filter') === 'unread') {
+  // Vil bli håndtert etter initApp()
+}
+
 // Start
-initApp();
+initApp().then(() => {
+  if (_urlParams.get('filter') === 'unread') {
+    document.querySelectorAll('.filter-btn[data-status]').forEach(b => b.classList.remove('active'));
+    const ulestBtn = document.querySelector('.filter-btn[data-status="unread"]');
+    if (ulestBtn) ulestBtn.classList.add('active');
+    state.filter = 'unread';
+    renderFeed(); updateBadge();
+    document.querySelector('[data-view="feed"]')?.click();
+    // Rens URL uten reload
+    window.history.replaceState({}, '', '/');
+  }
+});
 
 // ─── AI Chat ─────────────────────────────────────────────────────────────────
 

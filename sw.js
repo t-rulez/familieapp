@@ -1,45 +1,48 @@
-const CACHE_NAME = 'familie-v1';
+const CACHE_NAME = 'brief-v2';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(clients.claim());
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    ).then(() => clients.claim())
+  );
 });
 
-// Push-varsel mottat
 self.addEventListener('push', e => {
   if (!e.data) return;
   const data = e.data.json();
-  const title   = data.title || 'Familie';
-  const options = {
-    body:    data.body || '',
-    icon:    '/icon-192.png',
-    badge:   '/icon-192.png',
-    tag:     data.tag || 'familie-msg',
-    data:    { url: data.url || '/' },
+  e.waitUntil(self.registration.showNotification(data.title || 'Brief', {
+    body: data.body || '',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: data.tag || 'brief-msg',
     vibrate: [200, 100, 200],
+    data: { url: data.url || '/?filter=unread' },
     actions: [
-      { action: 'open',    title: 'Åpne' },
-      { action: 'dismiss', title: 'Lukk'  }
+      { action: 'open', title: 'Åpne' },
+      { action: 'dismiss', title: 'Lukk' }
     ]
-  };
-  e.waitUntil(self.registration.showNotification(title, options));
+  }));
 });
 
-// Klikk på varsel
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   if (e.action === 'dismiss') return;
+  const url = e.notification.data?.url || '/?filter=unread';
+  const fullUrl = self.location.origin + url;
   e.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
-      for (const client of clientList) {
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          return client.focus();
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const c of list) {
+        if (c.url.includes(self.location.origin)) {
+          c.postMessage({ type: 'NAVIGATE', filter: 'unread' });
+          return c.focus();
         }
       }
-      return clients.openWindow('/');
+      return clients.openWindow(fullUrl);
     })
   );
 });
