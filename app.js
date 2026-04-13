@@ -1292,16 +1292,14 @@ try {
   hasSubscription = !!sub;
 } catch(e) {}
 const isActive = perm === 'granted' && hasSubscription;
+const btnStyle = 'display:block;width:100%;color:var(--text);font-size:14px;';
 pushSection.innerHTML = `
   <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
-  <div style="font-size:14px;color:var(--text2);margin-bottom:12px;">
-${isActive ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
-  </div>
-  ${!isActive
-? '<button class="btn-secondary" id="btn-enable-push" onclick="enablePush()">Aktiver push-varsler</button>'
-: '<button class="btn-secondary" onclick="testPush()">Send testvarsel</button><button class="btn-secondary" onclick="resetPush()" style="margin-top:8px;display:block;width:100%;font-size:13px;color:var(--text3);">Nullstill push-tilkobling</button>'
-  }
-  <div id="push-status" style="font-size:13px;color:var(--text3);margin-top:8px;"></div>`;
+  <button class="btn-secondary" id="btn-toggle-push" onclick="togglePush()" style="${btnStyle}">
+    ${isActive ? 'Skru av push-varsler' : 'Skru på push-varsler'}
+  </button>
+  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:13px;">Send testvarsel</button>' : ''}
+  <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
   }
 
   // Plasser push-seksjonen inne i Annet-accordion
@@ -1313,35 +1311,48 @@ saveBtn.parentNode.insertBefore(pushSection, saveBtn);
   }
 }
 
-async function enablePush() {
-  const statusEl = document.getElementById('push-status');
-  statusEl.textContent = 'Aktiverer...';
-  // Slett gamle abonnementer først
-  await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
-  const ok = await requestPushPermission();
-  if (ok) {
-statusEl.textContent = '✓ Push-varsler aktivert!';
-document.getElementById('btn-enable-push')?.remove();
-  } else {
-statusEl.textContent = 'Kunne ikke aktivere push-varsler';
-  }
-}
+async function enablePush() { await togglePush(); }
+async function resetPush() { await togglePush(); }
 
-async function resetPush() {
+async function togglePush() {
   const statusEl = document.getElementById('push-status');
-  statusEl.textContent = 'Nullstiller...';
+  const btn = document.getElementById('btn-toggle-push');
+
+  // Sjekk nåværende status
+  let hasSubscription = false;
   try {
-// Slett alle gamle abonnementer i DB
-await apiFetch('/push/all', { method: 'DELETE' });
-// Avregistrer service worker subscription
-const reg = await navigator.serviceWorker.ready;
-const sub = await reg.pushManager.getSubscription();
-if (sub) await sub.unsubscribe();
-// Re-registrer med nye nøkler
-const ok = await subscribeToPush();
-statusEl.textContent = ok ? '✓ Push re-aktivert!' : 'Feil ved re-aktivering';
-  } catch (e) {
-statusEl.textContent = `Feil: ${e.message}`;
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    hasSubscription = !!sub;
+  } catch(e) {}
+  const isActive = Notification.permission === 'granted' && hasSubscription;
+
+  if (isActive) {
+    // Skru AV
+    if (btn) { btn.disabled = true; btn.textContent = 'Skrur av...'; }
+    try {
+      await apiFetch('/push/all', { method: 'DELETE' });
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) await sub.unsubscribe();
+      if (statusEl) statusEl.textContent = 'Push-varsler er skrudd av';
+      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
+    } catch(e) {
+      if (statusEl) statusEl.textContent = `Feil: ${e.message}`;
+      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
+    }
+  } else {
+    // Skru PÅ
+    if (btn) { btn.disabled = true; btn.textContent = 'Aktiverer...'; }
+    await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
+    const ok = await requestPushPermission();
+    if (ok) {
+      if (statusEl) statusEl.textContent = '✓ Push-varsler aktivert!';
+      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
+    } else {
+      if (statusEl) statusEl.textContent = 'Kunne ikke aktivere push-varsler';
+      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
+    }
   }
 }
 
