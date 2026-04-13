@@ -1292,13 +1292,16 @@ try {
   hasSubscription = !!sub;
 } catch(e) {}
 const isActive = perm === 'granted' && hasSubscription;
-const btnStyle = 'display:block;width:100%;color:var(--text);font-size:14px;';
+const statusText = isActive ? '✓ Push-varsler er aktivert' : '○ Push-varsler er ikke aktivert';
+const statusColor = isActive ? 'var(--green, #2D6A4F)' : 'var(--text3)';
+const btnStyle = 'display:block;width:100%;color:var(--text);font-size:15px;margin-top:10px;';
 pushSection.innerHTML = `
   <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+  <div style="font-size:13px;color:${statusColor};margin-bottom:4px;">${statusText}</div>
   <button class="btn-secondary" id="btn-toggle-push" onclick="togglePush()" style="${btnStyle}">
     ${isActive ? 'Skru av push-varsler' : 'Skru på push-varsler'}
   </button>
-  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:13px;">Send testvarsel</button>' : ''}
+  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
   <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
   }
 
