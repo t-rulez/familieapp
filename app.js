@@ -874,17 +874,30 @@ return { ...m, score };
 
 async function testCaldav() {
   const statusEl = document.getElementById('caldav-status');
-  statusEl.textContent = 'Tester tilkobling...';
+  statusEl.textContent = 'Lagrer og tester tilkobling...';
+  statusEl.style.color = 'var(--text2)';
   try {
+    // Lagre innstillinger først
+    const updates = {
+      caldav_url: document.getElementById('set-caldav-url')?.value.trim() || 'https://caldav.icloud.com',
+      caldav_username: document.getElementById('set-caldav-username')?.value.trim() || '',
+      caldav_enabled: document.getElementById('set-caldav-enabled')?.checked || false,
+      caldav_calendars: document.getElementById('set-caldav-calendars')?.value.trim() || '',
+    };
+    const caldavPw = document.getElementById('set-caldav-password')?.value;
+    if (caldavPw) updates.caldav_password = caldavPw;
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
+    // Test tilkobling
     const data = await apiFetch('/caldav/calendars');
     if (data.calendars && data.calendars.length > 0) {
       statusEl.textContent = '✓ Tilkoblet! Kalendere: ' + data.calendars.join(', ');
-      statusEl.style.color = 'var(--green)';
+      statusEl.style.color = 'var(--green, #2D6A4F)';
     } else {
       statusEl.textContent = '✓ Tilkoblet, men ingen kalendere funnet.';
+      statusEl.style.color = 'var(--green, #2D6A4F)';
     }
   } catch (e) {
-    statusEl.textContent = '✗ Feil: ' + (e.message || 'Kunne ikke koble til');
+    statusEl.textContent = '✗ ' + (e.message || 'Kunne ikke koble til');
     statusEl.style.color = '#A32D2D';
   }
 }
@@ -1357,6 +1370,8 @@ async function togglePush() {
       if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
     }
   }
+  // Refresh push-seksjonen for å vise oppdatert status
+  setTimeout(() => initPushSettings(), 500);
 }
 
 async function testPush() {
