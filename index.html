@@ -410,6 +410,39 @@
         <div id="history-status" style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6;"></div>
 
         <div id="push-section-placeholder"></div>
+
+        <!-- Kalender -->
+        <div class="settings-card" style="margin-top:12px;">
+          <div class="accordion-header" onclick="toggleAccordion('acc-caldav')">
+            <span style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">📅</span> Kalender (iCloud)</span>
+            <span id="badge-caldav" class="source-badge off">Av</span>
+          </div>
+          <div id="acc-caldav" class="accordion-body">
+            <div class="field-group">
+              <label class="field-label">Aktiver kalender</label>
+              <label class="toggle-switch"><input type="checkbox" id="set-caldav-enabled" onchange="updateSourceBadge('caldav')"><span class="slider"></span></label>
+            </div>
+            <div class="field-group">
+              <label class="field-label">CalDAV URL</label>
+              <input class="settings-input" type="text" id="set-caldav-url" placeholder="https://caldav.icloud.com"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Apple ID (e-post)</label>
+              <input class="settings-input" type="email" id="set-caldav-username" placeholder="din@icloud.com"/>
+            </div>
+            <div class="field-group">
+              <label class="field-label">App-spesifikt passord</label>
+              <input class="settings-input" type="password" id="set-caldav-password" placeholder="xxxx-xxxx-xxxx-xxxx"/>
+              <div id="caldav-pw-status" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Kalenderfilter (tomt = alle)</label>
+              <input class="settings-input" type="text" id="set-caldav-calendars" placeholder="Familie, Jobb"/>
+            </div>
+            <button class="btn-secondary" onclick="testCaldav()" style="margin-top:4px;">Test tilkobling</button>
+            <div id="caldav-status" style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;"></div>
+          </div>
+        </div>
       </div>
     </div>
 

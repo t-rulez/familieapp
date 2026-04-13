@@ -645,8 +645,19 @@ if (historyFrom) {
     historyFrom.value = historyFrom.min;
   }
 }
+// CalDAV
+const caldavUrl = document.getElementById('set-caldav-url');
+if (caldavUrl) caldavUrl.value = s.caldav_url || 'https://caldav.icloud.com';
+const caldavUser = document.getElementById('set-caldav-username');
+if (caldavUser) caldavUser.value = s.caldav_username || '';
+const caldavEnabled = document.getElementById('set-caldav-enabled');
+if (caldavEnabled) caldavEnabled.checked = !!s.caldav_enabled;
+const caldavCals = document.getElementById('set-caldav-calendars');
+if (caldavCals) caldavCals.value = s.caldav_calendars || '';
+const caldavPwStatus = document.getElementById('caldav-pw-status');
+if (caldavPwStatus) caldavPwStatus.textContent = s.caldav_has_password ? '(passord lagret)' : '(ikke satt)';
 // Update accordion badges
-['spond','e1','e2','wa'].forEach(k => updateSourceBadge(k));
+['spond','e1','e2','wa','caldav'].forEach(k => updateSourceBadge(k));
 initPushSettings();
   } catch (e) {
 console.error('Kunne ikke laste innstillinger:', e);
@@ -678,6 +689,10 @@ const updates = {
   wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
 
   wa_enabled:   document.getElementById('set-wa-enabled').checked,
+  caldav_url:      document.getElementById('set-caldav-url')?.value.trim() || 'https://caldav.icloud.com',
+  caldav_username: document.getElementById('set-caldav-username')?.value.trim() || '',
+  caldav_enabled:  document.getElementById('set-caldav-enabled')?.checked || false,
+  caldav_calendars: document.getElementById('set-caldav-calendars')?.value.trim() || '',
 };
 // Passord – bare send hvis fylt inn
 const spondPw = document.getElementById('set-spond-pw').value;
@@ -686,6 +701,8 @@ const e1pw = document.getElementById('set-e1-pw').value;
 if (e1pw) updates.email_1_password = e1pw;
 const e2pw = document.getElementById('set-e2-pw').value;
 if (e2pw) updates.email_2_password = e2pw;
+const caldavPw = document.getElementById('set-caldav-password')?.value;
+if (caldavPw) updates.caldav_password = caldavPw;
 
 await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
 btn.textContent = 'Lagret ✓';
@@ -855,6 +872,23 @@ return { ...m, score };
   return scored;
 }
 
+async function testCaldav() {
+  const statusEl = document.getElementById('caldav-status');
+  statusEl.textContent = 'Tester tilkobling...';
+  try {
+    const data = await apiFetch('/caldav/calendars');
+    if (data.calendars && data.calendars.length > 0) {
+      statusEl.textContent = '✓ Tilkoblet! Kalendere: ' + data.calendars.join(', ');
+      statusEl.style.color = 'var(--green)';
+    } else {
+      statusEl.textContent = '✓ Tilkoblet, men ingen kalendere funnet.';
+    }
+  } catch (e) {
+    statusEl.textContent = '✗ Feil: ' + (e.message || 'Kunne ikke koble til');
+    statusEl.style.color = '#A32D2D';
+  }
+}
+
 function sendAiShortcut(topic) {
   const prompts = {
     'i dag': 'Hva skjer i dag? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.',
@@ -1014,7 +1048,8 @@ function updateSourceBadge(key) {
   const enabled = document.getElementById(
 key === 'spond' ? 'set-spond-enabled' :
 key === 'e1'? 'set-e1-enabled' :
-key === 'e2'? 'set-e2-enabled' : 'set-wa-enabled'
+key === 'e2'? 'set-e2-enabled' :
+key === 'caldav' ? 'set-caldav-enabled' : 'set-wa-enabled'
   )?.checked;
   const badge = document.getElementById(`badge-${key}`);
   if (!badge) return;
