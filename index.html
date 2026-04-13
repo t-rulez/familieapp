@@ -413,11 +413,12 @@
 
         <!-- Kalender -->
         <div class="settings-card" style="margin-top:12px;">
-          <div class="accordion-header" onclick="toggleAccordion('acc-caldav')">
+          <div class="accordion-header" onclick="toggleAccordion('caldav')">
             <span style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">📅</span> Kalender (iCloud)</span>
             <span id="badge-caldav" class="source-badge off">Av</span>
+            <span id="arrow-caldav" class="accordion-arrow">▼</span>
           </div>
-          <div id="acc-caldav" class="accordion-body">
+          <div id="body-caldav" class="accordion-body">
             <div class="field-group">
               <label class="field-label">Aktiver kalender</label>
               <label class="toggle-switch"><input type="checkbox" id="set-caldav-enabled" onchange="updateSourceBadge('caldav')"><span class="slider"></span></label>

@@ -1284,12 +1284,20 @@ Safari → Del-knapp → "Legg til på hjemskjerm"
   </div>`;
   } else {
 const perm = Notification.permission;
+// Sjekk om vi har aktiv push-abonnement
+let hasSubscription = false;
+try {
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.getSubscription();
+  hasSubscription = !!sub;
+} catch(e) {}
+const isActive = perm === 'granted' && hasSubscription;
 pushSection.innerHTML = `
   <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
   <div style="font-size:14px;color:var(--text2);margin-bottom:12px;">
-${perm === 'granted' ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
+${isActive ? '✓ Push-varsler er aktivert' : 'Få varsel når nye meldinger kommer inn'}
   </div>
-  ${perm !== 'granted'
+  ${!isActive
 ? '<button class="btn-secondary" id="btn-enable-push" onclick="enablePush()">Aktiver push-varsler</button>'
 : '<button class="btn-secondary" onclick="testPush()">Send testvarsel</button><button class="btn-secondary" onclick="resetPush()" style="margin-top:8px;display:block;width:100%;font-size:13px;color:var(--text3);">Nullstill push-tilkobling</button>'
   }
