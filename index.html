@@ -380,38 +380,7 @@
       </div>
     </div>
 
-    <!-- Annet accordion -->
-    <div class="settings-section">
-      <div class="accordion-header" onclick="toggleAccordion('annet')">
-        <div class="accordion-title">
-          <span style="font-size:16px;">⚙️</span> Annet
-        </div>
-        <span class="accordion-arrow" id="arrow-annet">▼</span>
-      </div>
-      <div class="accordion-body" id="body-annet">
-        <div class="field-group" style="margin-bottom:16px;">
-          <label class="field-label">Familieprofil</label>
-          <textarea id="set-family-context" rows="5" class="settings-input"
-            placeholder="F.eks: Gustav, gutt f. 2015, fotball Ready Rød (G2015), svømming Tøyen. Rasmus, gutt f. 2017, fotball Ready Gul (G2017)."
-            style="resize:vertical;line-height:1.5;"></textarea>
-          <div style="font-size:12px;color:var(--text3);margin-top:4px;">Hjelper AI-assistenten å forstå hvem som er hvem i familien.</div>
-        </div>
-        <!-- Historisk henting -->
-        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
-        <div class="field-label" style="margin-bottom:6px;">Hent historiske meldinger</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Alle meldinger fra de aktive kategoriene over hentes tilbake til satt dato (maks 3 mnd).</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
-          <input type="date" id="set-history-from"
-            style="padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;flex-shrink:0;width:150px;"/>
-          <button class="btn-secondary" id="btn-fetch-history" onclick="fetchHistory()" style="flex:1;margin:0;">
-            Hent
-          </button>
-        </div>
-        <div id="history-status" style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6;"></div>
-
-        <div id="push-section-placeholder"></div>
-
-        <!-- Kalender -->
+     <!-- Kalender -->
         <div class="settings-card" style="margin-top:12px;">
           <div class="accordion-header" onclick="toggleAccordion('caldav')">
             <span style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">📅</span> Kalender (iCloud)</span>
@@ -447,6 +416,39 @@
             <div id="caldav-status" style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;"></div>
           </div>
         </div>
+
+    <!-- Annet accordion -->
+    <div class="settings-section">
+      <div class="accordion-header" onclick="toggleAccordion('annet')">
+        <div class="accordion-title">
+          <span style="font-size:16px;">⚙️</span> Annet
+        </div>
+        <span class="accordion-arrow" id="arrow-annet">▼</span>
+      </div>
+      <div class="accordion-body" id="body-annet">
+        <div class="field-group" style="margin-bottom:16px;">
+          <label class="field-label">Familieprofil</label>
+          <textarea id="set-family-context" rows="5" class="settings-input"
+            placeholder="F.eks: Gustav, gutt f. 2015, fotball Ready Rød (G2015), svømming Tøyen. Rasmus, gutt f. 2017, fotball Ready Gul (G2017)."
+            style="resize:vertical;line-height:1.5;"></textarea>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px;">Hjelper AI-assistenten å forstå hvem som er hvem i familien.</div>
+        </div>
+        <!-- Historisk henting -->
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
+        <div class="field-label" style="margin-bottom:6px;">Hent historiske meldinger</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Alle meldinger fra de aktive kategoriene over hentes tilbake til satt dato (maks 3 mnd).</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+          <input type="date" id="set-history-from"
+            style="padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;flex-shrink:0;width:150px;"/>
+          <button class="btn-secondary" id="btn-fetch-history" onclick="fetchHistory()" style="flex:1;margin:0;">
+            Hent
+          </button>
+        </div>
+        <div id="history-status" style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6;"></div>
+
+        <div id="push-section-placeholder"></div>
+
+       
       </div>
     </div>
 
