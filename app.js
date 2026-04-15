@@ -488,6 +488,49 @@ function renderStats() {
   }).join('');
 
   renderDailyChart();
+  renderApiUsage();
+}
+
+async function renderApiUsage() {
+  const el = document.getElementById('api-usage-stats');
+  if (!el) return;
+  try {
+    const data = await apiFetch('/stats/api');
+    const m = data.month || {};
+    const total = data.total || {};
+    const fmt = n => Number(n).toFixed(4);
+    const fmtTokens = n => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(0)+'K' : n;
+
+    const bySource = (data.by_source || []).map(s =>
+      `<div class="settings-row">
+        <span class="settings-row-text" style="font-size:13px;">${s.source}/${s.purpose}</span>
+        <span style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;">$${fmt(s.cost_usd)}</span>
+      </div>`
+    ).join('');
+
+    el.innerHTML = `
+      <div class="settings-label" style="margin-top:16px;">Claude API-forbruk</div>
+      <div style="background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px;">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Denne måneden</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:14px;color:var(--text);">Estimert kostnad</span>
+          <span style="font-size:16px;font-weight:600;color:var(--text);font-family:'DM Mono',monospace;">$${fmt(m.cost_usd||0)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+          <span style="font-size:13px;color:var(--text2);">Tokens inn / ut</span>
+          <span style="font-size:13px;color:var(--text2);font-family:'DM Mono',monospace;">${fmtTokens(m.tokens_in||0)} / ${fmtTokens(m.tokens_out||0)}</span>
+        </div>
+        ${bySource}
+        <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;">
+          <span style="font-size:12px;color:var(--text3);">Totalt alle måneder</span>
+          <span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;">$${fmt(total.cost_usd||0)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">Basert på Sonnet 4: $3/M input · $15/M output</div>
+      </div>`;
+  } catch(e) {
+    const el2 = document.getElementById('api-usage-stats');
+    if (el2) el2.innerHTML = '';
+  }
 }
 
 function renderDailyChart() {
