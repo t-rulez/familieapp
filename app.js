@@ -996,10 +996,20 @@ function toggleAiLength() {
   aiLengthShort = !aiLengthShort;
   const btn = document.getElementById('ai-length-toggle');
   if (btn) {
-    btn.textContent = aiLengthShort ? 'Kort' : 'Langt';
-    btn.style.background = aiLengthShort ? 'var(--surface2)' : '#185FA5';
-    btn.style.color = aiLengthShort ? 'var(--text2)' : 'white';
-    btn.style.border = aiLengthShort ? '1px solid var(--border2)' : '1px solid #185FA5';
+    const icon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h10M4 18h16"/></svg>';
+    if (aiLengthShort) {
+      // Lyseblå = Kort
+      btn.innerHTML = icon + 'Kort';
+      btn.style.background = '#E8F4FC';
+      btn.style.color = '#185FA5';
+      btn.style.border = '1px solid #93C5E8';
+    } else {
+      // Blå = Langt
+      btn.innerHTML = icon + 'Langt';
+      btn.style.background = '#185FA5';
+      btn.style.color = 'white';
+      btn.style.border = '1px solid #185FA5';
+    }
   }
 }
 
