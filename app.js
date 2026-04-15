@@ -703,6 +703,7 @@ if (showbieToken) {
   updates.showbie_token = parts[0];
   if (parts[1]) updates.showbie_user_id = parts[1];
   if (parts[2]) updates.showbie_fingerprint = parts[2];
+  if (parts[3]) updates.showbie_token_expires = parseInt(parts[3]) * 1000;
 }
 // Passord – bare send hvis fylt inn
 const spondPw = document.getElementById('set-spond-pw').value;
@@ -896,6 +897,7 @@ async function testShowbie() {
       };
       if (parts[1]) updates.showbie_user_id = parts[1];
       if (parts[2]) updates.showbie_fingerprint = parts[2];
+      if (parts[3]) updates.showbie_token_expires = parseInt(parts[3]) * 1000; // Unix timestamp → ms
       await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
     }
     const data = await apiFetch('/showbie/test', { method: 'POST' });
