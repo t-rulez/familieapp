@@ -713,18 +713,11 @@ const updates = {
 };
 const showbieToken = document.getElementById('set-showbie-token')?.value.trim();
 if (showbieToken) {
-  // Parse token|user_id format
+  // Parse token|user_id|fingerprint format
   const parts = showbieToken.split('|');
   updates.showbie_token = parts[0];
   if (parts[1]) updates.showbie_user_id = parts[1];
-  // Parse expiry from JWT
-  try {
-    const jwt = showbieToken.split('.')[1];
-    if (jwt) {
-      const payload = JSON.parse(atob(jwt));
-      if (payload.exp) updates.showbie_token_expires = payload.exp * 1000;
-    }
-  } catch(e) {}
+  if (parts[2]) updates.showbie_fingerprint = parts[2];
 }
 // Passord – bare send hvis fylt inn
 const spondPw = document.getElementById('set-spond-pw').value;
