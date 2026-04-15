@@ -357,7 +357,7 @@
         <div class="field-group">
           <label class="field-label">Hent token automatisk</label>
           <div style="font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.5;">Åpne Showbie i en annen fane og kjør dette i konsollen (F12):</div>
-          <code style="display:block;background:var(--surface2);padding:8px;border-radius:6px;font-size:11px;color:var(--text2);word-break:break-all;">const s=JSON.parse(localStorage.getItem('ember_simple_auth-session'));const a=s.authenticated;const fp=document.cookie.match(/sbe-device-uuid=([^;]+)/)?.[1]||'';console.log(a.token+'|'+a.user+'|'+fp)</code>
+          <code style="display:block;background:var(--surface2);padding:8px;border-radius:6px;font-size:11px;color:var(--text2);word-break:break-all;">const s=JSON.parse(localStorage.getItem('ember_simple_auth-session'));const a=s.authenticated;const fp=document.cookie.match(/sbe-device-uuid=([^;]+)/)?.[1]||'';const exp=JSON.parse(atob(a.requestToken.split('.')[1])).exp;console.log(a.token+'|'+a.user+'|'+fp+'|'+exp)</code>
         </div>
         <div id="showbie-token-info" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
         <button class="btn-secondary" onclick="testShowbie()" style="margin-top:8px;">Test tilkobling</button>
