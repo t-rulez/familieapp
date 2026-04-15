@@ -412,7 +412,15 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     if (view === 'feed') {
       document.getElementById('view-feed').style.display = 'flex';
     } else if (view === 'ai') {
-      document.getElementById('view-ai').style.display = 'flex';
+      const aiView = document.getElementById('view-ai');
+      aiView.style.display = 'flex';
+      // Desktop (>=600px): bottom nav er ikke floating, trenger ikke ekstra plass
+      // Mobil: trekk fra menylinjen (60px + safe-area)
+      if (window.innerWidth >= 600) {
+        aiView.style.bottom = '60px';
+      } else {
+        aiView.style.bottom = 'calc(60px + env(safe-area-inset-bottom, 0px))';
+      }
       renderAiHistory();
     } else {
       const el = document.getElementById(`view-${view}`);

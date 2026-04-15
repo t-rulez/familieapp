@@ -171,9 +171,7 @@
     .btn-save{width:100%;padding:16px;border-radius:var(--radius-sm);background:var(--text);color:var(--bg);font-family:var(--font);font-size:16px;font-weight:500;border:none;cursor:pointer;margin-top:16px;min-height:52px}
     .btn-logout-sm{background:none;border:1px solid var(--border2);color:var(--red);font-family:var(--font);font-size:14px;padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer;min-height:44px}
   
-@media (min-width: 600px) {
-  #view-ai { padding-bottom: 0 !important; }
-}
+
 </style>
 </head>
 <body>
@@ -495,7 +493,7 @@
   </div>
 
   <!-- AI Chat -->
-  <div id="view-ai" style="display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;max-width:430px;margin:0 auto;background:var(--bg);z-index:5;padding-bottom:calc(60px + env(safe-area-inset-bottom,0px));">
+  <div id="view-ai" style="display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;max-width:430px;margin:0 auto;background:var(--bg);z-index:5;">
     <div style="padding:max(env(safe-area-inset-top),16px) 16px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;">
       <div style="font-size:20px;font-weight:500;letter-spacing:-0.5px;">AI-assistent</div>
     </div>
