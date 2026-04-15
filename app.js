@@ -911,6 +911,7 @@ async function testShowbie() {
         showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
       };
       if (parts[1]) updates.showbie_user_id = parts[1];
+      if (parts[2]) updates.showbie_fingerprint = parts[2];
       await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
     }
     const data = await apiFetch('/showbie/test', { method: 'POST' });
