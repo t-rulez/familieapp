@@ -645,6 +645,22 @@ if (historyFrom) {
     historyFrom.value = historyFrom.min;
   }
 }
+// Showbie
+const showbieToken = document.getElementById('set-showbie-token');
+if (showbieToken) showbieToken.value = ''; // aldri vis token
+const showbieEnabled = document.getElementById('set-e2-enabled');
+if (showbieEnabled) showbieEnabled.checked = !!s.showbie_enabled;
+const showbieTokenStatus = document.getElementById('showbie-token-status');
+if (showbieTokenStatus) {
+  if (s.showbie_has_token) {
+    const exp = s.showbie_token_expires ? new Date(s.showbie_token_expires).toLocaleDateString('no-NO') : 'ukjent';
+    showbieTokenStatus.textContent = `✓ Token lagret – utløper ${exp}`;
+    showbieTokenStatus.style.color = 'var(--green, #2D6A4F)';
+  } else {
+    showbieTokenStatus.textContent = 'Ingen token lagret';
+  }
+}
+updateSourceBadge('e2');
 // CalDAV
 const caldavUrl = document.getElementById('set-caldav-url');
 if (caldavUrl) caldavUrl.value = s.caldav_url || 'https://caldav.icloud.com';
@@ -693,7 +709,23 @@ const updates = {
   caldav_username: document.getElementById('set-caldav-username')?.value.trim() || '',
   caldav_enabled:  document.getElementById('set-caldav-enabled')?.checked || false,
   caldav_calendars: document.getElementById('set-caldav-calendars')?.value.trim() || '',
+  showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
 };
+const showbieToken = document.getElementById('set-showbie-token')?.value.trim();
+if (showbieToken) {
+  // Parse token|user_id format
+  const parts = showbieToken.split('|');
+  updates.showbie_token = parts[0];
+  if (parts[1]) updates.showbie_user_id = parts[1];
+  // Parse expiry from JWT
+  try {
+    const jwt = showbieToken.split('.')[1];
+    if (jwt) {
+      const payload = JSON.parse(atob(jwt));
+      if (payload.exp) updates.showbie_token_expires = payload.exp * 1000;
+    }
+  } catch(e) {}
+}
 // Passord – bare send hvis fylt inn
 const spondPw = document.getElementById('set-spond-pw').value;
 if (spondPw) updates.spond_password = spondPw;
@@ -870,6 +902,33 @@ const score = words.reduce((s, w) => s + (text.includes(w) ? 1 : 0), 0);
 return { ...m, score };
   }).filter(m => m.score > 0).sort((a, b) => b.score - a.score).slice(0, 25);
   return scored;
+}
+
+async function testShowbie() {
+  const statusEl = document.getElementById('showbie-status');
+  statusEl.textContent = 'Lagrer og tester...';
+  statusEl.style.color = 'var(--text2)';
+  try {
+    // Lagre token først
+    const tokenInput = document.getElementById('set-showbie-token')?.value.trim();
+    if (tokenInput) {
+      const parts = tokenInput.split('|');
+      const updates = {
+        showbie_token: parts[0],
+        showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
+      };
+      if (parts[1]) updates.showbie_user_id = parts[1];
+      await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
+    }
+    const data = await apiFetch('/showbie/test', { method: 'POST' });
+    statusEl.textContent = `✓ Tilkoblet som ${data.name} (${data.email})`;
+    statusEl.style.color = 'var(--green, #2D6A4F)';
+    // Oppdater token-status
+    await loadSettings();
+  } catch(e) {
+    statusEl.textContent = '✗ ' + (e.message || 'Tilkobling feilet – sjekk token');
+    statusEl.style.color = '#A32D2D';
+  }
 }
 
 async function testCaldav() {

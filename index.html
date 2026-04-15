@@ -342,16 +342,26 @@
         <span class="accordion-arrow" id="arrow-e2">▼</span>
       </div>
       <div class="accordion-body" id="body-e2">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">
+          Henter oppgaver, ukeplaner og innleveringer direkte fra Showbie API. Token hentes fra Showbie i nettleseren.
+        </div>
         <div class="row-with-toggle">
           <span class="settings-row-text">Aktiver</span>
-          <label class="toggle"><input type="checkbox" id="set-e2-enabled" onchange="updateBadge('e2')"><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" id="set-e2-enabled" onchange="updateSourceBadge('e2')"><span class="toggle-slider"></span></label>
         </div>
-        <div class="field-group"><label class="field-label">IMAP-server</label><input class="settings-input" type="text" id="set-e2-host" placeholder="imap.one.com"/></div>
-        <div class="field-group"><label class="field-label">E-postadresse</label><input class="settings-input" type="email" id="set-e2-user" placeholder="din@epost.no"/></div>
-        <div class="field-group"><label class="field-label">Passord</label><input class="settings-input" type="password" id="set-e2-pw" placeholder="La tomt for å beholde"/><div class="pw-status" id="e2-pw-status"></div></div>
-        <div class="field-group"><label class="field-label">Filter: avsender inneholder</label><input class="settings-input" type="text" id="set-e2-from" placeholder="no-reply@showbie.com"/></div>
-        <div class="field-group"><label class="field-label">Filter: emne inneholder</label><input class="settings-input" type="text" id="set-e2-subject" placeholder="La tomt for alle"/></div>
-        <div class="row-with-toggle"><span style="font-size:14px;color:var(--text2);">Slett e-post etter henting</span><label class="toggle"><input type="checkbox" id="set-e2-delete"><span class="toggle-slider"></span></label></div>
+        <div class="field-group">
+          <label class="field-label">Showbie Token</label>
+          <textarea class="settings-input" id="set-showbie-token" rows="3" placeholder="Lim inn token fra konsollen" style="font-size:11px;font-family:monospace;resize:none;"></textarea>
+          <div id="showbie-token-status" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Hent token automatisk</label>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.5;">Åpne Showbie i en annen fane og kjør dette i konsollen (F12):</div>
+          <code style="display:block;background:var(--surface2);padding:8px;border-radius:6px;font-size:11px;color:var(--text2);word-break:break-all;">const s=JSON.parse(localStorage.getItem('ember_simple_auth-session'));console.log(s.authenticated.token+'|'+s.authenticated.user)</code>
+        </div>
+        <div id="showbie-token-info" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+        <button class="btn-secondary" onclick="testShowbie()" style="margin-top:8px;">Test tilkobling</button>
+        <div id="showbie-status" style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;"></div>
       </div>
     </div>
 
