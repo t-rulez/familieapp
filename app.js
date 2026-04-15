@@ -1449,18 +1449,25 @@ pushSection.innerHTML = `
   if (isActive) {
     const settings = await apiFetch('/settings').catch(() => ({}));
     const eveningEnabled = !!settings.evening_summary_enabled;
+    const eveningTime = settings.evening_summary_time || '20:00';
     const eveningDiv = document.createElement('div');
     eveningDiv.style.cssText = 'margin-top:12px;';
     eveningDiv.innerHTML = `
       <div class="row-with-toggle" style="margin-top:4px;">
         <div>
-          <div style="font-size:14px;color:var(--text);">Kveldsvarsel kl 20:00</div>
+          <div style="font-size:14px;color:var(--text);">Kveldsvarsel</div>
           <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
         </div>
         <label class="toggle">
           <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
           <span class="toggle-slider"></span>
         </label>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+        <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
+        <input type="time" id="evening-summary-time" value="${eveningTime}"
+          style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);"
+          onchange="saveEveningSummaryTime(this.value)">
       </div>`;
     pushSection.appendChild(eveningDiv);
   }
@@ -1472,6 +1479,14 @@ pushSection.innerHTML = `
 placeholder.replaceWith(pushSection);
   } else {
 saveBtn.parentNode.insertBefore(pushSection, saveBtn);
+  }
+}
+
+async function saveEveningSummaryTime(time) {
+  try {
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_time: time }) });
+  } catch(e) {
+    console.error('Kunne ikke lagre tidspunkt:', e);
   }
 }
 
