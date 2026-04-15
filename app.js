@@ -129,7 +129,7 @@ document.getElementById('btn-register').textContent = 'Registrer';
 
 function getFiltered() {
   const q = state.searchQuery.toLowerCase().trim();
-  return state.messages.filter(m => {
+  const filtered = state.messages.filter(m => {
 const statusMatch = state.statusFilter === 'alle' || m.status === state.statusFilter;
 const sourceMatch = state.sourceFilter === 'alle' ||
   (m.source || '').toLowerCase() === state.sourceFilter.toLowerCase();
@@ -142,6 +142,12 @@ return (
   (m.meta?.sender || '').toLowerCase().includes(q) ||
   (m.meta?.group  || '').toLowerCase().includes(q)
 );
+  });
+  // Sorter nyeste først
+  return filtered.sort((a, b) => {
+    const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return tb - ta;
   });
 }
 
