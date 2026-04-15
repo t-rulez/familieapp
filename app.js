@@ -615,14 +615,7 @@ document.getElementById('set-e1-delete').checked  = !!s.email_1_delete_after;
 document.getElementById('set-e1-enabled').checked = !!s.email_1_enabled;
 document.getElementById('e1-pw-status').textContent = s.email_1_has_password ? '(passord lagret)' : '(ikke satt)';
 // E-post 2
-document.getElementById('set-e2-host').value  = s.email_2_host || 'imap.one.com';
-document.getElementById('set-e2-user').value  = s.email_2_username || '';
-document.getElementById('set-e2-from').value  = s.email_2_from_filter || '';
-document.getElementById('set-e2-subject').value   = s.email_2_subject_filter || '';
-
-document.getElementById('set-e2-delete').checked  = !!s.email_2_delete_after;
-document.getElementById('set-e2-enabled').checked = !!s.email_2_enabled;
-document.getElementById('e2-pw-status').textContent = s.email_2_has_password ? '(passord lagret)' : '(ikke satt)';
+document.getElementById('set-e2-enabled').checked = !!s.showbie_enabled;
 // WhatsApp
 document.getElementById('set-wa-filter').value   = s.wa_group_filter || '';
 
@@ -695,21 +688,13 @@ const updates = {
 
   email_1_delete_after:   document.getElementById('set-e1-delete').checked,
   email_1_enabled:document.getElementById('set-e1-enabled').checked,
-  email_2_host:   document.getElementById('set-e2-host').value.trim(),
-  email_2_username:   document.getElementById('set-e2-user').value.trim(),
-  email_2_from_filter:document.getElementById('set-e2-from').value.trim(),
-  email_2_subject_filter: document.getElementById('set-e2-subject').value.trim(),
-
-  email_2_delete_after:   document.getElementById('set-e2-delete').checked,
-  email_2_enabled:document.getElementById('set-e2-enabled').checked,
+  showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
   wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
-
   wa_enabled:   document.getElementById('set-wa-enabled').checked,
   caldav_url:      document.getElementById('set-caldav-url')?.value.trim() || 'https://caldav.icloud.com',
   caldav_username: document.getElementById('set-caldav-username')?.value.trim() || '',
   caldav_enabled:  document.getElementById('set-caldav-enabled')?.checked || false,
   caldav_calendars: document.getElementById('set-caldav-calendars')?.value.trim() || '',
-  showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
 };
 const showbieToken = document.getElementById('set-showbie-token')?.value.trim();
 if (showbieToken) {
@@ -724,8 +709,7 @@ const spondPw = document.getElementById('set-spond-pw').value;
 if (spondPw) updates.spond_password = spondPw;
 const e1pw = document.getElementById('set-e1-pw').value;
 if (e1pw) updates.email_1_password = e1pw;
-const e2pw = document.getElementById('set-e2-pw').value;
-if (e2pw) updates.email_2_password = e2pw;
+
 const caldavPw = document.getElementById('set-caldav-password')?.value;
 if (caldavPw) updates.caldav_password = caldavPw;
 
