@@ -643,6 +643,8 @@ const showbieToken = document.getElementById('set-showbie-token');
 if (showbieToken) showbieToken.value = ''; // aldri vis token
 const showbieEnabled = document.getElementById('set-e2-enabled');
 if (showbieEnabled) showbieEnabled.checked = !!s.showbie_enabled;
+const showbieChildIds = document.getElementById('set-showbie-child-ids');
+if (showbieChildIds) showbieChildIds.value = s.showbie_child_ids || '';
 const showbieTokenStatus = document.getElementById('showbie-token-status');
 if (showbieTokenStatus) {
   if (s.showbie_has_token) {
@@ -689,6 +691,7 @@ const updates = {
   email_1_delete_after:   document.getElementById('set-e1-delete').checked,
   email_1_enabled:document.getElementById('set-e1-enabled').checked,
   showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
+  showbie_child_ids: document.getElementById('set-showbie-child-ids')?.value.trim() || '',
   wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
   wa_enabled:   document.getElementById('set-wa-enabled').checked,
   caldav_url:      document.getElementById('set-caldav-url')?.value.trim() || 'https://caldav.icloud.com',
@@ -894,10 +897,13 @@ async function testShowbie() {
       const updates = {
         showbie_token: parts[0],
         showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
+  showbie_child_ids: document.getElementById('set-showbie-child-ids')?.value.trim() || '',
       };
       if (parts[1]) updates.showbie_user_id = parts[1];
       if (parts[2]) updates.showbie_fingerprint = parts[2];
-      if (parts[3]) updates.showbie_token_expires = parseInt(parts[3]) * 1000; // Unix timestamp → ms
+      if (parts[3]) updates.showbie_token_expires = parseInt(parts[3]) * 1000;
+      const childIds = document.getElementById('set-showbie-child-ids')?.value.trim();
+      if (childIds) updates.showbie_child_ids = childIds; // Unix timestamp → ms
       await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify(updates) });
     }
     const data = await apiFetch('/showbie/test', { method: 'POST' });

@@ -355,11 +355,23 @@
           <div id="showbie-token-status" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
         </div>
         <div class="field-group">
-          <label class="field-label">Hent token automatisk</label>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.5;">Åpne Showbie i en annen fane og kjør dette i konsollen (F12):</div>
+          <label class="field-label">Steg 1 – Hent token</label>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.5;">Åpne Showbie i en annen fane, trykk F12 → Console og kjør:</div>
           <code style="display:block;background:var(--surface2);padding:8px;border-radius:6px;font-size:11px;color:var(--text2);word-break:break-all;">const s=JSON.parse(localStorage.getItem('ember_simple_auth-session'));const a=s.authenticated;const fp=document.cookie.match(/sbe-device-uuid=([^;]+)/)?.[1]||'';const exp=JSON.parse(atob(a.requestToken.split('.')[1])).exp;console.log(a.token+'|'+a.user+'|'+fp+'|'+exp)</code>
+          <div style="font-size:12px;color:var(--text3);margin-top:6px;">Lim inn resultatet i «Showbie Token»-feltet over.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Steg 2 – Hent barn-IDer</label>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:8px;line-height:1.5;">Naviger til hvert barns mappe i Showbie (slik at nettverkskall genereres), og kjør:</div>
+          <code style="display:block;background:var(--surface2);padding:8px;border-radius:6px;font-size:11px;color:var(--text2);word-break:break-all;">const ids=performance.getEntriesByType('resource').filter(r=>r.name.includes('eu.showbie.com/core/v5/users/')&&r.name.includes('/assignments')).map(r=>r.name.match(/users\/([a-f0-9]{40})/)?.[1]).filter((v,i,a)=>v&&a.indexOf(v)===i);console.log('Barn-IDer:',ids.join(','))</code>
+          <div style="font-size:12px;color:var(--text3);margin-top:6px;">Lim inn resultatet i «Barn-IDer»-feltet under.</div>
         </div>
         <div id="showbie-token-info" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+        <div class="field-group">
+          <label class="field-label">Barn-IDer (kommaseparert)</label>
+          <input class="settings-input" type="text" id="set-showbie-child-ids" placeholder="1b6de9d1..., 8186e69c..."/>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Én ID per barn, kommaseparert. Oppdateres ikke automatisk.</div>
+        </div>
         <button class="btn-secondary" onclick="testShowbie()" style="margin-top:8px;">Test tilkobling</button>
         <div id="showbie-status" style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;"></div>
       </div>
