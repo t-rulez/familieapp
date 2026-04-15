@@ -1445,9 +1445,7 @@ pushSection.innerHTML = `
   </button>
   ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
   <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
-  }
 
-  // Legg til kveldsvarsel-toggle hvis push er aktivt
   if (isActive) {
     const settings = await apiFetch('/settings').catch(() => ({}));
     const eveningEnabled = !!settings.evening_summary_enabled;
@@ -1465,6 +1463,7 @@ pushSection.innerHTML = `
         </label>
       </div>`;
     pushSection.appendChild(eveningDiv);
+  }
   }
 
   // Plasser push-seksjonen inne i Annet-accordion
