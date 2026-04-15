@@ -491,16 +491,18 @@
   </div>
 
   <!-- AI Chat -->
-  <div id="view-ai" style="display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;max-width:430px;margin:0 auto;background:var(--bg);z-index:5;">
+  <div id="view-ai" style="display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom,0px));max-width:430px;margin:0 auto;background:var(--bg);z-index:5;">
     <div style="padding:max(env(safe-area-inset-top),16px) 16px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;">
       <div style="font-size:20px;font-weight:500;letter-spacing:-0.5px;">AI-assistent</div>
     </div>
-    <div id="ai-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;padding-bottom:8px;"></div>
-    <div style="padding:10px 16px calc(4px + env(safe-area-inset-bottom,0px)) 16px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;">
-      <div style="display:flex;gap:6px;margin-bottom:8px;">
-        <button onclick="sendAiShortcut('i dag')" style="flex:1;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">I dag</button>
-        <button onclick="sendAiShortcut('i morgen')" style="flex:1;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">I morgen</button>
-        <button onclick="sendAiShortcut('neste 5 dager')" style="flex:1;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">Neste 5 dager</button>
+    <div id="ai-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;"></div>
+    <div style="padding:10px 16px 12px 16px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;">
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+        <button onclick="sendAiShortcut('i dag')" style="flex:1;min-width:60px;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">I dag</button>
+        <button onclick="sendAiShortcut('i morgen')" style="flex:1;min-width:60px;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">I morgen</button>
+        <button onclick="sendAiShortcut('neste 5 dager')" style="flex:1;min-width:60px;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">5 dager</button>
+        <button onclick="sendAiShortcut('skoleuke')" style="flex:1;min-width:60px;padding:6px 4px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">Skoleuke</button>
+        <button id="ai-length-toggle" onclick="toggleAiLength()" style="flex:0 0 auto;padding:6px 10px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:var(--font);font-size:12px;cursor:pointer;">Kort</button>
       </div>
       <div style="display:flex;gap:8px;align-items:flex-end;">
         <textarea id="ai-input" placeholder="Spør om noe fra meldingene dine..." rows="1"

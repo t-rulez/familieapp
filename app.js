@@ -990,11 +990,28 @@ async function testCaldav() {
   }
 }
 
+let aiLengthShort = true;
+
+function toggleAiLength() {
+  aiLengthShort = !aiLengthShort;
+  const btn = document.getElementById('ai-length-toggle');
+  if (btn) {
+    btn.textContent = aiLengthShort ? 'Kort' : 'Langt';
+    btn.style.background = aiLengthShort ? 'var(--surface2)' : '#185FA5';
+    btn.style.color = aiLengthShort ? 'var(--text2)' : 'white';
+    btn.style.border = aiLengthShort ? '1px solid var(--border2)' : '1px solid #185FA5';
+  }
+}
+
 function sendAiShortcut(topic) {
+  const lengthHint = aiLengthShort
+    ? ' Svar kort og konsist, maks 5-6 setninger.'
+    : ' Svar detaljert og utfyllende.';
   const prompts = {
-    'i dag': 'Hva skjer i dag? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.',
-    'i morgen': 'Hva skjer i morgen? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.',
-    'neste 5 dager': 'Hva skjer de neste 5 dagene? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.'
+    'i dag': 'Hva skjer i dag? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.' + lengthHint,
+    'i morgen': 'Hva skjer i morgen? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.' + lengthHint,
+    'neste 5 dager': 'Hva skjer de neste 5 dagene? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.' + lengthHint,
+    'skoleuke': 'Gi meg en oversikt over viktige skoleaktiviteter denne uken: lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine. Organiser per dag.' + lengthHint,
   };
   const input = document.getElementById('ai-input');
   if (input) {
@@ -1028,10 +1045,15 @@ const familyContext = settings.family_context || '';
 const autoContext = settings.ai_learned_context || '';
 
 
+    const lengthInstruction = aiLengthShort
+      ? ' Svar kort og konsist, maks 5-6 setninger.'
+      : ' Svar detaljert og utfyllende.';
+    const questionWithLength = question.endsWith(lengthInstruction.trim()) ? question : question + lengthInstruction;
+
     const data = await apiFetch('/ai/chat', {
   method: 'POST',
   body: JSON.stringify({
-question,
+question: questionWithLength,
 family_context: familyContext,
 auto_context: autoContext,
 history: aiHistory.slice(0, -1)
