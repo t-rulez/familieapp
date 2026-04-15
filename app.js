@@ -1447,12 +1447,40 @@ pushSection.innerHTML = `
   <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
   }
 
+  // Legg til kveldsvarsel-toggle hvis push er aktivt
+  if (isActive) {
+    const settings = await apiFetch('/settings').catch(() => ({}));
+    const eveningEnabled = !!settings.evening_summary_enabled;
+    const eveningDiv = document.createElement('div');
+    eveningDiv.style.cssText = 'margin-top:12px;';
+    eveningDiv.innerHTML = `
+      <div class="row-with-toggle" style="margin-top:4px;">
+        <div>
+          <div style="font-size:14px;color:var(--text);">Kveldsvarsel kl 20:00</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>`;
+    pushSection.appendChild(eveningDiv);
+  }
+
   // Plasser push-seksjonen inne i Annet-accordion
   const placeholder = document.getElementById('push-section-placeholder');
   if (placeholder) {
 placeholder.replaceWith(pushSection);
   } else {
 saveBtn.parentNode.insertBefore(pushSection, saveBtn);
+  }
+}
+
+async function saveEveningSummary(enabled) {
+  try {
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_enabled: enabled }) });
+  } catch(e) {
+    console.error('Kunne ikke lagre kveldsvarsel-innstilling:', e);
   }
 }
 
