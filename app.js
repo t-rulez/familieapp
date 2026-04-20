@@ -491,7 +491,10 @@ function renderStats() {
     if (!sources[m.source]) sources[m.source] = { label: m.sourceLabel, count: 0 };
     sources[m.source].count++;
   });
+  // Normaliser labels
+  const sourceLabels = { spond: 'Spond', showbie: 'Showbie', skolemelding: 'Skolemelding', whatsapp: 'WhatsApp' };
   document.getElementById('source-stats').innerHTML = Object.entries(sources).map(([key, val]) => {
+    val.label = sourceLabels[key] || val.label;
     const c = SOURCE_CONFIG[key] || { color: '#888', bg: '#eee', darkBg: '#333' };
     return `<div class="settings-row">
       <div class="settings-row-left">
@@ -918,17 +921,41 @@ container.innerHTML = `
   </div>`;
 return;
   }
-  container.innerHTML = aiHistory.map(msg => `
-<div style="display:flex;flex-direction:column;gap:2px;align-items:${msg.role==='user'?'flex-end':'flex-start'}">
-  <div style="max-width:85%;padding:10px 14px;border-radius:${msg.role==='user'?'16px 16px 4px 16px':'16px 16px 16px 4px'};
-background:${msg.role==='user'?'#185FA5':'var(--surface)'};
-color:${msg.role==='user'?'white':'var(--text)'};
-border:${msg.role==='user'?'none':'1px solid var(--border)'};
-font-size:14px;line-height:1.6;white-space:pre-wrap;">
-${msg.content}
-  </div>
-  <div style="font-size:10px;color:var(--text3);padding:0 4px;">${msg.role==='user'?'Du':'Brief AI'}</div>
-</div>`).join('');
+  container.innerHTML = aiHistory.map(msg => {
+    let content = msg.content;
+    if (msg.role === 'assistant') {
+      // Erstatt ### overskrifter med ikoner
+      content = content.replace(/###\s*(.+)/g, (_, t) => {
+        const lower = t.toLowerCase();
+        let icon = '📋';
+        if (lower.includes('skole') || lower.includes('uke')) icon = '🏫';
+        else if (lower.includes('fotball') || lower.includes('sport') || lower.includes('trening') || lower.includes('kamp')) icon = '⚽';
+        else if (lower.includes('kalender') || lower.includes('dato') || lower.includes('dag') || lower.includes('uke')) icon = '📅';
+        else if (lower.includes('lekse') || lower.includes('oppgave')) icon = '📚';
+        else if (lower.includes('aktivitet')) icon = '🎯';
+        else if (lower.includes('praktisk') || lower.includes('husk')) icon = '✅';
+        return '<strong>' + icon + ' ' + t + '</strong>';
+      });
+      // Erstatt ## overskrifter
+      content = content.replace(/##\s*(.+)/g, (_, t) => '<strong>' + t + '</strong>');
+      // Erstatt **bold**
+      content = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      // Erstatt *italic*
+      content = content.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      // Erstatt - bullet points med •
+      content = content.replace(/^- (.+)/gm, '• $1');
+    }
+    return '<div style="display:flex;flex-direction:column;gap:2px;align-items:' + (msg.role==='user'?'flex-end':'flex-start') + '">' +
+      '<div style="max-width:85%;padding:10px 14px;border-radius:' + (msg.role==='user'?'16px 16px 4px 16px':'16px 16px 16px 4px') + ';' +
+      'background:' + (msg.role==='user'?'#185FA5':'var(--surface)') + ';' +
+      'color:' + (msg.role==='user'?'white':'var(--text)') + ';' +
+      'border:' + (msg.role==='user'?'none':'1px solid var(--border)') + ';' +
+      'font-size:14px;line-height:1.6;white-space:pre-wrap;">' +
+      content +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--text3);padding:0 4px;">' + (msg.role==='user'?'Du':'Brief AI') + '</div>' +
+      '</div>';
+  }).join('');
   // Scroll to bottom
   container.scrollTop = container.scrollHeight;
 }
