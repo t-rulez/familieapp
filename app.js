@@ -924,21 +924,31 @@ return;
   container.innerHTML = aiHistory.map(msg => {
     let content = msg.content;
     if (msg.role === 'assistant') {
+      // Felles ikon-funksjon
+      const getIcon = (t) => {
+        const lower = t.toLowerCase();
+        if (lower.includes('skole') || lower.includes('uke')) return '🏫';
+        if (lower.includes('fotball') || lower.includes('sport') || lower.includes('trening') || lower.includes('kamp')) return '⚽';
+        if (lower.includes('aktivitet') || lower.includes('familieaktivitet')) return '🎯';
+        if (lower.includes('lekse') || lower.includes('oppgave')) return '📚';
+        if (lower.includes('praktisk') || lower.includes('husk')) return '✅';
+        if (lower.includes('voksne') || lower.includes('foreldre')) return '👤';
+        if (lower.includes('kalender') || lower.includes('dato')) return '📅';
+        return '📋';
+      };
       // Erstatt ### overskrifter med ikoner
       content = content.replace(/###\s*(.+)/g, (_, t) => {
-        const lower = t.toLowerCase();
-        let icon = '📋';
-        if (lower.includes('skole') || lower.includes('uke')) icon = '🏫';
-        else if (lower.includes('fotball') || lower.includes('sport') || lower.includes('trening') || lower.includes('kamp')) icon = '⚽';
-        else if (lower.includes('kalender') || lower.includes('dato') || lower.includes('dag') || lower.includes('uke')) icon = '📅';
-        else if (lower.includes('lekse') || lower.includes('oppgave')) icon = '📚';
-        else if (lower.includes('aktivitet')) icon = '🎯';
-        else if (lower.includes('praktisk') || lower.includes('husk')) icon = '✅';
-        return '<strong>' + icon + ' ' + t + '</strong>';
+        return '<strong>' + getIcon(t) + ' ' + t + '</strong>';
       });
-      // Erstatt ## overskrifter
-      content = content.replace(/##\s*(.+)/g, (_, t) => '<strong>' + t + '</strong>');
-      // Erstatt **bold**
+      // Erstatt ## overskrifter med ikoner
+      content = content.replace(/##\s*(.+)/g, (_, t) => {
+        return '<strong>' + getIcon(t) + ' ' + t + '</strong>';
+      });
+      // Erstatt **OVERSKRIFT:** (bold på egen linje eller etterfulgt av kolon) med ikoner
+      content = content.replace(/^\*\*([^*]+?):\*\*/gm, (_, t) => {
+        return '<strong>' + getIcon(t) + ' ' + t + ':</strong>';
+      });
+      // Erstatt øvrig **bold**
       content = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
       // Erstatt *italic*
       content = content.replace(/\*(.+?)\*/g, '<em>$1</em>');
