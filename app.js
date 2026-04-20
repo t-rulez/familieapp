@@ -924,31 +924,13 @@ return;
   container.innerHTML = aiHistory.map(msg => {
     let content = msg.content;
     if (msg.role === 'assistant') {
-      // Felles ikon-funksjon
-      const getIcon = (t) => {
-        const lower = t.toLowerCase();
-        if (lower.includes('skole') || lower.includes('uke')) return '🏫';
-        if (lower.includes('fotball') || lower.includes('sport') || lower.includes('trening') || lower.includes('kamp')) return '⚽';
-        if (lower.includes('aktivitet') || lower.includes('familieaktivitet')) return '🎯';
-        if (lower.includes('lekse') || lower.includes('oppgave')) return '📚';
-        if (lower.includes('praktisk') || lower.includes('husk')) return '✅';
-        if (lower.includes('voksne') || lower.includes('foreldre')) return '👤';
-        if (lower.includes('kalender') || lower.includes('dato')) return '📅';
-        return '📋';
-      };
-      // Erstatt ### overskrifter med ikoner
-      content = content.replace(/###\s*(.+)/g, (_, t) => {
-        return '<strong>' + getIcon(t) + ' ' + t + '</strong>';
-      });
-      // Erstatt ## overskrifter med ikoner
-      content = content.replace(/##\s*(.+)/g, (_, t) => {
-        return '<strong>' + getIcon(t) + ' ' + t + '</strong>';
-      });
-      // Erstatt **OVERSKRIFT:** (bold på egen linje eller etterfulgt av kolon) med ikoner
-      content = content.replace(/^\*\*([^*]+?):\*\*/gm, (_, t) => {
-        return '<strong>' + getIcon(t) + ' ' + t + ':</strong>';
-      });
-      // Erstatt øvrig **bold**
+      // Erstatt ### overskrifter – behold Claude sine egne emoji, ikke legg til nye
+      content = content.replace(/###\s*(.+)/g, (_, t) => '<strong>' + t.trim() + '</strong>');
+      // Erstatt ## overskrifter
+      content = content.replace(/##\s*(.+)/g, (_, t) => '<strong>' + t.trim() + '</strong>');
+      // Erstatt **OVERSKRIFT:** på egen linje
+      content = content.replace(/^\*\*([^*\n]+?)\*\*/gm, '<strong>$1</strong>');
+      // Erstatt øvrig **bold** (inline)
       content = content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
       // Erstatt *italic*
       content = content.replace(/\*(.+?)\*/g, '<em>$1</em>');
