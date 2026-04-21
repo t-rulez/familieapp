@@ -502,7 +502,10 @@
   <!-- AI Chat -->
   <div id="view-ai" style="display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;max-width:430px;margin:0 auto;background:var(--bg);z-index:5;">
     <div style="padding:max(env(safe-area-inset-top),16px) 16px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;">
-      <div style="font-size:20px;font-weight:500;letter-spacing:-0.5px;">AI-assistent</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:20px;font-weight:500;letter-spacing:-0.5px;">AI-assistent</div>
+        <button onclick="clearAiHistory()" style="background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--text2);font-size:20px;border-radius:8px;" title="Tøm historikk">🗑️</button>
+      </div>
     </div>
     <div id="ai-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;"></div>
     <div class="ai-input-area" style="padding:10px 16px 10px 16px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;">
