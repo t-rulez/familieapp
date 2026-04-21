@@ -116,15 +116,23 @@ document.getElementById('btn-forgot').addEventListener('click', async () => {
   statusEl.style.color = 'var(--text2)';
   statusEl.style.display = 'block';
   try {
-    const data = await apiFetch('/auth/forgot-password', {
+    const res = await fetch(API_URL + '/auth/forgot-password', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
     });
-    statusEl.textContent = 'Nytt passord er sendt til ' + email;
-    statusEl.style.color = 'var(--green, #2D6A4F)';
+    const data = await res.json();
+    if (data.ok) {
+      statusEl.textContent = 'Nytt passord er sendt til ' + email;
+      statusEl.style.color = '#2D6A4F';
+    } else {
+      statusEl.textContent = data.error || 'Kunne ikke sende e-post. Prøv igjen.';
+      statusEl.style.color = 'var(--red)';
+    }
   } catch (e) {
-    statusEl.textContent = 'Kunne ikke sende e-post. Prøv igjen.';
+    statusEl.textContent = 'Nettverksfeil. Prøv igjen.';
     statusEl.style.color = 'var(--red)';
+    console.error('Forgot password error:', e);
   }
 });
 
