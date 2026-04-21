@@ -946,6 +946,28 @@ async function saveAiHistory() {
   } catch (e) { /* stille feil */ }
 }
 
+async function changePassword() {
+  const oldPw = document.getElementById('pw-old').value;
+  const newPw = document.getElementById('pw-new').value;
+  const statusEl = document.getElementById('pw-status');
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--text2)';
+  statusEl.textContent = 'Lagrer...';
+  try {
+    await apiFetch('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ old_password: oldPw, new_password: newPw })
+    });
+    statusEl.textContent = '✓ Passord byttet!';
+    statusEl.style.color = '#2D6A4F';
+    document.getElementById('pw-old').value = '';
+    document.getElementById('pw-new').value = '';
+  } catch (e) {
+    statusEl.textContent = e.message || 'Noe gikk galt.';
+    statusEl.style.color = 'var(--red)';
+  }
+}
+
 async function clearAiHistory() {
   aiHistory = [];
   renderAiHistory();

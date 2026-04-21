@@ -292,6 +292,13 @@
           <div><div class="settings-row-text" id="set-user-name"></div><div class="settings-row-sub" id="set-user-email"></div></div>
           <button class="btn-logout-sm" onclick="logout()">Logg ut</button>
         </div>
+        <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px;">
+          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;">Bytt passord</div>
+          <div class="field-group"><input class="settings-input" type="password" id="pw-old" placeholder="Nåværende passord"/></div>
+          <div class="field-group"><input class="settings-input" type="password" id="pw-new" placeholder="Nytt passord (minst 8 tegn)"/></div>
+          <button class="btn-secondary" onclick="window.changePassword()" style="margin-top:4px;">Bytt passord</button>
+          <div id="pw-status" style="font-size:13px;margin-top:8px;display:none;"></div>
+        </div>
       </div>
     </div>
 
