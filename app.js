@@ -678,6 +678,7 @@ document.getElementById('e1-pw-status').textContent = s.email_1_has_password ? '
 // E-post 2
 document.getElementById('set-e2-enabled').checked = !!s.showbie_enabled;
 // WhatsApp
+document.getElementById('set-wa-service-url').value = s.wa_service_url || '';
 document.getElementById('set-wa-filter').value   = s.wa_group_filter || '';
 
 document.getElementById('set-wa-enabled').checked = !!s.wa_enabled;
@@ -688,6 +689,8 @@ document.getElementById('set-user-email').textContent = user?.email || '';
 // Family context
 const fc = document.getElementById('set-family-context');
 if (fc) fc.value = s.family_context || '';
+const claudeKeyEl = document.getElementById('set-claude-api-key');
+if (claudeKeyEl) claudeKeyEl.placeholder = s.claude_api_key_set ? '••••••••••••• (lagret)' : 'sk-ant-api03-...';
 // Maks 3 måneder tilbake for historisk henting
 const historyFrom = document.getElementById('set-history-from');
 if (historyFrom) {
@@ -742,6 +745,7 @@ async function saveSettings() {
   try {
 const updates = {
   family_context: document.getElementById('set-family-context')?.value || '',
+  claude_api_key: document.getElementById('set-claude-api-key')?.value || '',
   spond_username: document.getElementById('set-spond-user').value.trim(),
   spond_enabled:  document.getElementById('set-spond-enabled').checked,
   email_1_host:   document.getElementById('set-e1-host').value.trim(),
@@ -753,6 +757,7 @@ const updates = {
   email_1_enabled:document.getElementById('set-e1-enabled').checked,
   showbie_enabled: document.getElementById('set-e2-enabled')?.checked || false,
   showbie_child_ids: document.getElementById('set-showbie-child-ids')?.value.trim() || '',
+  wa_service_url: document.getElementById('set-wa-service-url').value.trim(),
   wa_group_filter:  document.getElementById('set-wa-filter').value.trim(),
   wa_enabled:   document.getElementById('set-wa-enabled').checked,
   caldav_url:      document.getElementById('set-caldav-url')?.value.trim() || 'https://caldav.icloud.com',

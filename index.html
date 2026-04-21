@@ -394,6 +394,7 @@
           <span class="settings-row-text">Aktiver WhatsApp</span>
           <label class="toggle"><input type="checkbox" id="set-wa-enabled" onchange="updateBadge('wa')"><span class="toggle-slider"></span></label>
         </div>
+        <div class="field-group"><label class="field-label">WhatsApp-tjeneste URL</label><input class="settings-input" type="text" id="set-wa-service-url" placeholder="https://wa-1.up.railway.app"/><div style="font-size:12px;color:var(--text3);margin-top:4px;">URL til din WhatsApp-tjeneste på Railway.</div></div>
         <div class="field-group"><label class="field-label">Gruppefilter (kommaseparert)</label><input class="settings-input" type="text" id="set-wa-filter" placeholder="Fotball 8år, Foreldregruppe 3B"/></div>
         <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;"/>
         <div class="field-label" style="margin-bottom:10px;">WhatsApp-tilkobling</div>
@@ -461,6 +462,12 @@
             placeholder="F.eks: Gustav, gutt f. 2015, fotball Ready Rød (G2015), svømming Tøyen. Rasmus, gutt f. 2017, fotball Ready Gul (G2017)."
             style="resize:vertical;line-height:1.5;"></textarea>
           <div style="font-size:12px;color:var(--text3);margin-top:4px;">Hjelper AI-assistenten å forstå hvem som er hvem i familien.</div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
+        <div class="field-group" style="margin-bottom:16px;">
+          <label class="field-label">Claude API-nøkkel</label>
+          <input class="settings-input" type="password" id="set-claude-api-key" placeholder="sk-ant-api03-..."/>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px;">Din personlige Claude API-nøkkel fra <a href="https://console.anthropic.com" target="_blank" style="color:#185FA5;">console.anthropic.com</a>. Lagres kryptert.</div>
         </div>
         <!-- Historisk henting -->
         <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
