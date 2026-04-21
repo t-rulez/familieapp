@@ -905,13 +905,22 @@ async function loadAiHistory() {
 }
 
 async function saveAiHistory() {
-  saveAiHistory();
   try {
     await apiFetch('/ai/history', {
       method: 'POST',
       body: JSON.stringify({ history: aiHistory.slice(-50) })
     });
   } catch (e) { /* stille feil */ }
+}
+
+async function clearAiHistory() {
+  aiHistory = [];
+  renderAiHistory();
+  try {
+    await apiFetch('/ai/history', { method: 'POST', body: JSON.stringify({ history: [] }) });
+  } catch (e) {
+    console.error('Feil ved tømming av historikk:', e);
+  }
 }
 
 function renderAiHistory() {
