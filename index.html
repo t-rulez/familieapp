@@ -292,13 +292,6 @@
           <div><div class="settings-row-text" id="set-user-name"></div><div class="settings-row-sub" id="set-user-email"></div></div>
           <button class="btn-logout-sm" onclick="logout()">Logg ut</button>
         </div>
-        <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px;">
-          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px;">Bytt passord</div>
-          <div class="field-group"><input class="settings-input" type="password" id="pw-old" placeholder="Nåværende passord"/></div>
-          <div class="field-group"><input class="settings-input" type="password" id="pw-new" placeholder="Nytt passord (minst 8 tegn)"/></div>
-          <button class="btn-secondary" onclick="window.changePassword()" style="margin-top:4px;">Bytt passord</button>
-          <div id="pw-status" style="font-size:13px;margin-top:8px;display:none;"></div>
-        </div>
       </div>
     </div>
 
@@ -456,15 +449,15 @@
           </div>
         </div>
 
-    <!-- Annet accordion -->
+    <!-- AI innstillinger accordion -->
     <div class="settings-section">
-      <div class="accordion-header" onclick="toggleAccordion('annet')">
+      <div class="accordion-header" onclick="toggleAccordion('ai-settings')">
         <div class="accordion-title">
-          <span style="font-size:16px;">⚙️</span> Annet
+          <span style="font-size:16px;">🤖</span> AI-innstillinger
         </div>
-        <span class="accordion-arrow" id="arrow-annet">▼</span>
+        <span class="accordion-arrow" id="arrow-ai-settings">▼</span>
       </div>
-      <div class="accordion-body" id="body-annet">
+      <div class="accordion-body" id="body-ai-settings">
         <div class="field-group" style="margin-bottom:16px;">
           <label class="field-label">Familieprofil</label>
           <textarea id="set-family-context" rows="5" class="settings-input"
@@ -478,8 +471,26 @@
           <input class="settings-input" type="password" id="set-claude-api-key" placeholder="sk-ant-api03-..."/>
           <div style="font-size:12px;color:var(--text3);margin-top:4px;">Din personlige Claude API-nøkkel fra <a href="https://console.anthropic.com" target="_blank" style="color:#185FA5;">console.anthropic.com</a>. Lagres kryptert.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Annet accordion -->
+    <div class="settings-section">
+      <div class="accordion-header" onclick="toggleAccordion('annet')">
+        <div class="accordion-title">
+          <span style="font-size:16px;">⚙️</span> Annet
+        </div>
+        <span class="accordion-arrow" id="arrow-annet">▼</span>
+      </div>
+      <div class="accordion-body" id="body-annet">
+        <!-- Bytt passord -->
+        <div class="field-label" style="margin-bottom:10px;">Bytt passord</div>
+        <div class="field-group"><input class="settings-input" type="password" id="pw-old" placeholder="Nåværende passord"/></div>
+        <div class="field-group"><input class="settings-input" type="password" id="pw-new" placeholder="Nytt passord (minst 8 tegn)"/></div>
+        <button class="btn-secondary" onclick="window.changePassword()" style="margin-top:4px;">Bytt passord</button>
+        <div id="pw-status" style="font-size:13px;margin-top:8px;display:none;"></div>
         <!-- Historisk henting -->
-        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;"/>
         <div class="field-label" style="margin-bottom:6px;">Hent historiske meldinger</div>
         <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Alle meldinger fra de aktive kategoriene over hentes tilbake til satt dato (maks 3 mnd).</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
@@ -492,8 +503,6 @@
         <div id="history-status" style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6;"></div>
 
         <div id="push-section-placeholder"></div>
-
-       
       </div>
     </div>
 
