@@ -103,6 +103,31 @@ document.getElementById('btn-show-login').addEventListener('click', () => {
   showAuthError('');
 });
 
+document.getElementById('btn-forgot').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const statusEl = document.getElementById('forgot-status');
+  if (!email) {
+    statusEl.textContent = 'Skriv inn e-postadressen din først.';
+    statusEl.style.color = 'var(--red)';
+    statusEl.style.display = 'block';
+    return;
+  }
+  statusEl.textContent = 'Sender...';
+  statusEl.style.color = 'var(--text2)';
+  statusEl.style.display = 'block';
+  try {
+    const data = await apiFetch('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+    statusEl.textContent = 'Nytt passord er sendt til ' + email;
+    statusEl.style.color = 'var(--green, #2D6A4F)';
+  } catch (e) {
+    statusEl.textContent = 'Kunne ikke sende e-post. Prøv igjen.';
+    statusEl.style.color = 'var(--red)';
+  }
+});
+
 document.getElementById('btn-register').addEventListener('click', async () => {
   const email= document.getElementById('reg-email').value.trim();
   const name = document.getElementById('reg-name').value.trim();
