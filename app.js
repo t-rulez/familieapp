@@ -1226,7 +1226,7 @@ key === 'caldav' ? 'set-caldav-enabled' : 'set-wa-enabled'
 
 // ─── WhatsApp QR i innstillinger ──────────────────────────────────────────────
 
-const WA_URL = localStorage.getItem('wa_url') || 'https://familieapp-whatsapp-service.up.railway.app';
+const WA_URL = localStorage.getItem('wa_url') || 'https://wa-1.up.railway.app';
 
 async function loadWaQr() {
   const contentEl = document.getElementById('wa-qr-content');
