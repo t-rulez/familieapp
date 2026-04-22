@@ -482,7 +482,7 @@ async function manualSync() {
     const since = state.lastSync || null;
     await apiFetch('/sync', { method: 'POST', body: JSON.stringify({ since }) });
     // Hent oppdatert meldingsliste fra cache
-    const data = await apiFetch('/messages');
+    const data = await apiFetch('/messages?limit=' + (localStorage.getItem('message_limit') || '500'));
     state.messages = data.messages;
     state.lastSync = new Date().toISOString();
     renderFeed(); updateBadge();
@@ -498,7 +498,7 @@ async function manualSync() {
 // Pull-to-refresh henter bare fra cache (ingen API-kall til Spond)
 async function refreshFromCache() {
   try {
-    const data = await apiFetch('/messages');
+    const data = await apiFetch('/messages?limit=' + (localStorage.getItem('message_limit') || '500'));
     state.messages = data.messages;
     renderFeed(); updateBadge();
   } catch (e) {
@@ -773,6 +773,10 @@ console.error('Kunne ikke laste innstillinger:', e);
 }
 
 async function saveSettings() {
+  // Lagre meldingsgrense i localStorage (ingen backend-kall nødvendig)
+  const limitVal = document.getElementById('set-message-limit')?.value;
+  if (limitVal) localStorage.setItem('message_limit', limitVal);
+
   const btn = document.getElementById('btn-save-settings');
   btn.textContent = 'Lagrer...'; btn.disabled = true;
   try {
@@ -869,7 +873,7 @@ avatar.textContent = initials.toUpperCase();
     });
   }
   try {
-const data = await apiFetch('/messages');
+const data = await apiFetch('/messages?limit=' + (localStorage.getItem('message_limit') || '500'));
 state.messages = data.messages;
 state.lastSync = data.last_sync;
 state.stats = {
@@ -947,6 +951,10 @@ async function saveAiHistory() {
 }
 
 async function changePassword() {
+  // Meldingsgrense fra localStorage
+  const limitEl = document.getElementById('set-message-limit');
+  if (limitEl) limitEl.value = localStorage.getItem('message_limit') || '500';
+
   const oldPw = document.getElementById('pw-old').value;
   const newPw = document.getElementById('pw-new').value;
   const statusEl = document.getElementById('pw-status');
@@ -1256,7 +1264,7 @@ async function fetchHistory() {
 
     // Oppdater feed
     if (result.total > 0) {
-      const data = await apiFetch('/messages');
+      const data = await apiFetch('/messages?limit=' + (localStorage.getItem('message_limit') || '500'));
       state.messages = data.messages;
       renderFeed(); updateBadge();
     }
