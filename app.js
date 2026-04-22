@@ -950,6 +950,21 @@ async function saveAiHistory() {
   } catch (e) { /* stille feil */ }
 }
 
+async function processAllMessages() {
+  const statusEl = document.getElementById('process-all-status');
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--text2)';
+  statusEl.textContent = '⏳ AI-scoring kjører i bakgrunnen – dette kan ta noen minutter...';
+  try {
+    await apiFetch('/admin/process-all', { method: 'POST' });
+    statusEl.textContent = '✓ AI-scoring startet! Synk appen etter noen minutter for å se resultatet.';
+    statusEl.style.color = '#2D6A4F';
+  } catch (e) {
+    statusEl.textContent = 'Feil: ' + (e.message || 'Noe gikk galt');
+    statusEl.style.color = 'var(--red)';
+  }
+}
+
 async function changePassword() {
   // Meldingsgrense fra localStorage
   const limitEl = document.getElementById('set-message-limit');
