@@ -1143,11 +1143,36 @@ function sendAiShortcut(topic) {
   const lengthHint = aiLengthShort
     ? ' Svar kort og konsist, maks 5-6 setninger.'
     : ' Svar detaljert og utfyllende.';
+  // Bruk lokal tid fra nettleseren for riktig dato
+  const now = new Date();
+  const days = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
+  const months = ['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'];
+  const todayStr = `${days[now.getDay()]} ${now.getDate()}. ${months[now.getMonth()]}`;
+  const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
+  const tomorrowStr = `${days[tomorrow.getDay()]} ${tomorrow.getDate()}. ${months[tomorrow.getMonth()]}`;
   const prompts = {
-    'i dag': 'Hva skjer i dag? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.' + lengthHint,
-    'i morgen': 'Hva skjer i morgen? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.' + lengthHint,
-    'neste 5 dager': 'Hva skjer de neste 5 dagene? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.' + lengthHint,
-    'skoleuke': 'Gi meg en oversikt over viktige skoleaktiviteter denne uken: lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine. Organiser per dag.' + lengthHint,
+    'i dag': `Hva skjer i dag (${todayStr})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.` + lengthHint,
+    'i morgen': `Hva skjer i morgen (${tomorrowStr})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.` + lengthHint,
+    'neste 5 dager': `Hva skjer de neste 5 dagene fra ${todayStr}? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.` + lengthHint,
+    'skoleuke': (() => {
+      const dayNum = now.getDay(); // 0=søndag, 6=lørdag
+      const isWeekend = dayNum === 0 || dayNum === 6;
+      const monday = new Date(now);
+      if (isWeekend) {
+        // Kommende mandag
+        const daysToMonday = dayNum === 6 ? 2 : 1;
+        monday.setDate(now.getDate() + daysToMonday);
+      } else {
+        // Inneværende mandag
+        monday.setDate(now.getDate() - (dayNum - 1));
+      }
+      const friday = new Date(monday);
+      friday.setDate(monday.getDate() + 4);
+      const mondayStr = `${days[monday.getDay()]} ${monday.getDate()}. ${months[monday.getMonth()]}`;
+      const fridayStr = `${days[friday.getDay()]} ${friday.getDate()}. ${months[friday.getMonth()]}`;
+      const weekLabel = isWeekend ? 'kommende skoleuke' : 'inneværende skoleuke';
+      return `Gi meg en oversikt over viktige skoleaktiviteter i ${weekLabel} (${mondayStr} – ${fridayStr}): lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine. Organiser per dag.` + lengthHint;
+    })(),
   };
   const input = document.getElementById('ai-input');
   if (input) {
