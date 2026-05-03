@@ -1607,9 +1607,11 @@ pushSection.innerHTML = `
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
         <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
-        <input type="time" id="evening-summary-time" value="${eveningTime}"
-          style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);"
+        <select id="evening-summary-time"
+          style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
           onchange="saveEveningSummaryTime(this.value)">
+          ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
+        </select>
       </div>`;
     pushSection.appendChild(eveningDiv);
   }
@@ -1626,7 +1628,8 @@ saveBtn.parentNode.insertBefore(pushSection, saveBtn);
 
 async function saveEveningSummaryTime(time) {
   try {
-    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_time: time }) });
+    const hour = time.split(':')[0].padStart(2, '0');
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_time: hour + ':00' }) });
   } catch(e) {
     console.error('Kunne ikke lagre tidspunkt:', e);
   }
