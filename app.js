@@ -1554,75 +1554,85 @@ async function initPushSettings() {
    window.navigator.standalone === true;
 
   if (!hasNotification || !hasSW) {
-pushSection.innerHTML = `
-  <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
-  <div style="font-size:13px;color:var(--text2);">
-Push-varsler støttes ikke i denne nettleseren. Legg til appen på hjemskjermen i Safari for å aktivere.
-  </div>`;
-  } else if (!isStandalone) {
-pushSection.innerHTML = `
-  <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
-  <div style="font-size:13px;color:var(--text2);">
-For å aktivere push-varsler må appen legges til på hjemskjermen.<br><br>
-Safari → Del-knapp → "Legg til på hjemskjerm"
-  </div>`;
-  } else {
-const perm = Notification.permission;
-// Sjekk om vi har aktiv push-abonnement
-let hasSubscription = false;
-try {
-  const reg = await navigator.serviceWorker.ready;
-  const sub = await reg.pushManager.getSubscription();
-  hasSubscription = !!sub;
-} catch(e) {}
-const isActive = perm === 'granted' && hasSubscription;
-const statusText = isActive ? '✓ Push-varsler er aktivert' : '○ Push-varsler er ikke aktivert';
-const statusColor = isActive ? 'var(--green, #2D6A4F)' : 'var(--text3)';
-const btnStyle = 'display:block;width:100%;color:var(--text);font-size:15px;margin-top:10px;';
-pushSection.innerHTML = `
-  <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
-  <div style="font-size:13px;color:${statusColor};margin-bottom:4px;">${statusText}</div>
-  <button class="btn-secondary" id="btn-toggle-push" onclick="togglePush()" style="${btnStyle}">
-    ${isActive ? 'Skru av push-varsler' : 'Skru på push-varsler'}
-  </button>
-  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
-  <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
-
-  if (isActive) {
-    const settings = await apiFetch('/settings').catch(() => ({}));
-    const eveningEnabled = !!settings.evening_summary_enabled;
-    const eveningTime = settings.evening_summary_time || '20:00';
-    const eveningDiv = document.createElement('div');
-    eveningDiv.style.cssText = 'margin-top:12px;';
-    eveningDiv.innerHTML = `
-      <div class="row-with-toggle" style="margin-top:4px;">
-        <div>
-          <div style="font-size:14px;color:var(--text);">Kveldsvarsel</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
-        <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
-        <select id="evening-summary-time"
-          style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
-          onchange="saveEveningSummaryTime(this.value)">
-          ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
-        </select>
+    pushSection.innerHTML = `
+      <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+      <div style="font-size:13px;color:var(--text2);">
+        Push-varsler støttes ikke i denne nettleseren. Legg til appen på hjemskjermen i Safari for å aktivere.
       </div>`;
-    pushSection.appendChild(eveningDiv);
-  }
+  } else if (!isStandalone) {
+    pushSection.innerHTML = `
+      <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+      <div style="font-size:13px;color:var(--text2);">
+        For å aktivere push-varsler må appen legges til på hjemskjermen.<br><br>
+        Safari → Del-knapp → "Legg til på hjemskjerm"
+      </div>`;
+  } else {
+    // Sjekk om push-abonnement er aktivt
+    let hasSubscription = false;
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      hasSubscription = !!sub;
+    } catch(e) {}
+    const perm = Notification.permission;
+    const isActive = perm === 'granted' && hasSubscription;
+
+    if (!isActive) {
+      // Tilstand 1: Ikke aktivert – vis aktiveringsknapp
+      pushSection.innerHTML = `
+        <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:10px;">○ Push-varsler er ikke aktivert</div>
+        <button class="btn-secondary" id="btn-enable-push" onclick="enablePushFirst()"
+          style="display:block;width:100%;color:var(--text);font-size:15px;">
+          Aktiver push-varsler
+        </button>
+        <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
+    } else {
+      // Tilstand 2: Aktivert – vis to toggles
+      const settings = await apiFetch('/settings').catch(() => ({}));
+      const newMsgEnabled = settings.push_new_messages_enabled !== false; // default true
+      const eveningEnabled = !!settings.evening_summary_enabled;
+      const eveningTime = settings.evening_summary_time || '20:00';
+
+      const toggleRow = (id, label, sublabel, checked, onchange) => `
+        <div class="row-with-toggle" style="margin-top:12px;">
+          <div>
+            <div style="font-size:14px;color:var(--text);">${label}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;">${sublabel}</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="${id}" ${checked ? 'checked' : ''} onchange="${onchange}">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>`;
+
+      pushSection.innerHTML = `
+        <div class="field-label" style="margin-bottom:4px;">Push-varsler</div>
+        <div style="font-size:13px;color:var(--green, #2D6A4F);margin-bottom:4px;">✓ Push-varsler er aktivert</div>
+        ${toggleRow('push-newmsg-toggle', 'Nye meldinger', 'Varsel når nye meldinger kommer inn', newMsgEnabled, 'savePushNewMessages(this.checked)')}
+        ${toggleRow('evening-summary-toggle', 'Kveldsvarsel', 'Morgendagens oversikt som push-notifikasjon', eveningEnabled, 'saveEveningSummary(this.checked)')}
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <span style="font-size:13px;color:var(--text2);">Tidspunkt kveldsvarsel</span>
+          <select id="evening-summary-time"
+            style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
+            onchange="saveEveningSummaryTime(this.value)">
+            ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
+          </select>
+        </div>
+        <button class="btn-secondary" onclick="testPush()"
+          style="margin-top:14px;display:block;width:100%;color:var(--text);font-size:15px;">
+          Send testvarsel
+        </button>
+        <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
+    }
   }
 
   // Plasser push-seksjonen inne i Annet-accordion
   const placeholder = document.getElementById('push-section-placeholder');
   if (placeholder) {
-placeholder.replaceWith(pushSection);
+    placeholder.replaceWith(pushSection);
   } else {
-saveBtn.parentNode.insertBefore(pushSection, saveBtn);
+    saveBtn.parentNode.insertBefore(pushSection, saveBtn);
   }
 }
 
@@ -1643,51 +1653,33 @@ async function saveEveningSummary(enabled) {
   }
 }
 
-async function enablePush() { await togglePush(); }
-async function resetPush() { await togglePush(); }
+async function enablePush() { await enablePushFirst(); }
+async function resetPush() { await enablePushFirst(); }
 
-async function togglePush() {
+// Førstegangsaktivering – ber om tillatelse og oppretter abonnement
+async function enablePushFirst() {
   const statusEl = document.getElementById('push-status');
-  const btn = document.getElementById('btn-toggle-push');
-
-  // Sjekk nåværende status
-  let hasSubscription = false;
-  try {
-    const reg = await navigator.serviceWorker.ready;
-    const sub = await reg.pushManager.getSubscription();
-    hasSubscription = !!sub;
-  } catch(e) {}
-  const isActive = Notification.permission === 'granted' && hasSubscription;
-
-  if (isActive) {
-    // Skru AV
-    if (btn) { btn.disabled = true; btn.textContent = 'Skrur av...'; }
-    try {
-      await apiFetch('/push/all', { method: 'DELETE' });
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.getSubscription();
-      if (sub) await sub.unsubscribe();
-      if (statusEl) statusEl.textContent = 'Push-varsler er skrudd av';
-      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
-    } catch(e) {
-      if (statusEl) statusEl.textContent = `Feil: ${e.message}`;
-      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
-    }
+  const btn = document.getElementById('btn-enable-push');
+  if (btn) { btn.disabled = true; btn.textContent = 'Aktiverer...'; }
+  await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
+  const ok = await requestPushPermission();
+  if (ok) {
+    if (statusEl) statusEl.textContent = '✓ Push-varsler aktivert!';
+    // Sett begge innstillinger til true som standard
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ push_new_messages_enabled: true }) }).catch(() => {});
+    setTimeout(() => initPushSettings(), 600);
   } else {
-    // Skru PÅ
-    if (btn) { btn.disabled = true; btn.textContent = 'Aktiverer...'; }
-    await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
-    const ok = await requestPushPermission();
-    if (ok) {
-      if (statusEl) statusEl.textContent = '✓ Push-varsler aktivert!';
-      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
-    } else {
-      if (statusEl) statusEl.textContent = 'Kunne ikke aktivere push-varsler';
-      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
-    }
+    if (statusEl) statusEl.textContent = 'Kunne ikke aktivere push-varsler. Sjekk at varsler er tillatt i telefoninnstillingene.';
+    if (btn) { btn.disabled = false; btn.textContent = 'Aktiver push-varsler'; }
   }
-  // Refresh push-seksjonen for å vise oppdatert status
-  setTimeout(() => initPushSettings(), 500);
+}
+
+async function savePushNewMessages(enabled) {
+  try {
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ push_new_messages_enabled: enabled }) });
+  } catch(e) {
+    console.error('Kunne ikke lagre push-innstilling:', e);
+  }
 }
 
 async function testPush() {
