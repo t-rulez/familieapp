@@ -306,16 +306,77 @@ checkSimilarMessages(id);
 async function checkSimilarMessages(id) {
   // Etter at en melding er satt til 'ikke relevant': sjekk om det finnes
   // lignende uleste meldinger (samme kilde/kategori) og tilby å merke dem likt.
+  // NB: bruker en egen dialogboks i DOM-en i stedet for confirm(), siden
+  // native browser-dialoger er upålitelige i installert PWA-modus (iOS).
   try {
 const res = await apiFetch(`/messages/${id}/similar`);
 const similar = res.similar || [];
 if (!similar.length) return;
-const names = similar.slice(0, 3).map(m => `• ${m.title}`).join('\n');
-const more = similar.length > 3 ? `\n...og ${similar.length - 3} til` : '';
-const flertall = similar.length > 1;
-const confirmMsg = `Fant ${similar.length} lignende ulest${flertall ? 'e' : ''} melding${flertall ? 'er' : ''}:\n\n${names}${more}\n\nMerk disse også som ikke relevante?`;
-if (confirm(confirmMsg)) {
-  const ids = similar.map(m => m.id);
+showSimilarDialog(similar);
+  } catch (e) {
+console.error('Kunne ikke sjekke lignende meldinger:', e);
+  }
+}
+
+function showSimilarDialog(similar) {
+  const old = document.getElementById('similar-dialog-overlay');
+  if (old) old.remove();
+
+  const flertall = similar.length > 1;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'similar-dialog-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;justify-content:center;';
+
+  const box = document.createElement('div');
+  box.style.cssText = 'background:var(--surface);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;box-shadow:0 -4px 24px rgba(0,0,0,0.4);';
+
+  const title = document.createElement('div');
+  title.style.cssText = 'font-size:15px;font-weight:600;margin-bottom:10px;';
+  title.textContent = `Fant ${similar.length} lignende ulest${flertall ? 'e' : ''} melding${flertall ? 'er' : ''}`;
+  box.appendChild(title);
+
+  const list = document.createElement('div');
+  list.style.cssText = 'font-size:13px;color:var(--text3);margin-bottom:16px;max-height:120px;overflow-y:auto;';
+  similar.slice(0, 5).forEach(m => {
+const item = document.createElement('div');
+item.style.cssText = 'padding:3px 0;';
+item.textContent = `• ${m.title}`;
+list.appendChild(item);
+  });
+  if (similar.length > 5) {
+const more = document.createElement('div');
+more.style.cssText = 'padding:3px 0;';
+more.textContent = `...og ${similar.length - 5} til`;
+list.appendChild(more);
+  }
+  box.appendChild(list);
+
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:10px;';
+
+  const yesBtn = document.createElement('button');
+  yesBtn.className = 'btn btn-skip-red';
+  yesBtn.style.cssText = 'flex:1;';
+  yesBtn.textContent = 'Merk alle som ikke relevante';
+
+  const noBtn = document.createElement('button');
+  noBtn.className = 'btn btn-skip';
+  noBtn.style.cssText = 'flex:0 0 auto;';
+  noBtn.textContent = 'Nei takk';
+
+  btnRow.appendChild(yesBtn);
+  btnRow.appendChild(noBtn);
+  box.appendChild(btnRow);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.remove();
+
+  yesBtn.addEventListener('click', async () => {
+close();
+const ids = similar.map(m => m.id);
+try {
   await apiFetch('/messages/bulk-status', { method: 'POST', body: JSON.stringify({ ids, status: 'skipped' }) });
   ids.forEach(sid => {
 const m = state.messages.find(x => x.id === sid);
@@ -327,10 +388,13 @@ if (m) {
   state.stats.skipped += ids.length;
   saveLocalStats();
   renderFeed(); updateBadge();
+} catch (e) {
+  console.error('Bulk-oppdatering feilet:', e);
 }
-  } catch (e) {
-console.error('Kunne ikke sjekke lignende meldinger:', e);
-  }
+  });
+
+  noBtn.addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
 
 async function markUnread(id) {
