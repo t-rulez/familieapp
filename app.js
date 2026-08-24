@@ -299,7 +299,38 @@ state.stats.skipped++;
 saveLocalStats();
 renderFeed(); updateBadge();
 await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'skipped' }) }).catch(console.error);
+checkSimilarMessages(id);
   });
+}
+
+async function checkSimilarMessages(id) {
+  // Etter at en melding er satt til 'ikke relevant': sjekk om det finnes
+  // lignende uleste meldinger (samme kilde/kategori) og tilby å merke dem likt.
+  try {
+const res = await apiFetch(`/messages/${id}/similar`);
+const similar = res.similar || [];
+if (!similar.length) return;
+const names = similar.slice(0, 3).map(m => `• ${m.title}`).join('\n');
+const more = similar.length > 3 ? `\n...og ${similar.length - 3} til` : '';
+const flertall = similar.length > 1;
+const confirmMsg = `Fant ${similar.length} lignende ulest${flertall ? 'e' : ''} melding${flertall ? 'er' : ''}:\n\n${names}${more}\n\nMerk disse også som ikke relevante?`;
+if (confirm(confirmMsg)) {
+  const ids = similar.map(m => m.id);
+  await apiFetch('/messages/bulk-status', { method: 'POST', body: JSON.stringify({ ids, status: 'skipped' }) });
+  ids.forEach(sid => {
+const m = state.messages.find(x => x.id === sid);
+if (m) {
+  if (m.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
+  m.status = 'skipped';
+}
+  });
+  state.stats.skipped += ids.length;
+  saveLocalStats();
+  renderFeed(); updateBadge();
+}
+  } catch (e) {
+console.error('Kunne ikke sjekke lignende meldinger:', e);
+  }
 }
 
 async function markUnread(id) {
