@@ -467,6 +467,14 @@
         </div>
         <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
         <div class="field-group" style="margin-bottom:16px;">
+          <label class="field-label">Lært kontekst</label>
+          <textarea id="set-learned-context" rows="5" class="settings-input"
+            placeholder="Ting AI-assistenten har lært fra samtaler med deg dukker opp her automatisk. Du kan også redigere direkte."
+            style="resize:vertical;line-height:1.5;"></textarea>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px;">Fylles ut automatisk når du gir assistenten instruksjoner i AI-chatten (f.eks. "ta alltid med turdager i oppsummeringer"). Du kan redigere eller slette linjer her når som helst.</div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:4px 0 16px;"/>
+        <div class="field-group" style="margin-bottom:16px;">
           <label class="field-label">Claude API-nøkkel</label>
           <input class="settings-input" type="password" id="set-claude-api-key" placeholder="sk-ant-api03-..."/>
           <div style="font-size:12px;color:var(--text3);margin-top:4px;">Din personlige Claude API-nøkkel fra <a href="https://console.anthropic.com" target="_blank" style="color:#185FA5;">console.anthropic.com</a>. Lagres kryptert.</div>
@@ -504,7 +512,7 @@
         <!-- Historisk henting -->
         <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;"/>
         <div class="field-label" style="margin-bottom:6px;">Hent historiske meldinger</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Alle meldinger fra de aktive kategoriene over hentes tilbake til satt dato (maks 3 mnd). Gjelder ikke WhatsApp.</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.5;">Alle meldinger fra de aktive kategoriene over hentes tilbake til satt dato (maks 3 mnd).</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
           <input type="date" id="set-history-from"
             style="padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;flex-shrink:0;width:150px;"/>
