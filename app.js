@@ -1254,8 +1254,14 @@ if (learned && learned.length > 3) {
   const settings = await apiFetch('/settings').catch(() => ({}));
   const existing = settings.ai_learned_context || '';
   if (!existing.includes(learned)) {
-const updated = existing ? `${existing}
+let updated = existing ? `${existing}
 ${learned}` : learned;
+    // Sikkerhetsnett mot ubegrenset vekst: behold kun de nyeste 40 linjene
+    // hvis listen blir for lang (eldre, mindre relevante linjer fjernes først)
+    const lines = updated.split('\n').filter(l => l.trim());
+    if (lines.length > 40) {
+      updated = lines.slice(lines.length - 40).join('\n');
+    }
 await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ ai_learned_context: updated }) });
   }
 }
