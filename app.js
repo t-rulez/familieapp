@@ -1238,10 +1238,20 @@ function toggleAiLength() {
   }
 }
 
+function getISOWeek(date) {
+  // Beregner ISO 8601-ukenummer – brukes til å matche Showbie-filer som
+  // "UKE 35 ...pdf", siden AI-søket ellers kun leter etter datoer.
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
 function sendAiShortcut(topic) {
   const lengthHint = aiLengthShort
-    ? ' Svar kort og konsist, maks 5-6 setninger.'
-    : ' Svar detaljert og utfyllende.';
+    ? ' Svar kort og konsist (maks 5-6 punkter totalt), men behold alltid ### overskrifter med emoji per seksjon.'
+    : ' Svar detaljert og utfyllende, med ### overskrifter og emoji per seksjon.';
   // Bruk lokal tid fra nettleseren for riktig dato
   const now = new Date();
   const days = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
@@ -1250,9 +1260,9 @@ function sendAiShortcut(topic) {
   const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
   const tomorrowStr = `${days[tomorrow.getDay()]} ${tomorrow.getDate()}. ${months[tomorrow.getMonth()]}`;
   const prompts = {
-    'i dag': `Hva skjer i dag (${todayStr})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.` + lengthHint,
-    'i morgen': `Hva skjer i morgen (${tomorrowStr})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.` + lengthHint,
-    'neste 5 dager': `Hva skjer de neste 5 dagene fra ${todayStr}? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.` + lengthHint,
+    'i dag': `Hva skjer i dag (${todayStr}, uke ${getISOWeek(now)})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag, inkludert eventuell ukeplan fra skolen.` + lengthHint,
+    'i morgen': `Hva skjer i morgen (${tomorrowStr}, uke ${getISOWeek(tomorrow)})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen, inkludert eventuell ukeplan fra skolen.` + lengthHint,
+    'neste 5 dager': `Hva skjer de neste 5 dagene fra ${todayStr} (uke ${getISOWeek(now)})? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting, inkludert eventuell ukeplan fra skolen.` + lengthHint,
     'skoleuke': (() => {
       const dayNum = now.getDay(); // 0=søndag, 6=lørdag
       const isWeekend = dayNum === 0 || dayNum === 6;
@@ -1270,7 +1280,8 @@ function sendAiShortcut(topic) {
       const mondayStr = `${days[monday.getDay()]} ${monday.getDate()}. ${months[monday.getMonth()]}`;
       const fridayStr = `${days[friday.getDay()]} ${friday.getDate()}. ${months[friday.getMonth()]}`;
       const weekLabel = isWeekend ? 'kommende skoleuke' : 'inneværende skoleuke';
-      return `Gi meg en oversikt over viktige skoleaktiviteter i ${weekLabel} (${mondayStr} – ${fridayStr}): lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine. Organiser per dag.` + lengthHint;
+      const weekNum = getISOWeek(monday);
+      return `Gi meg en oversikt over viktige skoleaktiviteter i ${weekLabel}, uke ${weekNum} (${mondayStr} – ${fridayStr}): lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine, basert på ukeplan uke ${weekNum} fra Showbie/skolen. Organiser per dag.` + lengthHint;
     })(),
   };
   const input = document.getElementById('ai-input');
@@ -1306,8 +1317,8 @@ const autoContext = settings.ai_learned_context || '';
 
 
     const lengthInstruction = aiLengthShort
-      ? ' Svar kort og konsist, maks 5-6 setninger.'
-      : ' Svar detaljert og utfyllende.';
+      ? ' Svar kort og konsist (maks 5-6 punkter totalt), men behold alltid ### overskrifter med emoji per seksjon.'
+      : ' Svar detaljert og utfyllende, med ### overskrifter og emoji per seksjon.';
     const questionWithLength = question.endsWith(lengthInstruction.trim()) ? question : question + lengthInstruction;
 
     const data = await apiFetch('/ai/chat', {
