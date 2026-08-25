@@ -936,9 +936,17 @@ async function initApp() {
   initPullToRefresh();
   const user = getUser();
   if (!user) { showLogin(); return; }
-  // Auto-registrer push hvis tillatelse allerede er gitt
+  // Auto-registrer push KUN hvis brukeren faktisk har minst én varsel-type
+  // skrudd på i innstillingene – ikke bare fordi nettleseren en gang har gitt
+  // tillatelse (tillatelsen forblir 'granted' selv etter at brukeren har
+  // skrudd av varsler i appen, så den sjekken alene førte til at push slo
+  // seg på igjen av seg selv ved neste app-åpning).
   if ('Notification' in window && Notification.permission === 'granted') {
-subscribeToPush().catch(() => {});
+    try {
+      const s = await apiFetch('/settings').catch(() => ({}));
+      const wantsPush = s.new_messages_push_enabled !== false || !!s.evening_summary_enabled;
+      if (wantsPush) subscribeToPush().catch(() => {});
+    } catch (e) {}
   }
   const nameEl = document.getElementById('user-display-name');
   if (nameEl) nameEl.textContent = user.display_name;
@@ -1692,45 +1700,49 @@ try {
   hasSubscription = !!sub;
 } catch(e) {}
 const isActive = perm === 'granted' && hasSubscription;
-const statusText = isActive ? '✓ Push-varsler er aktivert' : '○ Push-varsler er ikke aktivert';
+
+const settings = await apiFetch('/settings').catch(() => ({}));
+const newMsgEnabled = settings.new_messages_push_enabled !== false; // default på
+const eveningEnabled = !!settings.evening_summary_enabled;
+const eveningTime = settings.evening_summary_time || '20:00';
+
+const statusText = isActive ? '✓ Varsler er klare til å sendes' : '○ Trenger tillatelse fra nettleseren';
 const statusColor = isActive ? 'var(--green, #2D6A4F)' : 'var(--text3)';
-const btnStyle = 'display:block;width:100%;color:var(--text);font-size:15px;margin-top:10px;';
+
 pushSection.innerHTML = `
   <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
-  <div style="font-size:13px;color:${statusColor};margin-bottom:4px;">${statusText}</div>
-  <button class="btn-secondary" id="btn-toggle-push" onclick="togglePush()" style="${btnStyle}">
-    ${isActive ? 'Skru av push-varsler' : 'Skru på push-varsler'}
-  </button>
-  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
+  <div style="font-size:13px;color:${statusColor};margin-bottom:10px;">${statusText}</div>
+  ${!isActive ? `<button class="btn-secondary" id="btn-toggle-push" onclick="requestPushPermission().then(() => initPushSettings())" style="display:block;width:100%;color:var(--text);font-size:15px;margin-bottom:10px;">Gi tillatelse til push-varsler</button>` : ''}
+  <div class="row-with-toggle" style="margin-top:4px;">
+    <div>
+      <div style="font-size:14px;color:var(--text);">Nye meldinger</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:2px;">Varsel når nye meldinger synkes inn</div>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="new-messages-toggle" ${newMsgEnabled ? 'checked' : ''} onchange="saveNewMessagesPush(this.checked)">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="row-with-toggle" style="margin-top:12px;">
+    <div>
+      <div style="font-size:14px;color:var(--text);">Kveldsvarsel</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+    <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
+    <select id="evening-summary-time"
+      style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
+      onchange="saveEveningSummaryTime(this.value)">
+      ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
+    </select>
+  </div>
+  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:14px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
   <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
-
-  if (isActive) {
-    const settings = await apiFetch('/settings').catch(() => ({}));
-    const eveningEnabled = !!settings.evening_summary_enabled;
-    const eveningTime = settings.evening_summary_time || '20:00';
-    const eveningDiv = document.createElement('div');
-    eveningDiv.style.cssText = 'margin-top:12px;';
-    eveningDiv.innerHTML = `
-      <div class="row-with-toggle" style="margin-top:4px;">
-        <div>
-          <div style="font-size:14px;color:var(--text);">Kveldsvarsel</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
-        <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
-        <select id="evening-summary-time"
-          style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
-          onchange="saveEveningSummaryTime(this.value)">
-          ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
-        </select>
-      </div>`;
-    pushSection.appendChild(eveningDiv);
-  }
   }
 
   // Plasser push-seksjonen inne i Annet-accordion
@@ -1751,60 +1763,77 @@ async function saveEveningSummaryTime(time) {
   }
 }
 
-async function saveEveningSummary(enabled) {
-  try {
-    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_enabled: enabled }) });
-  } catch(e) {
-    console.error('Kunne ikke lagre kveldsvarsel-innstilling:', e);
-  }
-}
-
-async function enablePush() { await togglePush(); }
-async function resetPush() { await togglePush(); }
-
-async function togglePush() {
-  const statusEl = document.getElementById('push-status');
-  const btn = document.getElementById('btn-toggle-push');
-
-  // Sjekk nåværende status
+// Sikrer at det finnes et aktivt push-abonnement (nødvendig for at NOEN
+// varsel-type i det hele tatt skal kunne leveres). Kalles når en av de to
+// bryterne (nye meldinger / kveldsvarsel) skrus PÅ.
+async function ensurePushSubscription() {
   let hasSubscription = false;
   try {
     const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.getSubscription();
     hasSubscription = !!sub;
   } catch(e) {}
-  const isActive = Notification.permission === 'granted' && hasSubscription;
+  if (hasSubscription && Notification.permission === 'granted') return true;
+  return await requestPushPermission();
+}
 
-  if (isActive) {
-    // Skru AV
-    if (btn) { btn.disabled = true; btn.textContent = 'Skrur av...'; }
-    try {
-      await apiFetch('/push/all', { method: 'DELETE' });
+// Fjerner selve push-abonnementet helt, men KUN hvis begge varsel-typer nå
+// er skrudd av – ellers ville vi fjernet grunnlaget for den som fortsatt
+// skal være på.
+async function maybeDisablePushEntirely() {
+  try {
+    const settings = await apiFetch('/settings').catch(() => ({}));
+    const newMsgOff = settings.new_messages_push_enabled === false;
+    const eveningOff = !settings.evening_summary_enabled;
+    if (newMsgOff && eveningOff) {
+      await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
       if (sub) await sub.unsubscribe();
-      if (statusEl) statusEl.textContent = 'Push-varsler er skrudd av';
-      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
-    } catch(e) {
-      if (statusEl) statusEl.textContent = `Feil: ${e.message}`;
-      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
     }
-  } else {
-    // Skru PÅ
-    if (btn) { btn.disabled = true; btn.textContent = 'Aktiverer...'; }
-    await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
-    const ok = await requestPushPermission();
-    if (ok) {
-      if (statusEl) statusEl.textContent = '✓ Push-varsler aktivert!';
-      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
-    } else {
-      if (statusEl) statusEl.textContent = 'Kunne ikke aktivere push-varsler';
-      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
-    }
+  } catch (e) {
+    console.error('Kunne ikke rydde opp push-abonnement:', e);
   }
-  // Refresh push-seksjonen for å vise oppdatert status
-  setTimeout(() => initPushSettings(), 500);
 }
+
+async function saveNewMessagesPush(enabled) {
+  const statusEl = document.getElementById('push-status');
+  try {
+    if (enabled) {
+      const ok = await ensurePushSubscription();
+      if (!ok) {
+        if (statusEl) statusEl.textContent = 'Kunne ikke aktivere – sjekk nettleser-tillatelse';
+        setTimeout(() => initPushSettings(), 500);
+        return;
+      }
+    }
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ new_messages_push_enabled: enabled }) });
+    if (!enabled) await maybeDisablePushEntirely();
+  } catch(e) {
+    console.error('Kunne ikke lagre innstilling for nye meldinger:', e);
+  }
+  setTimeout(() => initPushSettings(), 300);
+}
+
+async function saveEveningSummary(enabled) {
+  const statusEl = document.getElementById('push-status');
+  try {
+    if (enabled) {
+      const ok = await ensurePushSubscription();
+      if (!ok) {
+        if (statusEl) statusEl.textContent = 'Kunne ikke aktivere – sjekk nettleser-tillatelse';
+        setTimeout(() => initPushSettings(), 500);
+        return;
+      }
+    }
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_enabled: enabled }) });
+    if (!enabled) await maybeDisablePushEntirely();
+  } catch(e) {
+    console.error('Kunne ikke lagre kveldsvarsel-innstilling:', e);
+  }
+  setTimeout(() => initPushSettings(), 300);
+}
+
 
 async function testPush() {
   const statusEl = document.getElementById('push-status');
