@@ -106,9 +106,24 @@ function extractTimeKey(text) {
   return `${m[1].padStart(2, '0')}:${m[2]}`;
 }
 
-// Bygger underrader for én dag: én rad per unikt klokkeslett som finnes hos minst
-// én person, pluss én rad til slutt for stikkord uten kjent tidspunkt. Personer uten
-// noe på det tidspunktet får en tom celle, slik at samme klokkeslett står på linje.
+function timeToMinutes(timeKey) {
+  if (!timeKey) return null;
+  const [h, m] = timeKey.split(':').map(Number);
+  return h * 60 + m;
+}
+
+const ALIGN_BUCKET_MIN = 30; // "omtrent likt klokkeslett" = samme halvtimes-bøtte
+
+function bucketOf(timeKey) {
+  const mins = timeToMinutes(timeKey);
+  if (mins === null) return null;
+  return Math.floor(mins / ALIGN_BUCKET_MIN) * ALIGN_BUCKET_MIN;
+}
+
+// Bygger underrader for én dag: én rad for hver halvtimes-bøtte som faktisk deles av
+// 2+ personer (slik at omtrent like klokkeslett - f.eks 17:00 og 17:15 - alignes
+// horisontalt), pluss én "rest"-rad til slutt for alt annet (unike tidspunkt og
+// stikkord uten kjent tid). Stikkordene er alltid sortert kronologisk i hver celle.
 function buildDayRows(day) {
   const entries = [];
   for (const p of PEOPLE) {
@@ -119,23 +134,31 @@ function buildDayRows(day) {
     return [{ cells: Object.fromEntries(PEOPLE.map(p => [p, []])) }];
   }
 
-  // Finn kun klokkeslett som faktisk deles av 2 eller flere personer samme dag -
-  // det er KUN disse som skal få sin egen alignede rad. Alt annet (unike
-  // tidspunkt eller uten tidspunkt) samles i én vanlig rad per dag, som før.
-  const peopleByTime = {};
+  // Sorter kronologisk (kjente tidspunkt stigende, deretter stikkord uten tid).
+  entries.sort((a, b) => {
+    const ta = timeToMinutes(a.timeKey), tb = timeToMinutes(b.timeKey);
+    if (ta === null && tb === null) return 0;
+    if (ta === null) return 1;
+    if (tb === null) return -1;
+    return ta - tb;
+  });
+
+  const peopleByBucket = {};
   for (const e of entries) {
-    if (!e.timeKey) continue;
-    (peopleByTime[e.timeKey] ||= new Set()).add(e.person);
+    const b = bucketOf(e.timeKey);
+    if (b === null) continue;
+    (peopleByBucket[b] ||= new Set()).add(e.person);
   }
-  const sharedTimes = Object.keys(peopleByTime)
-    .filter(tk => peopleByTime[tk].size >= 2)
-    .sort();
+  const sharedBuckets = Object.keys(peopleByBucket)
+    .map(Number)
+    .filter(b => peopleByBucket[b].size >= 2)
+    .sort((a, b) => a - b);
 
   const rows = [];
-  for (const tk of sharedTimes) {
+  for (const bucket of sharedBuckets) {
     const cells = Object.fromEntries(PEOPLE.map(p => [p, []]));
     for (const e of entries) {
-      if (e.timeKey === tk) cells[e.person].push(e.text);
+      if (bucketOf(e.timeKey) === bucket) cells[e.person].push(e.text);
     }
     rows.push({ cells });
   }
@@ -143,7 +166,8 @@ function buildDayRows(day) {
   const restCells = Object.fromEntries(PEOPLE.map(p => [p, []]));
   let hasRest = false;
   for (const e of entries) {
-    if (sharedTimes.includes(e.timeKey)) continue;
+    const b = bucketOf(e.timeKey);
+    if (b !== null && sharedBuckets.includes(b)) continue;
     restCells[e.person].push(e.text);
     hasRest = true;
   }
@@ -151,6 +175,16 @@ function buildDayRows(day) {
     rows.push({ cells: restCells });
   }
   return rows;
+}
+
+// Sant hvis personen kun har ÉN aktivitet denne dagen totalt (uansett hvilken rad den
+// havner i), og den er på kveldstid (fra kl 18) - da skal den plasseres nederst i
+// cellen i stedet for øverst, siden cellen nå har mye ledig høyde å spille på.
+function isSingleEveningItem(day, p) {
+  const items = (day.people && day.people[p]) || [];
+  if (items.length !== 1) return false;
+  const mins = timeToMinutes(extractTimeKey(items[0]));
+  return mins !== null && mins >= 18 * 60;
 }
 
 function renderTable(data) {
@@ -190,7 +224,10 @@ function renderTable(data) {
         if (!items || items.length === 0) {
           html += '<span class="empty-cell">–</span>';
         } else {
-          html += items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
+          const pushBottom = isSingleEveningItem(day, p) ? ' push-bottom' : '';
+          html += `<div class="cell-inner${pushBottom}">` +
+            items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('') +
+            '</div>';
         }
         html += '</td>';
       }
@@ -205,10 +242,11 @@ function renderTable(data) {
 
 // Fordeler ledig plass i #table-wrap jevnt per DAG (ikke per rad), slik at hver
 // dag utgjør en fast andel (1/7) av skjermen og ukesoversikten til sammen fyller
-// 100% av høyden - uansett om en dag har én eller flere underrader. Legger bare
-// til ekstra padding-bottom (aldri mindre enn det CSS allerede setter), så vi
-// risikerer aldri å klippe innhold - en veldig innholdsrik uke får da bare
-// litt mindre "luft" i tillegg, i stedet for å bli presset sammen.
+// 100% av høyden - uansett om en dag har én eller flere underrader. Ekstra plass
+// settes som en eksplisitt HØYDE på <tr> (ikke padding), slik at innholdet i hver
+// celle (.cell-inner, height:100%) faktisk får den ekstra plassen å jobbe med -
+// det er det som gjør at "push-bottom" (kveldsaktivitet nederst i cellen) virker.
+// En veldig innholdsrik uke strekkes ikke, men presses heller aldri sammen.
 function distributeExtraHeight() {
   const wrap = document.getElementById('table-wrap');
   const table = wrap.querySelector('table');
@@ -217,15 +255,19 @@ function distributeExtraHeight() {
   const tbody = table.querySelector('tbody');
   if (!thead || !tbody) return;
 
-  const cells = Array.from(tbody.querySelectorAll('td'));
-  cells.forEach(td => { td.style.paddingBottom = ''; }); // nullstill fra forrige måling/visning
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.forEach(tr => {
+    tr.style.height = '';
+    Array.from(tr.children).forEach(td => { td.style.height = ''; });
+  }); // nullstill fra forrige måling/visning
 
   const available = wrap.clientHeight;
-  const used = thead.getBoundingClientRect().height + tbody.getBoundingClientRect().height;
-  const extra = available - used;
+  const theadHeight = thead.getBoundingClientRect().height;
+  const bodyAvailable = available - theadHeight;
+  const naturalBodyHeight = tbody.getBoundingClientRect().height;
+  const extra = bodyAvailable - naturalBodyHeight;
   if (extra <= 0) return; // uken er for innholdsrik til å strekkes - la den heller gå marginalt over
 
-  const rows = Array.from(tbody.querySelectorAll('tr'));
   const groups = [];
   let current = null;
   rows.forEach(tr => {
@@ -241,10 +283,13 @@ function distributeExtraHeight() {
   groups.forEach(groupRows => {
     const extraPerRow = extraPerDay / groupRows.length;
     groupRows.forEach(tr => {
-      Array.from(tr.children).forEach(td => {
-        const basePb = parseFloat(window.getComputedStyle(td).paddingBottom) || 0;
-        td.style.paddingBottom = `${basePb + extraPerRow}px`;
-      });
+      const natural = tr.getBoundingClientRect().height;
+      const h = `${natural + extraPerRow}px`;
+      tr.style.height = h;
+      // Prosent-høyde (.cell-inner{height:100%}) løses kun hvis høyden står direkte
+      // på <td> selv - en høyde satt kun på <tr> regnes ikke som "eksplisitt" av
+      // nettleseren for dette formålet, selv om cellen faktisk tegnes like høy.
+      Array.from(tr.children).forEach(td => { td.style.height = h; });
     });
   });
 }

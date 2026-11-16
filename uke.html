@@ -54,12 +54,12 @@
     #table-wrap{flex:1;min-height:0}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px}
     .week-nav{display:flex;align-items:center;gap:8px}
-    .week-nav button.nav-arrow{width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
+    .week-nav button.nav-arrow{width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
     .week-nav button.nav-arrow:disabled{opacity:0.3;cursor:default}
     .week-title-block{display:flex;align-items:baseline;gap:8px}
-    .week-title-block h1{font-size:18px;font-weight:600;letter-spacing:-0.3px;white-space:nowrap}
-    .week-title-block .sub{font-size:12.5px;color:var(--text2);white-space:nowrap}
-    .btn-refresh{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:12px;cursor:pointer}
+    .week-title-block h1{font-size:20px;font-weight:600;letter-spacing:-0.3px;white-space:nowrap}
+    .week-title-block .sub{font-size:14.5px;color:var(--text2);white-space:nowrap}
+    .btn-refresh{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;cursor:pointer}
     .btn-refresh:active{opacity:0.7}
     .btn-refresh:disabled{opacity:0.5;cursor:default}
 
@@ -67,20 +67,22 @@
     th,td{padding:4px 10px;text-align:left;vertical-align:top}
     th{background:var(--surface);padding-top:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
     .person-head{display:flex;align-items:center;gap:5px}
-    .person-head svg{width:18px;height:18px;flex-shrink:0}
-    .person-head .name{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
+    .person-head svg{width:20px;height:20px;flex-shrink:0}
+    .person-head .name{font-size:13.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
     th.col-rasmus .name{color:var(--p-rasmus)}
     th.col-gustav .name{color:var(--p-gustav)}
     th.col-kristin .name{color:var(--p-kristin)}
     th.col-truls .name{color:var(--p-truls)}
-    td.day-col{width:95px;font-weight:600;font-size:12.5px;background:var(--surface) !important;white-space:nowrap}
-    td.day-col .date{font-size:11px;color:var(--text3);font-weight:400;margin-left:4px}
+    td.day-col{width:95px;font-weight:600;font-size:14.5px;background:var(--surface) !important;white-space:nowrap}
+    td.day-col .date{font-size:13px;color:var(--text3);font-weight:400;margin-left:4px}
     tr.today td.day-col{border-left:3px solid var(--today-border)}
     tr.day-start td{border-top:1px solid var(--border2)}
     tr.day-start:first-child td{border-top:none}
-    .item{font-size:12px;line-height:1.3}
+    .cell-inner{display:flex;flex-direction:column;height:100%}
+    .cell-inner.push-bottom{justify-content:flex-end}
+    .item{font-size:14px;line-height:1.3}
     .item+.item{margin-top:0}
-    .empty-cell{color:var(--text3);font-size:12px}
+    .empty-cell{color:var(--text3);font-size:14px}
 
     td.col-rasmus{background:var(--p-rasmus-tint)}
     td.col-gustav{background:var(--p-gustav-tint)}
@@ -96,17 +98,17 @@
     @media (orientation:landscape) and (min-width:700px){
       #screen-app{padding:12px 20px}
       header{margin-bottom:8px}
-      .week-nav button.nav-arrow{width:22px;height:22px;font-size:12px}
-      .week-title-block h1{font-size:16px}
-      .week-title-block .sub{font-size:11.5px}
-      .btn-refresh{padding:5px 11px;font-size:11px}
+      .week-nav button.nav-arrow{width:22px;height:22px;font-size:14px}
+      .week-title-block h1{font-size:18px}
+      .week-title-block .sub{font-size:13.5px}
+      .btn-refresh{padding:5px 11px;font-size:13px}
       th,td{padding:3px 9px}
       th{padding-top:6px;padding-bottom:5px}
-      .person-head svg{width:16px;height:16px}
-      .person-head .name{font-size:10.5px}
-      td.day-col{width:85px;font-size:11.5px}
-      td.day-col .date{font-size:10px}
-      .item,.empty-cell{font-size:11px;line-height:1.2}
+      .person-head svg{width:18px;height:18px}
+      .person-head .name{font-size:12.5px}
+      td.day-col{width:85px;font-size:13.5px}
+      td.day-col .date{font-size:12px}
+      .item,.empty-cell{font-size:13px;line-height:1.2}
     }
 
     @media (max-width:620px){
