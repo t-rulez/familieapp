@@ -243,7 +243,7 @@ function renderTable(data) {
       const classes = [day.is_today ? 'today' : '', idx === 0 ? 'day-start' : ''].filter(Boolean).join(' ');
       html += `<tr class="${classes}">`;
       if (idx === 0) {
-        html += `<td class="day-col">${capitalize(day.day)}<span class="date">${dateLabel}</span></td>`;
+        html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span></td>`;
       } else {
         html += `<td class="day-col sub"></td>`;
       }
@@ -339,6 +339,11 @@ if (document.fonts && document.fonts.ready) {
 }
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+// Korte dagnavn (3 bokstaver) - dag-kolonnen er smal, og fulle navn som "Torsdag"
+// brytes da stygt midt i ordet uten bindestrek.
+const DAY_SHORT = { mandag:'Man', tirsdag:'Tir', onsdag:'Ons', torsdag:'Tor', fredag:'Fre', lørdag:'Lør', søndag:'Søn' };
+function shortDay(s) { return DAY_SHORT[(s || '').toLowerCase()] || capitalize(s); }
 function escapeHtml(s) {
   const div = document.createElement('div');
   div.textContent = s;

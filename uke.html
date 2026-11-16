@@ -67,14 +67,16 @@
     th,td{padding:4px 10px;text-align:left;vertical-align:top}
     th{background:var(--surface);padding-top:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
     .person-head{display:flex;align-items:center;gap:6px}
-    .person-head svg{width:23px;height:23px;flex-shrink:0}
+    .person-head svg{width:34.5px;height:34.5px;flex-shrink:0}
     .person-head .name{font-size:17px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
     th.col-rasmus .name{color:var(--p-rasmus)}
     th.col-gustav .name{color:var(--p-gustav)}
     th.col-kristin .name{color:var(--p-kristin)}
     th.col-truls .name{color:var(--p-truls)}
-    td.day-col{width:66px;font-weight:600;font-size:14.5px;background:var(--surface) !important}
-    td.day-col .date{display:block;font-size:13px;color:var(--text3);font-weight:400;margin-left:0}
+    th:first-child,td.day-col{width:33px}
+    th:first-child{padding-left:4px;padding-right:2px}
+    td.day-col{padding-left:4px;padding-right:2px;font-weight:600;font-size:12px;background:var(--surface) !important;white-space:nowrap}
+    td.day-col .date{display:block;font-size:10px;color:var(--text3);font-weight:400;margin-left:0}
     tr.today td.day-col{border-left:3px solid var(--today-border)}
     tr.day-start td{border-top:1px solid var(--border2)}
     tr.day-start:first-child td{border-top:none}
@@ -107,10 +109,11 @@
       .btn-refresh{padding:5px 11px;font-size:13px}
       th,td{padding:3px 9px}
       th{padding-top:6px;padding-bottom:5px}
-      .person-head svg{width:20px;height:20px}
+      .person-head svg{width:30px;height:30px}
       .person-head .name{font-size:15px}
-      td.day-col{width:58px;font-size:13px}
-      td.day-col .date{font-size:11.5px}
+      th:first-child,td.day-col{width:29px}
+      td.day-col{font-size:10.5px}
+      td.day-col .date{font-size:8.5px}
       .item,.empty-cell{font-size:13px;line-height:1.2}
       .skole-item{font-size:10px}
     }
