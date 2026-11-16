@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/uke", "destination": "/uke.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
