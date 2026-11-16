@@ -202,14 +202,17 @@ function buildDayRows(day) {
   return rows;
 }
 
-// Sant hvis personen kun har ÉN aktivitet denne dagen totalt (uansett hvilken rad den
-// havner i), og den er på kveldstid (fra kl 18) - da skal den plasseres nederst i
-// cellen i stedet for øverst, siden cellen nå har mye ledig høyde å spille på.
-function isSingleEveningItem(day, p) {
-  const items = annetOf(day, p);
-  if (items.length !== 1) return false;
-  const mins = timeToMinutes(extractTimeKey(items[0]));
-  return mins !== null && mins >= 18 * 60;
+// Sant hvis aktivitetene i DENNE raden/cellen starter kl 16 eller senere - da skal de
+// plasseres nederst i cellen i stedet for øverst, som en enkel visuell indikasjon på at
+// det er en sen aktivitet (cellen har ledig høyde å spille på pga distributeExtraHeight).
+// Går på det tidligste kjente klokkeslettet blant stikkordene i raden - gjelder uansett
+// om det er ett eller flere stikkord. Stikkord uten kjent tid teller ikke med i vurderingen;
+// hvis INGEN av stikkordene har kjent tid, pushes de ikke (vi vet ikke om det er sent).
+function shouldPushBottom(items) {
+  if (!items || items.length === 0) return false;
+  const mins = items.map(t => timeToMinutes(extractTimeKey(t))).filter(m => m !== null);
+  if (mins.length === 0) return false;
+  return Math.min(...mins) >= 16 * 60;
 }
 
 function renderTable(data) {
@@ -254,7 +257,7 @@ function renderTable(data) {
         const skoleHtml = skoleItems.length
           ? `<div class="skole-items">${skoleItems.map(i => `<div class="skole-item">${escapeHtml(i)}</div>`).join('')}</div>`
           : '';
-        const pushBottom = isSingleEveningItem(day, p) ? ' push-bottom' : '';
+        const pushBottom = shouldPushBottom(items) ? ' push-bottom' : '';
         const contentHtml = (!items || items.length === 0)
           ? '<span class="empty-cell">–</span>'
           : items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
