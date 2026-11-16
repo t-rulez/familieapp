@@ -99,11 +99,19 @@ document.getElementById('btn-login').addEventListener('click', async () => {
 });
 
 // Henter ut klokkeslett (HH:MM) fra et stikkord, f.eks "⚽ 18:00 Fotball" -> "18:00".
-// Brukes til å justere aktiviteter på samme tidspunkt horisontalt på tvers av personer.
+// Brukes til sortering og til å justere aktiviteter på samme tidspunkt horisontalt på
+// tvers av personer. Formatet skal være "<emoji> <HH:MM> <aktivitet>", så vi leter kun
+// i starten av teksten (rett etter emojien) - ellers kan vi plukke opp et tilfeldig
+// klokkeslett-lignende tall lenger ute i selve aktivitetsteksten (varighet, resultat
+// e.l.), som er roten til at sorteringen innimellom har virket "tilfeldig". Godtar
+// både kolon og punktum som skilletegn, samt "kl 19" uten minutter.
 function extractTimeKey(text) {
-  const m = text.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
-  if (!m) return null;
-  return `${m[1].padStart(2, '0')}:${m[2]}`;
+  const head = (text || '').slice(0, 14);
+  let m = head.match(/([01]?\d|2[0-3])[:.]([0-5]\d)/);
+  if (m) return `${m[1].padStart(2, '0')}:${m[2]}`;
+  m = head.match(/\bkl\.?\s*([01]?\d|2[0-3])\b(?!\s*[:.]\d)/i);
+  if (m) return `${m[1].padStart(2, '0')}:00`;
+  return null;
 }
 
 function timeToMinutes(timeKey) {
@@ -120,14 +128,31 @@ function bucketOf(timeKey) {
   return Math.floor(mins / ALIGN_BUCKET_MIN) * ALIGN_BUCKET_MIN;
 }
 
+// Henter "annet"-listen (fritid/avtaler, ikke skole) for én person/dag - trygt mot
+// både ny ({skole,annet}) og eventuell gammel (flat liste) datastruktur fra backend.
+function annetOf(day, p) {
+  const entry = day.people && day.people[p];
+  if (!entry) return [];
+  if (Array.isArray(entry)) return entry; // gammelt format
+  return Array.isArray(entry.annet) ? entry.annet : [];
+}
+
+function skoleOf(day, p) {
+  const entry = day.people && day.people[p];
+  if (!entry || Array.isArray(entry)) return [];
+  return Array.isArray(entry.skole) ? entry.skole : [];
+}
+
 // Bygger underrader for én dag: én rad for hver halvtimes-bøtte som faktisk deles av
 // 2+ personer (slik at omtrent like klokkeslett - f.eks 17:00 og 17:15 - alignes
 // horisontalt), pluss én "rest"-rad til slutt for alt annet (unike tidspunkt og
 // stikkord uten kjent tid). Stikkordene er alltid sortert kronologisk i hver celle.
+// Merk: kun "annet" (fritid/avtaler) går gjennom denne logikken - "skole" vises for
+// seg selv øverst i cellen, uavhengig av rad-oppdelingen her.
 function buildDayRows(day) {
   const entries = [];
   for (const p of PEOPLE) {
-    const items = (day.people && day.people[p]) || [];
+    const items = annetOf(day, p);
     for (const text of items) entries.push({ person: p, text, timeKey: extractTimeKey(text) });
   }
   if (entries.length === 0) {
@@ -181,7 +206,7 @@ function buildDayRows(day) {
 // havner i), og den er på kveldstid (fra kl 18) - da skal den plasseres nederst i
 // cellen i stedet for øverst, siden cellen nå har mye ledig høyde å spille på.
 function isSingleEveningItem(day, p) {
-  const items = (day.people && day.people[p]) || [];
+  const items = annetOf(day, p);
   if (items.length !== 1) return false;
   const mins = timeToMinutes(extractTimeKey(items[0]));
   return mins !== null && mins >= 18 * 60;
@@ -195,7 +220,8 @@ function renderTable(data) {
   const end = new Date(data.week_end);
   const fmt = d => d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
   titleEl.textContent = weekOffset === 0 ? 'Denne uken' : 'Neste uke';
-  subEl.textContent = `${fmt(start)} – ${fmt(end)}`;
+  const weekNrSuffix = data.week_number ? ` (uke ${data.week_number})` : '';
+  subEl.textContent = `${fmt(start)} – ${fmt(end)}${weekNrSuffix}`;
 
   document.getElementById('btn-prev-week').disabled = (weekOffset <= 0);
   document.getElementById('btn-next-week').disabled = (weekOffset >= 1);
@@ -220,16 +246,21 @@ function renderTable(data) {
       }
       for (const p of PEOPLE) {
         const items = row.cells[p];
-        html += `<td class="col-${p.toLowerCase()}" data-person="${p}">`;
-        if (!items || items.length === 0) {
-          html += '<span class="empty-cell">–</span>';
-        } else {
-          const pushBottom = isSingleEveningItem(day, p) ? ' push-bottom' : '';
-          html += `<div class="cell-inner${pushBottom}">` +
-            items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('') +
-            '</div>';
-        }
-        html += '</td>';
+        // Skole vises kun i dagens FØRSTE rad (ikke gjentatt på hver underrad av dagen),
+        // som en egen, liten, grå/kursiv blokk øverst - adskilt fra fritid/avtaler. Resten
+        // av cellen (.content) tar all gjenværende plass, slik at push-bottom fortsatt
+        // virker riktig selv når det også står et skole-stikkord over.
+        const skoleItems = idx === 0 ? skoleOf(day, p) : [];
+        const skoleHtml = skoleItems.length
+          ? `<div class="skole-items">${skoleItems.map(i => `<div class="skole-item">${escapeHtml(i)}</div>`).join('')}</div>`
+          : '';
+        const pushBottom = isSingleEveningItem(day, p) ? ' push-bottom' : '';
+        const contentHtml = (!items || items.length === 0)
+          ? '<span class="empty-cell">–</span>'
+          : items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
+        html += `<td class="col-${p.toLowerCase()}" data-person="${p}">` +
+          `<div class="td-inner">${skoleHtml}<div class="content${pushBottom}">${contentHtml}</div></div>` +
+          '</td>';
       }
       html += '</tr>';
     });
