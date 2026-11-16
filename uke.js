@@ -4,7 +4,7 @@
 
 const API_URL = localStorage.getItem('api_url') || 'https://familieapp-backend.up.railway.app';
 
-const PEOPLE = ['Rasmus', 'Gustav', 'Kristin', 'Truls'];
+const PEOPLE = ['Gustav', 'Rasmus', 'Kristin', 'Truls'];
 
 // Enkle, stiliserte avatar-ikoner (ikke bilder av de faktiske personene) –
 // farge/kjennetegn gjenkjennelige: Rasmus=bøttehatt, Gustav=caps,
@@ -98,6 +98,38 @@ document.getElementById('btn-login').addEventListener('click', async () => {
   }
 });
 
+// Henter ut klokkeslett (HH:MM) fra et stikkord, f.eks "⚽ 18:00 Fotball" -> "18:00".
+// Brukes til å justere aktiviteter på samme tidspunkt horisontalt på tvers av personer.
+function extractTimeKey(text) {
+  const m = text.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
+  if (!m) return null;
+  return `${m[1].padStart(2, '0')}:${m[2]}`;
+}
+
+// Bygger underrader for én dag: én rad per unikt klokkeslett som finnes hos minst
+// én person, pluss én rad til slutt for stikkord uten kjent tidspunkt. Personer uten
+// noe på det tidspunktet får en tom celle, slik at samme klokkeslett står på linje.
+function buildDayRows(day) {
+  const entries = [];
+  for (const p of PEOPLE) {
+    const items = (day.people && day.people[p]) || [];
+    for (const text of items) entries.push({ person: p, text, timeKey: extractTimeKey(text) });
+  }
+  if (entries.length === 0) {
+    return [{ cells: Object.fromEntries(PEOPLE.map(p => [p, []])) }];
+  }
+  const timeKeys = [...new Set(entries.filter(e => e.timeKey).map(e => e.timeKey))].sort();
+  const hasUntimed = entries.some(e => !e.timeKey);
+  const orderedKeys = hasUntimed ? [...timeKeys, null] : timeKeys;
+  return orderedKeys.map(tk => {
+    const cells = Object.fromEntries(PEOPLE.map(p => [p, []]));
+    for (const e of entries) {
+      if (e.timeKey === tk) cells[e.person].push(e.text);
+    }
+    return { cells };
+  });
+}
+
 function renderTable(data) {
   const titleEl = document.getElementById('week-title');
   const subEl = document.getElementById('week-sub');
@@ -120,19 +152,27 @@ function renderTable(data) {
   for (const day of data.days) {
     const d = new Date(day.date);
     const dateLabel = d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
-    html += `<tr class="${day.is_today ? 'today' : ''}">`;
-    html += `<td class="day-col">${capitalize(day.day)}<span class="date">${dateLabel}</span></td>`;
-    for (const p of PEOPLE) {
-      const items = (day.people && day.people[p]) || [];
-      html += `<td class="col-${p.toLowerCase()}" data-person="${p}">`;
-      if (items.length === 0) {
-        html += '<span class="empty-cell">–</span>';
+    const rows = buildDayRows(day);
+    rows.forEach((row, idx) => {
+      const classes = [day.is_today ? 'today' : '', idx === 0 ? 'day-start' : ''].filter(Boolean).join(' ');
+      html += `<tr class="${classes}">`;
+      if (idx === 0) {
+        html += `<td class="day-col">${capitalize(day.day)}<span class="date">${dateLabel}</span></td>`;
       } else {
-        html += items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
+        html += `<td class="day-col sub"></td>`;
       }
-      html += '</td>';
-    }
-    html += '</tr>';
+      for (const p of PEOPLE) {
+        const items = row.cells[p];
+        html += `<td class="col-${p.toLowerCase()}" data-person="${p}">`;
+        if (!items || items.length === 0) {
+          html += '<span class="empty-cell">–</span>';
+        } else {
+          html += items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
+        }
+        html += '</td>';
+      }
+      html += '</tr>';
+    });
   }
   html += '</tbody></table>';
 
