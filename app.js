@@ -299,102 +299,7 @@ state.stats.skipped++;
 saveLocalStats();
 renderFeed(); updateBadge();
 await apiFetch(`/messages/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'skipped' }) }).catch(console.error);
-checkSimilarMessages(id);
   });
-}
-
-async function checkSimilarMessages(id) {
-  // Etter at en melding er satt til 'ikke relevant': sjekk om det finnes
-  // lignende uleste meldinger (samme kilde/kategori) og tilby å merke dem likt.
-  // NB: bruker en egen dialogboks i DOM-en i stedet for confirm(), siden
-  // native browser-dialoger er upålitelige i installert PWA-modus (iOS).
-  try {
-const res = await apiFetch(`/messages/${id}/similar`);
-const similar = res.similar || [];
-if (!similar.length) return;
-showSimilarDialog(similar);
-  } catch (e) {
-console.error('Kunne ikke sjekke lignende meldinger:', e);
-  }
-}
-
-function showSimilarDialog(similar) {
-  const old = document.getElementById('similar-dialog-overlay');
-  if (old) old.remove();
-
-  const flertall = similar.length > 1;
-
-  const overlay = document.createElement('div');
-  overlay.id = 'similar-dialog-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;justify-content:center;';
-
-  const box = document.createElement('div');
-  box.style.cssText = 'background:var(--surface);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;box-shadow:0 -4px 24px rgba(0,0,0,0.4);';
-
-  const title = document.createElement('div');
-  title.style.cssText = 'font-size:15px;font-weight:600;margin-bottom:10px;';
-  title.textContent = `Fant ${similar.length} lignende ulest${flertall ? 'e' : ''} melding${flertall ? 'er' : ''}`;
-  box.appendChild(title);
-
-  const list = document.createElement('div');
-  list.style.cssText = 'font-size:13px;color:var(--text3);margin-bottom:16px;max-height:120px;overflow-y:auto;';
-  similar.slice(0, 5).forEach(m => {
-const item = document.createElement('div');
-item.style.cssText = 'padding:3px 0;';
-item.textContent = `• ${m.title}`;
-list.appendChild(item);
-  });
-  if (similar.length > 5) {
-const more = document.createElement('div');
-more.style.cssText = 'padding:3px 0;';
-more.textContent = `...og ${similar.length - 5} til`;
-list.appendChild(more);
-  }
-  box.appendChild(list);
-
-  const btnRow = document.createElement('div');
-  btnRow.style.cssText = 'display:flex;gap:10px;';
-
-  const yesBtn = document.createElement('button');
-  yesBtn.className = 'btn btn-skip-red';
-  yesBtn.style.cssText = 'flex:1;';
-  yesBtn.textContent = 'Merk alle som ikke relevante';
-
-  const noBtn = document.createElement('button');
-  noBtn.className = 'btn btn-skip';
-  noBtn.style.cssText = 'flex:0 0 auto;';
-  noBtn.textContent = 'Nei takk';
-
-  btnRow.appendChild(yesBtn);
-  btnRow.appendChild(noBtn);
-  box.appendChild(btnRow);
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-
-  const close = () => overlay.remove();
-
-  yesBtn.addEventListener('click', async () => {
-close();
-const ids = similar.map(m => m.id);
-try {
-  await apiFetch('/messages/bulk-status', { method: 'POST', body: JSON.stringify({ ids, status: 'skipped' }) });
-  ids.forEach(sid => {
-const m = state.messages.find(x => x.id === sid);
-if (m) {
-  if (m.status === 'read') state.stats.read = Math.max(0, state.stats.read - 1);
-  m.status = 'skipped';
-}
-  });
-  state.stats.skipped += ids.length;
-  saveLocalStats();
-  renderFeed(); updateBadge();
-} catch (e) {
-  console.error('Bulk-oppdatering feilet:', e);
-}
-  });
-
-  noBtn.addEventListener('click', close);
-  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 }
 
 async function markUnread(id) {
@@ -817,11 +722,11 @@ document.getElementById('set-user-email').textContent = user?.email || '';
 // Family context
 const fc = document.getElementById('set-family-context');
 if (fc) fc.value = s.family_context || '';
-// Lært kontekst (fylles ut automatisk av AI, redigerbar)
-const lc = document.getElementById('set-learned-context');
-if (lc) lc.value = s.ai_learned_context || '';
 const claudeKeyEl = document.getElementById('set-claude-api-key');
 if (claudeKeyEl) claudeKeyEl.placeholder = s.claude_api_key_set ? '••••••••••••• (lagret)' : 'sk-ant-api03-...';
+// AI-scoring av/på (på som standard)
+const aiScoringEl = document.getElementById('set-ai-scoring-enabled');
+if (aiScoringEl) aiScoringEl.checked = s.ai_scoring_enabled !== false;
 // Maks 3 måneder tilbake for historisk henting
 const historyFrom = document.getElementById('set-history-from');
 if (historyFrom) {
@@ -880,8 +785,8 @@ async function saveSettings() {
   try {
 const updates = {
   family_context: document.getElementById('set-family-context')?.value || '',
-  ai_learned_context: document.getElementById('set-learned-context')?.value || '',
   claude_api_key: document.getElementById('set-claude-api-key')?.value || '',
+  ai_scoring_enabled: document.getElementById('set-ai-scoring-enabled')?.checked ?? true,
   spond_username: document.getElementById('set-spond-user').value.trim(),
   spond_enabled:  document.getElementById('set-spond-enabled').checked,
   email_1_host:   document.getElementById('set-e1-host').value.trim(),
@@ -936,17 +841,9 @@ async function initApp() {
   initPullToRefresh();
   const user = getUser();
   if (!user) { showLogin(); return; }
-  // Auto-registrer push KUN hvis brukeren faktisk har minst én varsel-type
-  // skrudd på i innstillingene – ikke bare fordi nettleseren en gang har gitt
-  // tillatelse (tillatelsen forblir 'granted' selv etter at brukeren har
-  // skrudd av varsler i appen, så den sjekken alene førte til at push slo
-  // seg på igjen av seg selv ved neste app-åpning).
+  // Auto-registrer push hvis tillatelse allerede er gitt
   if ('Notification' in window && Notification.permission === 'granted') {
-    try {
-      const s = await apiFetch('/settings').catch(() => ({}));
-      const wantsPush = s.new_messages_push_enabled !== false || !!s.evening_summary_enabled;
-      if (wantsPush) subscribeToPush().catch(() => {});
-    } catch (e) {}
+subscribeToPush().catch(() => {});
   }
   const nameEl = document.getElementById('user-display-name');
   if (nameEl) nameEl.textContent = user.display_name;
@@ -1246,20 +1143,10 @@ function toggleAiLength() {
   }
 }
 
-function getISOWeek(date) {
-  // Beregner ISO 8601-ukenummer – brukes til å matche Showbie-filer som
-  // "UKE 35 ...pdf", siden AI-søket ellers kun leter etter datoer.
-  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-}
-
 function sendAiShortcut(topic) {
   const lengthHint = aiLengthShort
-    ? ' Svar kort og konsist (maks 5-6 punkter totalt), men behold alltid ### overskrifter med emoji per seksjon.'
-    : ' Svar detaljert og utfyllende, med ### overskrifter og emoji per seksjon.';
+    ? ' Svar kort og konsist, maks 5-6 setninger.'
+    : ' Svar detaljert og utfyllende.';
   // Bruk lokal tid fra nettleseren for riktig dato
   const now = new Date();
   const days = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
@@ -1268,9 +1155,9 @@ function sendAiShortcut(topic) {
   const tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
   const tomorrowStr = `${days[tomorrow.getDay()]} ${tomorrow.getDate()}. ${months[tomorrow.getMonth()]}`;
   const prompts = {
-    'i dag': `Hva skjer i dag (${todayStr}, uke ${getISOWeek(now)})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag, inkludert eventuell ukeplan fra skolen.` + lengthHint,
-    'i morgen': `Hva skjer i morgen (${tomorrowStr}, uke ${getISOWeek(tomorrow)})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen, inkludert eventuell ukeplan fra skolen.` + lengthHint,
-    'neste 5 dager': `Hva skjer de neste 5 dagene fra ${todayStr} (uke ${getISOWeek(now)})? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting, inkludert eventuell ukeplan fra skolen.` + lengthHint,
+    'i dag': `Hva skjer i dag (${todayStr})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i dag.` + lengthHint,
+    'i morgen': `Hva skjer i morgen (${tomorrowStr})? Gi meg en oversikt over arrangementer, meldinger og viktige ting for i morgen.` + lengthHint,
+    'neste 5 dager': `Hva skjer de neste 5 dagene fra ${todayStr}? Gi meg en dag-for-dag oversikt over arrangementer og viktige ting.` + lengthHint,
     'skoleuke': (() => {
       const dayNum = now.getDay(); // 0=søndag, 6=lørdag
       const isWeekend = dayNum === 0 || dayNum === 6;
@@ -1288,8 +1175,7 @@ function sendAiShortcut(topic) {
       const mondayStr = `${days[monday.getDay()]} ${monday.getDate()}. ${months[monday.getMonth()]}`;
       const fridayStr = `${days[friday.getDay()]} ${friday.getDate()}. ${months[friday.getMonth()]}`;
       const weekLabel = isWeekend ? 'kommende skoleuke' : 'inneværende skoleuke';
-      const weekNum = getISOWeek(monday);
-      return `Gi meg en oversikt over viktige skoleaktiviteter i ${weekLabel}, uke ${weekNum} (${mondayStr} – ${fridayStr}): lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine, basert på ukeplan uke ${weekNum} fra Showbie/skolen. Organiser per dag.` + lengthHint;
+      return `Gi meg en oversikt over viktige skoleaktiviteter i ${weekLabel} (${mondayStr} – ${fridayStr}): lekser, prøver, aktiviteter, turer og andre skoleoppgaver for barna mine. Organiser per dag.` + lengthHint;
     })(),
   };
   const input = document.getElementById('ai-input');
@@ -1325,8 +1211,8 @@ const autoContext = settings.ai_learned_context || '';
 
 
     const lengthInstruction = aiLengthShort
-      ? ' Svar kort og konsist (maks 5-6 punkter totalt), men behold alltid ### overskrifter med emoji per seksjon.'
-      : ' Svar detaljert og utfyllende, med ### overskrifter og emoji per seksjon.';
+      ? ' Svar kort og konsist, maks 5-6 setninger.'
+      : ' Svar detaljert og utfyllende.';
     const questionWithLength = question.endsWith(lengthInstruction.trim()) ? question : question + lengthInstruction;
 
     const data = await apiFetch('/ai/chat', {
@@ -1368,14 +1254,8 @@ if (learned && learned.length > 3) {
   const settings = await apiFetch('/settings').catch(() => ({}));
   const existing = settings.ai_learned_context || '';
   if (!existing.includes(learned)) {
-let updated = existing ? `${existing}
+const updated = existing ? `${existing}
 ${learned}` : learned;
-    // Sikkerhetsnett mot ubegrenset vekst: behold kun de nyeste 40 linjene
-    // hvis listen blir for lang (eldre, mindre relevante linjer fjernes først)
-    const lines = updated.split('\n').filter(l => l.trim());
-    if (lines.length > 40) {
-      updated = lines.slice(lines.length - 40).join('\n');
-    }
 await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ ai_learned_context: updated }) });
   }
 }
@@ -1700,49 +1580,45 @@ try {
   hasSubscription = !!sub;
 } catch(e) {}
 const isActive = perm === 'granted' && hasSubscription;
-
-const settings = await apiFetch('/settings').catch(() => ({}));
-const newMsgEnabled = settings.new_messages_push_enabled !== false; // default på
-const eveningEnabled = !!settings.evening_summary_enabled;
-const eveningTime = settings.evening_summary_time || '20:00';
-
-const statusText = isActive ? '✓ Varsler er klare til å sendes' : '○ Trenger tillatelse fra nettleseren';
+const statusText = isActive ? '✓ Push-varsler er aktivert' : '○ Push-varsler er ikke aktivert';
 const statusColor = isActive ? 'var(--green, #2D6A4F)' : 'var(--text3)';
-
+const btnStyle = 'display:block;width:100%;color:var(--text);font-size:15px;margin-top:10px;';
 pushSection.innerHTML = `
   <div class="field-label" style="margin-bottom:8px;">Push-varsler</div>
-  <div style="font-size:13px;color:${statusColor};margin-bottom:10px;">${statusText}</div>
-  ${!isActive ? `<button class="btn-secondary" id="btn-toggle-push" onclick="requestPushPermission().then(() => initPushSettings())" style="display:block;width:100%;color:var(--text);font-size:15px;margin-bottom:10px;">Gi tillatelse til push-varsler</button>` : ''}
-  <div class="row-with-toggle" style="margin-top:4px;">
-    <div>
-      <div style="font-size:14px;color:var(--text);">Nye meldinger</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:2px;">Varsel når nye meldinger synkes inn</div>
-    </div>
-    <label class="toggle">
-      <input type="checkbox" id="new-messages-toggle" ${newMsgEnabled ? 'checked' : ''} onchange="saveNewMessagesPush(this.checked)">
-      <span class="toggle-slider"></span>
-    </label>
-  </div>
-  <div class="row-with-toggle" style="margin-top:12px;">
-    <div>
-      <div style="font-size:14px;color:var(--text);">Kveldsvarsel</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
-    </div>
-    <label class="toggle">
-      <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
-      <span class="toggle-slider"></span>
-    </label>
-  </div>
-  <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
-    <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
-    <select id="evening-summary-time"
-      style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
-      onchange="saveEveningSummaryTime(this.value)">
-      ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
-    </select>
-  </div>
-  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:14px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
+  <div style="font-size:13px;color:${statusColor};margin-bottom:4px;">${statusText}</div>
+  <button class="btn-secondary" id="btn-toggle-push" onclick="togglePush()" style="${btnStyle}">
+    ${isActive ? 'Skru av push-varsler' : 'Skru på push-varsler'}
+  </button>
+  ${isActive ? '<button class="btn-secondary" onclick="testPush()" style="margin-top:8px;display:block;width:100%;color:var(--text);font-size:15px;">Send testvarsel</button>' : ''}
   <div id="push-status" style="font-size:13px;color:var(--text2);margin-top:8px;"></div>`;
+
+  if (isActive) {
+    const settings = await apiFetch('/settings').catch(() => ({}));
+    const eveningEnabled = !!settings.evening_summary_enabled;
+    const eveningTime = settings.evening_summary_time || '20:00';
+    const eveningDiv = document.createElement('div');
+    eveningDiv.style.cssText = 'margin-top:12px;';
+    eveningDiv.innerHTML = `
+      <div class="row-with-toggle" style="margin-top:4px;">
+        <div>
+          <div style="font-size:14px;color:var(--text);">Kveldsvarsel</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">Morgendagens oversikt som push-notifikasjon</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="evening-summary-toggle" ${eveningEnabled ? 'checked' : ''} onchange="saveEveningSummary(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
+        <span style="font-size:13px;color:var(--text2);">Tidspunkt</span>
+        <select id="evening-summary-time"
+          style="border:1px solid var(--border2);background:var(--surface);color:var(--text);border-radius:8px;padding:5px 10px;font-size:13px;font-family:var(--font);cursor:pointer;"
+          onchange="saveEveningSummaryTime(this.value)">
+          ${Array.from({length:18},(_,i)=>{const h=String(i+6).padStart(2,'0');return `<option value="${h}:00"${eveningTime===`${h}:00`?' selected':''}>${h}:00</option>`;}).join('')}
+        </select>
+      </div>`;
+    pushSection.appendChild(eveningDiv);
+  }
   }
 
   // Plasser push-seksjonen inne i Annet-accordion
@@ -1763,77 +1639,69 @@ async function saveEveningSummaryTime(time) {
   }
 }
 
-// Sikrer at det finnes et aktivt push-abonnement (nødvendig for at NOEN
-// varsel-type i det hele tatt skal kunne leveres). Kalles når en av de to
-// bryterne (nye meldinger / kveldsvarsel) skrus PÅ.
-async function ensurePushSubscription() {
+async function saveEveningSummary(enabled) {
+  try {
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_enabled: enabled }) });
+  } catch(e) {
+    console.error('Kunne ikke lagre kveldsvarsel-innstilling:', e);
+  }
+}
+
+// Lagrer AI-scoring av/på med en gang bryteren endres
+async function saveAiScoring(enabled) {
+  try {
+    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ ai_scoring_enabled: enabled }) });
+  } catch(e) {
+    console.error('Kunne ikke lagre AI-scoring-innstilling:', e);
+  }
+}
+
+async function enablePush() { await togglePush(); }
+async function resetPush() { await togglePush(); }
+
+async function togglePush() {
+  const statusEl = document.getElementById('push-status');
+  const btn = document.getElementById('btn-toggle-push');
+
+  // Sjekk nåværende status
   let hasSubscription = false;
   try {
     const reg = await navigator.serviceWorker.ready;
     const sub = await reg.pushManager.getSubscription();
     hasSubscription = !!sub;
   } catch(e) {}
-  if (hasSubscription && Notification.permission === 'granted') return true;
-  return await requestPushPermission();
-}
+  const isActive = Notification.permission === 'granted' && hasSubscription;
 
-// Fjerner selve push-abonnementet helt, men KUN hvis begge varsel-typer nå
-// er skrudd av – ellers ville vi fjernet grunnlaget for den som fortsatt
-// skal være på.
-async function maybeDisablePushEntirely() {
-  try {
-    const settings = await apiFetch('/settings').catch(() => ({}));
-    const newMsgOff = settings.new_messages_push_enabled === false;
-    const eveningOff = !settings.evening_summary_enabled;
-    if (newMsgOff && eveningOff) {
-      await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
+  if (isActive) {
+    // Skru AV
+    if (btn) { btn.disabled = true; btn.textContent = 'Skrur av...'; }
+    try {
+      await apiFetch('/push/all', { method: 'DELETE' });
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
       if (sub) await sub.unsubscribe();
+      if (statusEl) statusEl.textContent = 'Push-varsler er skrudd av';
+      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
+    } catch(e) {
+      if (statusEl) statusEl.textContent = `Feil: ${e.message}`;
+      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
     }
-  } catch (e) {
-    console.error('Kunne ikke rydde opp push-abonnement:', e);
-  }
-}
-
-async function saveNewMessagesPush(enabled) {
-  const statusEl = document.getElementById('push-status');
-  try {
-    if (enabled) {
-      const ok = await ensurePushSubscription();
-      if (!ok) {
-        if (statusEl) statusEl.textContent = 'Kunne ikke aktivere – sjekk nettleser-tillatelse';
-        setTimeout(() => initPushSettings(), 500);
-        return;
-      }
+  } else {
+    // Skru PÅ
+    if (btn) { btn.disabled = true; btn.textContent = 'Aktiverer...'; }
+    await apiFetch('/push/all', { method: 'DELETE' }).catch(() => {});
+    const ok = await requestPushPermission();
+    if (ok) {
+      if (statusEl) statusEl.textContent = '✓ Push-varsler aktivert!';
+      if (btn) { btn.textContent = 'Skru av push-varsler'; btn.disabled = false; }
+    } else {
+      if (statusEl) statusEl.textContent = 'Kunne ikke aktivere push-varsler';
+      if (btn) { btn.textContent = 'Skru på push-varsler'; btn.disabled = false; }
     }
-    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ new_messages_push_enabled: enabled }) });
-    if (!enabled) await maybeDisablePushEntirely();
-  } catch(e) {
-    console.error('Kunne ikke lagre innstilling for nye meldinger:', e);
   }
-  setTimeout(() => initPushSettings(), 300);
+  // Refresh push-seksjonen for å vise oppdatert status
+  setTimeout(() => initPushSettings(), 500);
 }
-
-async function saveEveningSummary(enabled) {
-  const statusEl = document.getElementById('push-status');
-  try {
-    if (enabled) {
-      const ok = await ensurePushSubscription();
-      if (!ok) {
-        if (statusEl) statusEl.textContent = 'Kunne ikke aktivere – sjekk nettleser-tillatelse';
-        setTimeout(() => initPushSettings(), 500);
-        return;
-      }
-    }
-    await apiFetch('/settings', { method: 'PATCH', body: JSON.stringify({ evening_summary_enabled: enabled }) });
-    if (!enabled) await maybeDisablePushEntirely();
-  } catch(e) {
-    console.error('Kunne ikke lagre kveldsvarsel-innstilling:', e);
-  }
-  setTimeout(() => initPushSettings(), 300);
-}
-
 
 async function testPush() {
   const statusEl = document.getElementById('push-status');
