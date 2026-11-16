@@ -118,16 +118,39 @@ function buildDayRows(day) {
   if (entries.length === 0) {
     return [{ cells: Object.fromEntries(PEOPLE.map(p => [p, []])) }];
   }
-  const timeKeys = [...new Set(entries.filter(e => e.timeKey).map(e => e.timeKey))].sort();
-  const hasUntimed = entries.some(e => !e.timeKey);
-  const orderedKeys = hasUntimed ? [...timeKeys, null] : timeKeys;
-  return orderedKeys.map(tk => {
+
+  // Finn kun klokkeslett som faktisk deles av 2 eller flere personer samme dag -
+  // det er KUN disse som skal få sin egen alignede rad. Alt annet (unike
+  // tidspunkt eller uten tidspunkt) samles i én vanlig rad per dag, som før.
+  const peopleByTime = {};
+  for (const e of entries) {
+    if (!e.timeKey) continue;
+    (peopleByTime[e.timeKey] ||= new Set()).add(e.person);
+  }
+  const sharedTimes = Object.keys(peopleByTime)
+    .filter(tk => peopleByTime[tk].size >= 2)
+    .sort();
+
+  const rows = [];
+  for (const tk of sharedTimes) {
     const cells = Object.fromEntries(PEOPLE.map(p => [p, []]));
     for (const e of entries) {
       if (e.timeKey === tk) cells[e.person].push(e.text);
     }
-    return { cells };
-  });
+    rows.push({ cells });
+  }
+
+  const restCells = Object.fromEntries(PEOPLE.map(p => [p, []]));
+  let hasRest = false;
+  for (const e of entries) {
+    if (sharedTimes.includes(e.timeKey)) continue;
+    restCells[e.person].push(e.text);
+    hasRest = true;
+  }
+  if (hasRest || rows.length === 0) {
+    rows.push({ cells: restCells });
+  }
+  return rows;
 }
 
 function renderTable(data) {
@@ -177,6 +200,63 @@ function renderTable(data) {
   html += '</tbody></table>';
 
   document.getElementById('table-wrap').innerHTML = html;
+  distributeExtraHeight();
+}
+
+// Fordeler ledig plass i #table-wrap jevnt per DAG (ikke per rad), slik at hver
+// dag utgjør en fast andel (1/7) av skjermen og ukesoversikten til sammen fyller
+// 100% av høyden - uansett om en dag har én eller flere underrader. Legger bare
+// til ekstra padding-bottom (aldri mindre enn det CSS allerede setter), så vi
+// risikerer aldri å klippe innhold - en veldig innholdsrik uke får da bare
+// litt mindre "luft" i tillegg, i stedet for å bli presset sammen.
+function distributeExtraHeight() {
+  const wrap = document.getElementById('table-wrap');
+  const table = wrap.querySelector('table');
+  if (!table) return;
+  const thead = table.querySelector('thead');
+  const tbody = table.querySelector('tbody');
+  if (!thead || !tbody) return;
+
+  const cells = Array.from(tbody.querySelectorAll('td'));
+  cells.forEach(td => { td.style.paddingBottom = ''; }); // nullstill fra forrige måling/visning
+
+  const available = wrap.clientHeight;
+  const used = thead.getBoundingClientRect().height + tbody.getBoundingClientRect().height;
+  const extra = available - used;
+  if (extra <= 0) return; // uken er for innholdsrik til å strekkes - la den heller gå marginalt over
+
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const groups = [];
+  let current = null;
+  rows.forEach(tr => {
+    if (tr.classList.contains('day-start') || !current) {
+      current = [];
+      groups.push(current);
+    }
+    current.push(tr);
+  });
+  if (groups.length === 0) return;
+
+  const extraPerDay = extra / groups.length;
+  groups.forEach(groupRows => {
+    const extraPerRow = extraPerDay / groupRows.length;
+    groupRows.forEach(tr => {
+      Array.from(tr.children).forEach(td => {
+        const basePb = parseFloat(window.getComputedStyle(td).paddingBottom) || 0;
+        td.style.paddingBottom = `${basePb + extraPerRow}px`;
+      });
+    });
+  });
+}
+
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(distributeExtraHeight, 150);
+});
+window.addEventListener('orientationchange', () => setTimeout(distributeExtraHeight, 250));
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => distributeExtraHeight());
 }
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
