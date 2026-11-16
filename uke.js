@@ -199,6 +199,24 @@ function buildDayRows(day) {
   if (hasRest || rows.length === 0) {
     rows.push({ cells: restCells });
   }
+
+  // Rekkefølgen på radene over var tidligere "delte bøtter (stigende), så rest-raden
+  // til slutt" - uavhengig av om rest-raden faktisk inneholdt et TIDLIGERE tidspunkt enn
+  // de delte bøttene (f.eks. 16:50 unikt for én person havner i rest-raden, mens 19:30
+  // deles av to personer og havner i en egen, tidligere-plassert bøtte-rad - da vises
+  // 19:30 FØR 16:50, selv om de ligger i samme celle/dag). Sorter derfor alle radene
+  // (delte bøtter OG rest) sammen på det tidligste kjente klokkeslettet i hver rad, slik
+  // at rekkefølgen alltid blir kronologisk riktig på tvers av rad-typene også.
+  rows.forEach(row => {
+    const mins = Object.values(row.cells)
+      .flat()
+      .map(t => timeToMinutes(extractTimeKey(t)))
+      .filter(m => m !== null);
+    row._sortKey = mins.length ? Math.min(...mins) : Infinity;
+  });
+  rows.sort((a, b) => a._sortKey - b._sortKey);
+  rows.forEach(row => { delete row._sortKey; });
+
   return rows;
 }
 
