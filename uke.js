@@ -66,6 +66,26 @@ document.querySelectorAll('#layout-switch button').forEach(btn => {
 });
 setLayout(getLayout());
 
+// Fargetema (gjelder først og fremst Tabell-visningen - se egne CSS-blokker i
+// uke.html). Rent CSS-drevet: vi bytter bare en klasse på <body>, selve
+// render-funksjonene under er helt uendret uansett valgt tema.
+const THEME_KEY = 'uke_theme';
+const THEMES = ['standard', 'aurora', 'citrus', 'hostglod', 'vinterfrost', 'nexus', 'controlroom'];
+function getTheme() {
+  const v = localStorage.getItem(THEME_KEY);
+  return THEMES.includes(v) ? v : 'standard';
+}
+function setTheme(v) {
+  if (!THEMES.includes(v)) v = 'standard';
+  localStorage.setItem(THEME_KEY, v);
+  THEMES.forEach(t => document.body.classList.remove(`theme-${t}`));
+  if (v !== 'standard') document.body.classList.add(`theme-${v}`);
+  const sel = document.getElementById('theme-switch');
+  if (sel) sel.value = v;
+}
+document.getElementById('theme-switch').addEventListener('change', (e) => setTheme(e.target.value));
+setTheme(getTheme());
+
 function getToken() { return localStorage.getItem('auth_token'); }
 function saveAuth(token, user) {
   localStorage.setItem('auth_token', token);
