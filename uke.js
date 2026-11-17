@@ -306,12 +306,12 @@ function renderTable(data) {
         // virker riktig selv når det også står et skole-stikkord over.
         const skoleItems = idx === 0 ? skoleOf(day, p) : [];
         const skoleHtml = skoleItems.length
-          ? `<div class="skole-items">${skoleItems.map(i => `<div class="skole-item topic-click" data-topic="${escapeAttr(abbreviateNames(i))}">${displayText(i)}</div>`).join('')}</div>`
+          ? `<div class="skole-items">${skoleItems.map(i => `<div class="skole-item">${displayText(i)}</div>`).join('')}</div>`
           : '';
         const pushBottom = shouldPushBottom(items) ? ' push-bottom' : '';
         const contentHtml = (!items || items.length === 0)
           ? ''
-          : items.map(i => `<div class="item topic-click" data-topic="${escapeAttr(abbreviateNames(i))}">${displayText(i)}</div>`).join('');
+          : items.map(i => `<div class="item">${displayText(i)}</div>`).join('');
         html += `<td class="col-${p.toLowerCase()}" data-person="${p}">` +
           `<div class="td-inner">${skoleHtml}<div class="content${pushBottom}">${contentHtml}</div></div>` +
           '</td>';
@@ -366,8 +366,8 @@ function renderCards(data) {
       const skoleItems = skoleOf(day, p);
       const items = sortedAnnet(day, p);
       html += `<div class="card-person"><div class="phead"><span class="pdot p-${pl}-bg"></span><span class="pname p-${pl}-fg">${p.toUpperCase()}</span></div>`;
-      for (const s of skoleItems) html += `<div class="card-skole topic-click" data-topic="${escapeAttr(abbreviateNames(s))}">${displayText(s)}</div>`;
-      for (const i of items) html += `<div class="card-chip p-${pl}-tint topic-click" data-topic="${escapeAttr(abbreviateNames(i))}">${displayText(i)}</div>`;
+      for (const s of skoleItems) html += `<div class="card-skole">${displayText(s)}</div>`;
+      for (const i of items) html += `<div class="card-chip p-${pl}-tint">${displayText(i)}</div>`;
       html += '</div>';
     }
     html += '</div></div>';
@@ -437,7 +437,7 @@ function renderAgenda(data) {
         const items = skoleOf(day, p);
         skoleCount += items.length;
         html += `<div class="agenda-skole-col"><div class="agenda-skole-pname p-${pl}-fg">${p.toUpperCase()}</div>`;
-        for (const s of items) html += `<div class="agenda-skole-item topic-click" data-topic="${escapeAttr(abbreviateNames(s))}">${displayText(s)}</div>`;
+        for (const s of items) html += `<div class="agenda-skole-item">${displayText(s)}</div>`;
         html += '</div>';
       }
       html += '</div>';
@@ -455,7 +455,7 @@ function renderAgenda(data) {
         }
         html += `<div class="agenda-row"><div class="agenda-time">${timeLabel}</div>` +
           `<div class="agenda-avatars">${avatars}</div>` +
-          `<div class="agenda-text topic-click" data-topic="${escapeAttr(abbreviateNames(e.text))}">${displayText(stripLeadingTime(e.text))}</div></div>`;
+          `<div class="agenda-text">${displayText(stripLeadingTime(e.text))}</div></div>`;
       }
     }
     html += '</div>';
@@ -579,16 +579,6 @@ function escapeHtml(s) {
   return div.innerHTML;
 }
 
-// Som escapeHtml, men trygg å sette inn i et HTML-attributt (escaper også
-// anførselstegn) - brukes for data-topic på klikkbare stikkord.
-function escapeAttr(s) {
-  return String(s || '')
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
 function renderStatus(msg, isError) {
   document.getElementById('table-wrap').innerHTML =
     `<div id="status" class="${isError ? 'error' : ''}">${msg}</div>`;
@@ -649,59 +639,6 @@ function scheduleAutoRefresh() {
   }, msUntilNextEvenHour());
 }
 scheduleAutoRefresh();
-
-// ─── WhatsApp-temasøk ───────────────────────────────────────────────────────
-// Klikk på et stikkord/aktivitet (i alle tre layoutene) søker gjennom ALLE
-// lagrede WhatsApp-meldinger etter dialog knyttet til temaet, og viser en
-// AI-generert oppsummering i en modal/popup her på ukeoversikt-siden.
-const waOverlay = document.getElementById('wa-modal-overlay');
-const waTitle = document.getElementById('wa-modal-title');
-const waBody = document.getElementById('wa-modal-body');
-
-function closeWaModal() {
-  waOverlay.style.display = 'none';
-}
-document.getElementById('wa-modal-close').addEventListener('click', closeWaModal);
-waOverlay.addEventListener('click', (ev) => {
-  if (ev.target === waOverlay) closeWaModal();
-});
-document.addEventListener('keydown', (ev) => {
-  if (ev.key === 'Escape' && waOverlay.style.display !== 'none') closeWaModal();
-});
-
-async function openWhatsappModal(topic) {
-  waTitle.textContent = topic;
-  waBody.className = 'wa-modal-body loading';
-  waBody.textContent = 'Søker i WhatsApp...';
-  waOverlay.style.display = 'flex';
-  try {
-    const data = await apiFetch('/ai/whatsapp-topic', {
-      method: 'POST',
-      body: JSON.stringify({ topic })
-    });
-    if (data.found) {
-      waBody.className = 'wa-modal-body';
-      const count = (data.messages || []).length;
-      const metaLine = count
-        ? `<div class="wa-modal-meta">${count} melding${count === 1 ? '' : 'er'} funnet i WhatsApp</div>`
-        : '';
-      waBody.innerHTML = `<div>${escapeHtml(data.summary || '').replace(/\n/g, '<br>')}</div>${metaLine}`;
-    } else {
-      waBody.className = 'wa-modal-body wa-empty';
-      waBody.textContent = data.summary || 'Fant ingen WhatsApp-meldinger om dette.';
-    }
-  } catch (e) {
-    waBody.className = 'wa-modal-body wa-empty';
-    waBody.textContent = e.message || 'Klarte ikke å søke i WhatsApp.';
-  }
-}
-
-document.getElementById('table-wrap').addEventListener('click', (ev) => {
-  const el = ev.target.closest('.topic-click');
-  if (!el) return;
-  const topic = el.dataset.topic;
-  if (topic) openWhatsappModal(topic);
-});
 
 // ─── Start ────────────────────────────────────────────────────────────────
 
