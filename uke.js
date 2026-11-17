@@ -43,6 +43,28 @@ const AVATARS = {
 };
 
 let weekOffset = 0; // 0 = denne uken, 1 = neste uke
+let lastData = null; // siste hentede ukedata - lar oss bytte layout uten ny nettverkskall
+
+const LAYOUT_KEY = 'uke_layout';
+function getLayout() {
+  const v = localStorage.getItem(LAYOUT_KEY);
+  return (v === 'cards' || v === 'agenda') ? v : 'table';
+}
+function setLayout(v) {
+  localStorage.setItem(LAYOUT_KEY, v);
+  document.body.classList.remove('layout-table', 'layout-cards', 'layout-agenda');
+  document.body.classList.add(`layout-${v}`);
+  document.querySelectorAll('#layout-switch button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.layout === v);
+  });
+}
+document.querySelectorAll('#layout-switch button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setLayout(btn.dataset.layout);
+    if (lastData) renderCurrentLayout(lastData);
+  });
+});
+setLayout(getLayout());
 
 function getToken() { return localStorage.getItem('auth_token'); }
 function saveAuth(token, user) {
@@ -222,7 +244,9 @@ function shouldPushBottom(items) {
   return Math.min(...mins) >= 16 * 60;
 }
 
-function renderTable(data) {
+// Oppdaterer uke-tittel/undertittel og frem/tilbake-knappene - felles for alle tre
+// layoutene, uavhengig av hvilken som er valgt.
+function updateWeekHeader(data) {
   const titleEl = document.getElementById('week-title');
   const subEl = document.getElementById('week-sub');
 
@@ -235,7 +259,20 @@ function renderTable(data) {
 
   document.getElementById('btn-prev-week').disabled = (weekOffset <= 0);
   document.getElementById('btn-next-week').disabled = (weekOffset >= 1);
+}
 
+// Velger riktig render-funksjon ut fra valgt layout (lagret i localStorage via
+// layout-switch-knappene) - alle tre bruker samme rådata fra backend.
+function renderCurrentLayout(data) {
+  lastData = data;
+  updateWeekHeader(data);
+  const layout = getLayout();
+  if (layout === 'cards') renderCards(data);
+  else if (layout === 'agenda') renderAgenda(data);
+  else renderTable(data);
+}
+
+function renderTable(data) {
   let html = '<table><thead><tr><th>Dag</th>';
   for (const p of PEOPLE) {
     html += `<th class="col-${p.toLowerCase()}"><div class="person-head">${AVATARS[p]}<span class="name">${p}</span></div></th>`;
@@ -279,6 +316,130 @@ function renderTable(data) {
 
   document.getElementById('table-wrap').innerHTML = html;
   distributeExtraHeight();
+}
+
+// Henter "annet"-listen for én person/dag, sortert kronologisk (kjente tidspunkt
+// først, deretter stikkord uten tid) - samme sorteringsprinsipp som buildDayRows,
+// men per person i stedet for samlet, siden kort-layouten ikke trenger å rad-justere
+// forskjellige personers tidspunkt mot hverandre.
+function sortedAnnet(day, p) {
+  const items = annetOf(day, p).map(text => ({ text, timeKey: extractTimeKey(text) }));
+  items.sort((a, b) => {
+    const ta = timeToMinutes(a.timeKey), tb = timeToMinutes(b.timeKey);
+    if (ta === null && tb === null) return 0;
+    if (ta === null) return 1;
+    if (tb === null) return -1;
+    return ta - tb;
+  });
+  return items.map(i => i.text);
+}
+
+// ─── Layout A: Myke kort - én kortbasert boks per dag, personene som fire mini-
+// seksjoner inni kortet i stedet for fargede kolonner. ──────────────────────
+function renderCards(data) {
+  let html = '';
+  for (const day of data.days) {
+    const d = new Date(day.date);
+    const dateLabel = d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
+    const isWeekend = ['lørdag', 'søndag'].includes((day.day || '').toLowerCase());
+    const classes = ['day-card', isWeekend ? 'weekend' : '', day.is_today ? 'today' : ''].filter(Boolean).join(' ');
+    html += `<div class="${classes}">`;
+    html += `<div class="day-card-head"><span class="dname">${shortDay(day.day)}</span><span class="ddate">${dateLabel}</span>`;
+    if (isWeekend) html += '<span class="helg-badge">HELG</span>';
+    html += '</div><div class="day-card-grid">';
+    for (const p of PEOPLE) {
+      const pl = p.toLowerCase();
+      const skoleItems = skoleOf(day, p);
+      const items = sortedAnnet(day, p);
+      html += `<div class="card-person"><div class="phead"><span class="pdot p-${pl}-bg"></span><span class="pname p-${pl}-fg">${p.toUpperCase()}</span></div>`;
+      for (const s of skoleItems) html += `<div class="card-skole">${escapeHtml(s)}</div>`;
+      if (items.length === 0) {
+        html += '<span class="card-empty">–</span>';
+      } else {
+        for (const i of items) html += `<div class="card-chip p-${pl}-tint">${escapeHtml(i)}</div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('table-wrap').innerHTML = html || '<div id="status">Ingen dager å vise.</div>';
+}
+
+// Fjerner et ledende klokkeslett (og emoji før det) fra et stikkord, f.eks.
+// "🏒 16:00 Trening Lillegutt" -> "🏒 Trening Lillegutt" - brukes i tidslinje-
+// layouten, der klokkeslettet allerede vises i sin egen kolonne til venstre.
+function stripLeadingTime(text) {
+  const head = (text || '').slice(0, 14);
+  let m = head.match(/([01]?\d|2[0-3])[:.]([0-5]\d)/);
+  if (!m) m = head.match(/\bkl\.?\s*([01]?\d|2[0-3])\b(?!\s*[:.]\d)/i);
+  if (!m) return text;
+  const idx = head.indexOf(m[0]);
+  return (text.slice(0, idx) + text.slice(idx + m[0].length)).replace(/\s{2,}/g, ' ').trim();
+}
+
+// Slår sammen "annet"-stikkord fra ALLE personer for én dag til én kronologisk
+// liste, der identiske (tidspunkt, tekst)-par fra flere personer (f.eks. "R & G
+// gymtøy" som ligger likt hos både Rasmus og Gustav) blir ETT oppføring med to
+// avatarer i stedet for to separate linjer.
+function buildAgendaEntries(day) {
+  const groups = new Map();
+  for (const p of PEOPLE) {
+    for (const text of annetOf(day, p)) {
+      const timeKey = extractTimeKey(text);
+      const key = `${timeKey || ''}||${text}`;
+      if (!groups.has(key)) groups.set(key, { text, timeKey, people: [] });
+      groups.get(key).people.push(p);
+    }
+  }
+  const entries = Array.from(groups.values());
+  entries.sort((a, b) => {
+    const ta = timeToMinutes(a.timeKey), tb = timeToMinutes(b.timeKey);
+    if (ta === null && tb === null) return 0;
+    if (ta === null) return 1;
+    if (tb === null) return -1;
+    return ta - tb;
+  });
+  return entries;
+}
+
+// ─── Layout B: Tidslinje - alle fire personene samlet i én kronologisk linje per
+// dag (som en agenda-/kalender-app), i stedet for fire kolonner. ────────────
+function renderAgenda(data) {
+  let html = '<div class="agenda-wrap">';
+  for (const day of data.days) {
+    const d = new Date(day.date);
+    const dateLabel = d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
+    const isWeekend = ['lørdag', 'søndag'].includes((day.day || '').toLowerCase());
+    html += `<div class="agenda-day${day.is_today ? ' today' : ''}">`;
+    html += `<div class="agenda-head${isWeekend ? ' weekend' : ''}"><span class="dname">${shortDay(day.day)}</span><span class="ddate">${dateLabel}</span>`;
+    if (isWeekend) html += '<span class="helg-badge">HELG</span>';
+    html += '</div>';
+
+    const allSkole = [];
+    for (const p of PEOPLE) {
+      for (const s of skoleOf(day, p)) allSkole.push(s);
+    }
+    for (const s of allSkole) html += `<div class="agenda-skole">${escapeHtml(s)}</div>`;
+
+    const entries = buildAgendaEntries(day);
+    if (entries.length === 0 && allSkole.length === 0) {
+      html += '<div class="agenda-empty">Ingen avtaler</div>';
+    } else {
+      for (const e of entries) {
+        const timeLabel = e.timeKey || '–';
+        let avatars = '';
+        for (const p of e.people) {
+          avatars += `<span class="avatar-dot p-${p.toLowerCase()}-bg">${p.charAt(0)}</span>`;
+        }
+        html += `<div class="agenda-row"><div class="agenda-time">${timeLabel}</div>` +
+          `<div class="agenda-avatars">${avatars}</div>` +
+          `<div class="agenda-text">${escapeHtml(stripLeadingTime(e.text))}</div></div>`;
+      }
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  document.getElementById('table-wrap').innerHTML = html;
 }
 
 // Fordeler ledig plass i #table-wrap jevnt per DAG (ikke per rad), slik at hver
@@ -372,7 +533,7 @@ async function loadWeek(forceRefresh = false) {
     const params = new URLSearchParams({ week_offset: String(weekOffset) });
     if (forceRefresh) params.set('refresh', 'true');
     const data = await apiFetch(`/ai/week-overview?${params.toString()}`);
-    renderTable(data);
+    renderCurrentLayout(data);
   } catch (e) {
     renderStatus(e.message || 'Klarte ikke å hente ukeoversikt', true);
   } finally {
