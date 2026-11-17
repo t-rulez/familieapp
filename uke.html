@@ -51,8 +51,8 @@
     .auth-error{color:#A32D2D;font-size:13px;margin-top:10px;min-height:18px}
 
     /* ── App ── */
-    #screen-app{display:none;flex-direction:column;min-height:100dvh;padding:16px 20px;max-width:1400px;margin:0 auto;width:100%}
-    #table-wrap{flex:1;min-height:0}
+    #screen-app{display:none;flex-direction:column;height:100dvh;overflow:hidden;padding:16px 20px;max-width:1400px;margin:0 auto;width:100%}
+    #table-wrap{flex:1;min-height:0;overflow:hidden}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px}
     .week-nav{display:flex;align-items:center;gap:8px}
     .week-nav button.nav-arrow{width:26px;height:26px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
@@ -115,63 +115,8 @@
     #status{text-align:center;padding:60px 20px;color:var(--text2);font-size:15px}
     #status.error{color:#A32D2D}
 
-    /* ── Layout-velger (tabell / kort / tidslinje) ── */
-    .layout-switch{display:flex;background:var(--surface2);border-radius:9px;padding:2px;gap:2px}
-    .layout-switch button{border:none;background:transparent;padding:5px 10px;border-radius:7px;font-family:var(--font);font-size:12.5px;color:var(--text2);cursor:pointer}
-    .layout-switch button.active{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,0.08);font-weight:600}
-
-    /* ── Fargetema-velger (gjelder først og fremst Tabell-visningen) ── */
+    /* ── Fargetema-velger ── */
     .theme-switch{border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:12.5px;padding:6px 10px;border-radius:8px;cursor:pointer}
-
-    /* ── Felles person-fargeklasser (brukes av kort- og tidslinje-layout) ── */
-    .p-rasmus-bg{background:var(--p-rasmus)} .p-gustav-bg{background:var(--p-gustav)} .p-kristin-bg{background:var(--p-kristin)} .p-truls-bg{background:var(--p-truls)}
-    .p-rasmus-tint{background:var(--p-rasmus-tint)} .p-gustav-tint{background:var(--p-gustav-tint)} .p-kristin-tint{background:var(--p-kristin-tint)} .p-truls-tint{background:var(--p-truls-tint)}
-    .p-rasmus-fg{color:var(--p-rasmus)} .p-gustav-fg{color:var(--p-gustav)} .p-kristin-fg{color:var(--p-kristin)} .p-truls-fg{color:var(--p-truls)}
-    .avatar-wrap{display:inline-flex;flex-shrink:0}
-    .avatar-wrap svg{display:block;width:100%;height:100%}
-
-    /* ── Layout A: Myke kort ── */
-    .layout-cards #table-wrap{overflow-y:auto}
-    .day-card{background:var(--surface);border-radius:18px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,0.04),0 3px 10px rgba(0,0,0,0.05)}
-    .day-card.weekend{background:var(--today-bg);border:1px solid var(--today-border)}
-    .day-card.today{outline:2px solid var(--today-border);outline-offset:-1px}
-    .day-card-head{display:flex;align-items:baseline;gap:7px;margin-bottom:9px}
-    .day-card-head .dname{font-size:14.5px;font-weight:700}
-    .day-card-head .ddate{font-size:12px;color:var(--text3)}
-    .day-card-head .helg-badge{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.06em;color:#8a6d1c;background:#F3E4B0;border-radius:999px;padding:3px 9px}
-    .day-card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .card-person{display:flex;flex-direction:column;gap:4px;min-width:0}
-    .card-person .phead{display:flex;align-items:center;gap:5px;margin-bottom:1px}
-    .card-person .pdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .card-person .pname{font-size:10.5px;font-weight:700;letter-spacing:0.04em}
-    .card-chip{border-radius:7px;padding:4px 7px;font-size:12px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .card-skole{font-size:10px;font-style:italic;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .card-empty{color:var(--text3);font-size:12px}
-    @media(max-width:620px){.day-card-grid{grid-template-columns:repeat(2,1fr)}}
-
-    /* ── Layout B: Tidslinje ── */
-    .layout-agenda #table-wrap{overflow-y:auto}
-    .agenda-wrap{background:var(--surface);border-radius:18px;padding:0 18px;box-shadow:0 1px 2px rgba(0,0,0,0.04),0 3px 10px rgba(0,0,0,0.05)}
-    .agenda-day{padding:13px 0 8px 0;border-top:1px solid var(--border)}
-    .agenda-day:first-child{border-top:none}
-    .agenda-day.today .agenda-head .dname{text-decoration:underline;text-decoration-color:var(--today-border);text-decoration-thickness:2px}
-    .agenda-head{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
-    .agenda-head .dname{font-size:14.5px;font-weight:700}
-    .agenda-head .ddate{font-size:12px;color:var(--text3)}
-    .agenda-head.weekend .dname{color:#8a6d1c}
-    .agenda-head .helg-badge{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:0.06em;color:#8a6d1c;background:var(--today-bg);border-radius:999px;padding:3px 9px}
-    .agenda-skole-grid{display:flex;gap:18px;flex-wrap:wrap;padding:3px 0 7px 0}
-    .agenda-skole-col{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .agenda-skole-pname{font-size:9.5px;font-weight:700;letter-spacing:0.05em}
-    .agenda-skole-item{font-size:10.5px;font-style:italic;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .agenda-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-top:1px solid var(--border)}
-    .agenda-row:first-of-type{border-top:none}
-    .agenda-time{width:48px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);text-align:right;flex-shrink:0}
-    .agenda-avatars{display:flex;flex-shrink:0}
-    .avatar-dot{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0;border:2px solid var(--surface)}
-    .avatar-dot+.avatar-dot{margin-left:-7px}
-    .agenda-text{font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .agenda-empty{font-size:12px;color:var(--text3);padding:6px 0}
 
     /* Liggende iPad har mindre høyde å gå på enn stående, så vi strammer inn
        vertikal plass ytterligere når bredden er klart større enn høyden. */
@@ -206,6 +151,8 @@
       td.day-col::before{content:none}
       .item{font-size:13px}
       tr.weekend-start td.col-truls::after{display:none !important}
+      #table-wrap{overflow-y:auto !important}
+      table{transform:none !important;width:100% !important}
     }
 
     /* ── Fargetemaer for Tabell-visningen ──────────────────────────────────
@@ -227,20 +174,6 @@
       --p-truls:#C9A9FF;--p-truls-tint:rgba(201,169,255,0.14);
     }
     body.theme-aurora tr.weekend-start td.col-truls::after{display:block;color:#1c1407;background:linear-gradient(135deg,#F5D37A,#E0A93A);box-shadow:0 0 10px rgba(230,178,66,0.45)}
-
-    /* B — Citrus Shine: lys, glossy, saturerte "candy"-farger */
-    body.theme-citrus{
-      --bg:#FAFAF7;--surface:#FFFFFF;--surface2:#F3F1EA;
-      --text:#20201C;--text2:#8A8A80;--text3:#B8B6AC;
-      --border:rgba(0,0,0,0.06);--border2:rgba(0,0,0,0.12);
-      --today-bg:#FFF6DE;--today-border:#E3B341;
-      --weekend-line:#E5B84A;--day-radius:14px;
-      --p-gustav:#059669;--p-gustav-tint:#E6F7EF;
-      --p-rasmus:#2563EB;--p-rasmus-tint:#E1EDFF;
-      --p-kristin:#EA580C;--p-kristin-tint:#FFE7D4;
-      --p-truls:#7C3AED;--p-truls-tint:#EDE4FB;
-    }
-    body.theme-citrus tr.weekend-start td.col-truls::after{display:block;color:#5C4208;background:linear-gradient(135deg,#F7D77A,#E5B84A);box-shadow:0 4px 10px rgba(213,164,50,0.35)}
 
     /* C — Høstglød: varme, jordnære høstfarger */
     body.theme-hostglod{
@@ -269,22 +202,6 @@
       --p-truls:#6E5A9E;--p-truls-tint:#E7E1F3;
     }
     body.theme-vinterfrost tr.weekend-start td.col-truls::after{display:block;color:#1C3B52;background:linear-gradient(135deg,#D7EBFB,#AFD4EF);box-shadow:0 4px 10px rgba(62,124,177,0.3)}
-
-    /* E — Nexus HUD: mørk, sci-fi/cockpit-følelse, monospace + skarpe hjørner */
-    body.theme-nexus{
-      background:radial-gradient(900px 500px at 50% -15%, rgba(41,224,255,0.08), transparent),#05070A;
-      --bg:#05070A;--surface:#0A1016;--surface2:#111920;
-      --text:#D6F3FF;--text2:#6E8896;--text3:#3E5661;
-      --border:rgba(41,224,255,0.16);--border2:rgba(41,224,255,0.28);
-      --today-bg:rgba(255,180,60,0.14);--today-border:#FFB43C;
-      --weekend-line:#FFB43C;--day-radius:3px;
-      --p-gustav:#39FF88;--p-gustav-tint:rgba(57,255,136,0.10);
-      --p-rasmus:#29E0FF;--p-rasmus-tint:rgba(41,224,255,0.10);
-      --p-kristin:#FF4FA3;--p-kristin-tint:rgba(255,79,163,0.10);
-      --p-truls:#B46BFF;--p-truls-tint:rgba(180,107,255,0.10);
-    }
-    body.theme-nexus #table-wrap,body.theme-nexus .person-head .name,body.theme-nexus td.day-col{font-family:'DM Mono',monospace;letter-spacing:0.04em}
-    body.theme-nexus tr.weekend-start td.col-truls::after{display:block;content:"⚠ HELG";font-family:'DM Mono',monospace;color:#1A1203;background:linear-gradient(135deg,#FFD27A,#FFA93C);box-shadow:0 0 10px rgba(255,169,60,0.5)}
 
     /* F — Control Room: mørkt fiolett glasspanel, dashbord-inspirert */
     body.theme-controlroom{
@@ -331,18 +248,11 @@
         <button class="nav-arrow" id="btn-prev-week" aria-label="Forrige uke">&#8249;</button>
         <button class="nav-arrow" id="btn-next-week" aria-label="Neste uke">&#8250;</button>
       </div>
-      <div class="layout-switch" id="layout-switch">
-        <button data-layout="table">Tabell</button>
-        <button data-layout="cards">Kort</button>
-        <button data-layout="agenda">Tidslinje</button>
-      </div>
       <select class="theme-switch" id="theme-switch" aria-label="Fargetema">
         <option value="standard">Standard</option>
         <option value="aurora">Midnight Aurora</option>
-        <option value="citrus">Citrus Shine</option>
         <option value="hostglod">Høstglød</option>
         <option value="vinterfrost">Vinterfrost</option>
-        <option value="nexus">Nexus HUD</option>
         <option value="controlroom">Control Room</option>
       </select>
       <button class="btn-refresh" id="btn-refresh">Oppdater</button>
