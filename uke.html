@@ -204,6 +204,20 @@
     }
     body.theme-vinterfrost tr.weekend-start td.col-truls::after{display:block;color:#1C3B52;background:linear-gradient(135deg,#D7EBFB,#AFD4EF);box-shadow:0 4px 10px rgba(62,124,177,0.3)}
 
+    /* Spring Bloom: lyse, friske vårfarger - mint/lysegrønn bunn, blomsterrosa helg-aksent */
+    body.theme-spring{
+      --bg:#F3F8EF;--surface:#FFFFFF;--surface2:#E8F3E0;
+      --text:#28361F;--text2:#6E8560;--text3:#AEC29E;
+      --border:rgba(74,124,43,0.12);--border2:rgba(74,124,43,0.2);
+      --today-bg:#FCEEF5;--today-border:#E58FB3;
+      --weekend-line:#E58FB3;--day-radius:14px;
+      --p-gustav:#3E8E4F;--p-gustav-tint:#DFF2E2;
+      --p-rasmus:#3E8FC9;--p-rasmus-tint:#DCEEFB;
+      --p-kristin:#D97756;--p-kristin-tint:#FBE4DA;
+      --p-truls:#8B6FB0;--p-truls-tint:#ECE4F6;
+    }
+    body.theme-spring tr.weekend-start td.col-truls::after{display:block;color:#7A2E4A;background:linear-gradient(135deg,#FBD0E3,#F4A8C7);box-shadow:0 4px 10px rgba(229,143,179,0.35)}
+
     /* F — Control Room: mørkt fiolett glasspanel, dashbord-inspirert */
     body.theme-controlroom{
       background:radial-gradient(760px 420px at 85% -10%, rgba(123,97,255,0.20), transparent),radial-gradient(640px 400px at 0% 100%, rgba(66,140,255,0.12), transparent),linear-gradient(160deg,#171331,#100D22);
@@ -250,7 +264,8 @@
         <button class="nav-arrow" id="btn-next-week" aria-label="Neste uke">&#8250;</button>
       </div>
       <select class="theme-switch" id="theme-switch" aria-label="Fargetema">
-        <option value="standard">Warm Linen</option>
+        <option value="standard">Summer Breeze</option>
+        <option value="spring">Spring Bloom</option>
         <option value="aurora">Midnight Aurora</option>
         <option value="hostglod">Autumn Glow</option>
         <option value="vinterfrost">Winter Frost</option>

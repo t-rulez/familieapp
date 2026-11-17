@@ -48,7 +48,7 @@ let weekOffset = 0; // 0 = denne uken, 1 = neste uke
 // uke.html). Rent CSS-drevet: vi bytter bare en klasse på <body>, selve
 // render-funksjonene under er helt uendret uansett valgt tema.
 const THEME_KEY = 'uke_theme';
-const THEMES = ['standard', 'aurora', 'hostglod', 'vinterfrost', 'controlroom'];
+const THEMES = ['standard', 'spring', 'aurora', 'hostglod', 'vinterfrost', 'controlroom'];
 function getTheme() {
   const v = localStorage.getItem(THEME_KEY);
   return THEMES.includes(v) ? v : 'standard';
