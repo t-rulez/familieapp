@@ -460,8 +460,25 @@
       <div class="accordion-body" id="body-ai-settings">
         <div class="field-group" style="margin-bottom:16px;">
           <label class="field-label">Familieprofil</label>
-          <textarea id="set-family-context" rows="5" class="settings-input"
-            placeholder="F.eks: Gustav, gutt f. 2015, fotball Ready Rød (G2015), svømming Tøyen. Rasmus, gutt f. 2017, fotball Ready Gul (G2017)."
+          <div style="font-size:12.5px;color:var(--text2);background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;line-height:1.55;">
+            Slik skriver du det riktig:
+            <div style="margin-top:4px;">
+              • Start hver person på egen linje med navnet i <b>fet skrift</b>: <code style="background:var(--surface);padding:1px 4px;border-radius:4px;">**Gustav**:</code> etterfulgt av litt om personen<br/>
+              • Legg detaljer (lag, skole, fritidsaktiviteter) på egne linjer under, gjerne med <code style="background:var(--surface);padding:1px 4px;border-radius:4px;">-</code> foran<br/>
+              • Sett lag-/gruppenavn i <b>anførselstegn</b>, f.eks. <code style="background:var(--surface);padding:1px 4px;border-radius:4px;">"Lillegutt 2015 Ready"</code> – det gjør at AI-en kan kjenne igjen hvem en aktivitet gjelder, selv når tittelen alene er uklar
+            </div>
+          </div>
+          <textarea id="set-family-context" rows="12" class="settings-input"
+            placeholder="**Gustav**: gutt, født 2015, går på Holmen Skole 6C.
+- Fotball: &quot;Ready G2015 Rød&quot; (også kalt &quot;Ready G11 Rød&quot;)
+- Bandy (vinter), Ready: &quot;Knøtt 2015 Ready&quot; eller &quot;Lillegutt 2015 Ready&quot;
+
+**Rasmus**: gutt, født 2017, går på Holmen Skole 4C.
+- Fotball: &quot;Ready G2017 Gul&quot; (også kalt &quot;Ready G9 Gul&quot;)
+- Bandy (vinter), Ready: &quot;Minigutt 2017 Ready&quot; eller &quot;G17&quot;
+
+**Kristin**: mor, RS (Redningsselskapet)
+**Truls**: far, innebandy"
             style="resize:vertical;line-height:1.5;"></textarea>
           <div style="font-size:12px;color:var(--text3);margin-top:4px;">Hjelper AI-assistenten å forstå hvem som er hvem i familien.</div>
         </div>
