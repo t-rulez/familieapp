@@ -247,7 +247,7 @@ function renderTable(data) {
     const dateLabel = d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
     const rows = buildDayRows(day);
     rows.forEach((row, idx) => {
-      const classes = [day.is_today ? 'today' : '', idx === 0 ? 'day-start' : ''].filter(Boolean).join(' ');
+      const classes = [day.is_today ? 'today' : '', idx === 0 ? 'day-start' : '', (idx === 0 && (day.day || '').toLowerCase() === 'lørdag') ? 'weekend-start' : ''].filter(Boolean).join(' ');
       html += `<tr class="${classes}">`;
       if (idx === 0) {
         html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span></td>`;
