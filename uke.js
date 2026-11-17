@@ -306,12 +306,12 @@ function renderTable(data) {
         // virker riktig selv når det også står et skole-stikkord over.
         const skoleItems = idx === 0 ? skoleOf(day, p) : [];
         const skoleHtml = skoleItems.length
-          ? `<div class="skole-items">${skoleItems.map(i => `<div class="skole-item">${escapeHtml(i)}</div>`).join('')}</div>`
+          ? `<div class="skole-items">${skoleItems.map(i => `<div class="skole-item topic-click" data-topic="${escapeAttr(abbreviateNames(i))}">${displayText(i)}</div>`).join('')}</div>`
           : '';
         const pushBottom = shouldPushBottom(items) ? ' push-bottom' : '';
         const contentHtml = (!items || items.length === 0)
           ? ''
-          : items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
+          : items.map(i => `<div class="item topic-click" data-topic="${escapeAttr(abbreviateNames(i))}">${displayText(i)}</div>`).join('');
         html += `<td class="col-${p.toLowerCase()}" data-person="${p}">` +
           `<div class="td-inner">${skoleHtml}<div class="content${pushBottom}">${contentHtml}</div></div>` +
           '</td>';
@@ -366,8 +366,8 @@ function renderCards(data) {
       const skoleItems = skoleOf(day, p);
       const items = sortedAnnet(day, p);
       html += `<div class="card-person"><div class="phead"><span class="pdot p-${pl}-bg"></span><span class="pname p-${pl}-fg">${p.toUpperCase()}</span></div>`;
-      for (const s of skoleItems) html += `<div class="card-skole">${escapeHtml(s)}</div>`;
-      for (const i of items) html += `<div class="card-chip p-${pl}-tint">${escapeHtml(i)}</div>`;
+      for (const s of skoleItems) html += `<div class="card-skole topic-click" data-topic="${escapeAttr(abbreviateNames(s))}">${displayText(s)}</div>`;
+      for (const i of items) html += `<div class="card-chip p-${pl}-tint topic-click" data-topic="${escapeAttr(abbreviateNames(i))}">${displayText(i)}</div>`;
       html += '</div>';
     }
     html += '</div></div>';
@@ -437,7 +437,7 @@ function renderAgenda(data) {
         const items = skoleOf(day, p);
         skoleCount += items.length;
         html += `<div class="agenda-skole-col"><div class="agenda-skole-pname p-${pl}-fg">${p.toUpperCase()}</div>`;
-        for (const s of items) html += `<div class="agenda-skole-item">${escapeHtml(s)}</div>`;
+        for (const s of items) html += `<div class="agenda-skole-item topic-click" data-topic="${escapeAttr(abbreviateNames(s))}">${displayText(s)}</div>`;
         html += '</div>';
       }
       html += '</div>';
@@ -455,7 +455,7 @@ function renderAgenda(data) {
         }
         html += `<div class="agenda-row"><div class="agenda-time">${timeLabel}</div>` +
           `<div class="agenda-avatars">${avatars}</div>` +
-          `<div class="agenda-text">${escapeHtml(stripLeadingTime(e.text))}</div></div>`;
+          `<div class="agenda-text topic-click" data-topic="${escapeAttr(abbreviateNames(e.text))}">${displayText(stripLeadingTime(e.text))}</div></div>`;
       }
     }
     html += '</div>';
@@ -553,10 +553,40 @@ function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 // brytes da stygt midt i ordet uten bindestrek.
 const DAY_SHORT = { mandag:'Man', tirsdag:'Tir', onsdag:'Ons', torsdag:'Tor', fredag:'Fre', lørdag:'Lør', søndag:'Søn' };
 function shortDay(s) { return DAY_SHORT[(s || '').toLowerCase()] || capitalize(s); }
+// Forkorter familienavn til forbokstav INNI selve stikkord-teksten (f.eks. "Kristin
+// trening" -> "K trening", "Truls innebandy" -> "T innebandy") - ikke i kolonne-/
+// kort-overskrifter, der navnet allerede er det eneste som identifiserer hvem raden/
+// kortet gjelder. Bruker rett og slett forbokstaven i hvert navn i PEOPLE (ikke noe
+// hentet fra familieprofilen) - de fire navnene starter alltid på fire ulike
+// bokstaver, så dette er trygt uansett hva slags kallenavn som ellers er definert.
+// Kun hele ord byttes ut (ordgrense), slik at f.eks. "Kristins" eller et navn som
+// tilfeldigvis inngår i et annet ord ikke treffes feilaktig.
+function abbreviateNames(text) {
+  let result = text || '';
+  for (const p of PEOPLE) {
+    result = result.replace(new RegExp(`\\b${p}\\b`, 'g'), p.charAt(0));
+  }
+  return result;
+}
+
+function displayText(s) {
+  return escapeHtml(abbreviateNames(s));
+}
+
 function escapeHtml(s) {
   const div = document.createElement('div');
   div.textContent = s;
   return div.innerHTML;
+}
+
+// Som escapeHtml, men trygg å sette inn i et HTML-attributt (escaper også
+// anførselstegn) - brukes for data-topic på klikkbare stikkord.
+function escapeAttr(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function renderStatus(msg, isError) {
@@ -594,6 +624,83 @@ document.getElementById('btn-next-week').addEventListener('click', () => {
   if (weekOffset >= 1) return;
   weekOffset += 1;
   loadWeek();
+});
+
+// ─── Automatisk oppdatering ─────────────────────────────────────────────────
+// Oppdaterer ukesoversikten automatisk hver 2. time, forankret til kl 12:00 -
+// altså ved hver PARTALLSTIME (00, 02, 04 ... 12, 14 ... 22). iPad-en er ment å
+// stå fremme hele tiden, så dette holder visningen fersk uten at noen må trykke
+// "Oppdater" manuelt. Gjelder kun mens siden faktisk er åpen i nettleseren/PWA-en
+// (ingen bakgrunns-oppdatering når appen er lukket eller iPad-en i dvale).
+function msUntilNextEvenHour() {
+  const now = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0, 0);
+  if (next.getHours() % 2 !== 0) next.setHours(next.getHours() + 1);
+  if (next <= now) next.setHours(next.getHours() + 2);
+  return next.getTime() - now.getTime();
+}
+
+let autoRefreshTimer = null;
+function scheduleAutoRefresh() {
+  if (autoRefreshTimer) clearTimeout(autoRefreshTimer);
+  autoRefreshTimer = setTimeout(() => {
+    if (getToken()) loadWeek(true);
+    scheduleAutoRefresh();
+  }, msUntilNextEvenHour());
+}
+scheduleAutoRefresh();
+
+// ─── WhatsApp-temasøk ───────────────────────────────────────────────────────
+// Klikk på et stikkord/aktivitet (i alle tre layoutene) søker gjennom ALLE
+// lagrede WhatsApp-meldinger etter dialog knyttet til temaet, og viser en
+// AI-generert oppsummering i en modal/popup her på ukeoversikt-siden.
+const waOverlay = document.getElementById('wa-modal-overlay');
+const waTitle = document.getElementById('wa-modal-title');
+const waBody = document.getElementById('wa-modal-body');
+
+function closeWaModal() {
+  waOverlay.style.display = 'none';
+}
+document.getElementById('wa-modal-close').addEventListener('click', closeWaModal);
+waOverlay.addEventListener('click', (ev) => {
+  if (ev.target === waOverlay) closeWaModal();
+});
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape' && waOverlay.style.display !== 'none') closeWaModal();
+});
+
+async function openWhatsappModal(topic) {
+  waTitle.textContent = topic;
+  waBody.className = 'wa-modal-body loading';
+  waBody.textContent = 'Søker i WhatsApp...';
+  waOverlay.style.display = 'flex';
+  try {
+    const data = await apiFetch('/ai/whatsapp-topic', {
+      method: 'POST',
+      body: JSON.stringify({ topic })
+    });
+    if (data.found) {
+      waBody.className = 'wa-modal-body';
+      const count = (data.messages || []).length;
+      const metaLine = count
+        ? `<div class="wa-modal-meta">${count} melding${count === 1 ? '' : 'er'} funnet i WhatsApp</div>`
+        : '';
+      waBody.innerHTML = `<div>${escapeHtml(data.summary || '').replace(/\n/g, '<br>')}</div>${metaLine}`;
+    } else {
+      waBody.className = 'wa-modal-body wa-empty';
+      waBody.textContent = data.summary || 'Fant ingen WhatsApp-meldinger om dette.';
+    }
+  } catch (e) {
+    waBody.className = 'wa-modal-body wa-empty';
+    waBody.textContent = e.message || 'Klarte ikke å søke i WhatsApp.';
+  }
+}
+
+document.getElementById('table-wrap').addEventListener('click', (ev) => {
+  const el = ev.target.closest('.topic-click');
+  if (!el) return;
+  const topic = el.dataset.topic;
+  if (topic) openWhatsappModal(topic);
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────
