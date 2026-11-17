@@ -63,7 +63,7 @@
     .btn-refresh:active{opacity:0.7}
     .btn-refresh:disabled{opacity:0.5;cursor:default}
 
-    table{width:100%;border-collapse:separate;border-spacing:0 5px;table-layout:fixed}
+    table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
     th,td{padding:4px 10px;text-align:left;vertical-align:top}
     th{background:var(--bg);padding-top:8px;padding-bottom:6px}
     .person-head{display:flex;align-items:center;gap:6px}
@@ -93,12 +93,18 @@
     td.col-truls{background:var(--p-truls-tint)}
     tr.today td.col-rasmus,tr.today td.col-gustav,tr.today td.col-kristin,tr.today td.col-truls{background:var(--today-bg)}
 
-    /* Avrundede "rader" med litt luft mellom seg, i stedet for én sammenhengende
-       tabell - border-spacing gir luften, og radius på første/siste celle i hver
-       rad gir det avrundede inntrykket uten å måtte style hele raden som én blokk
-       (hver celle beholder sin egen personfarge). */
-    td.day-col{border-radius:10px 0 0 10px}
-    td.col-truls{border-radius:0 10px 10px 0}
+    /* Hver DAG skal se ut som ÉN avrundet blokk, selv når den (pga mange ulike
+       klokkeslett) består av flere underrader under hverandre - ikke én avrundet
+       boks per underrad. Derfor: ingen luft MELLOM underradene i samme dag (kun
+       en egen "day-gap"-rad MELLOM dager, se under i tabellen), og radius settes
+       kun på toppen av dagens FØRSTE underrad og bunnen av dagens SISTE underrad
+       (ofte samme rad, hvis dagen bare har én) - mellomliggende underrader
+       forblir firkantede, slik at dagblokken henger visuelt sammen som én enhet. */
+    tr.day-start td.day-col{border-top-left-radius:10px}
+    tr.day-end td.day-col{border-bottom-left-radius:10px}
+    tr.day-start td.col-truls{border-top-right-radius:10px}
+    tr.day-end td.col-truls{border-bottom-right-radius:10px}
+    tr.day-gap td{height:7px;padding:0;border:none;background:transparent}
 
     #status{text-align:center;padding:60px 20px;color:var(--text2);font-size:15px}
     #status.error{color:#A32D2D}
@@ -186,6 +192,7 @@
       td{display:flex;gap:10px;border-bottom:1px solid var(--border);align-items:flex-start;padding:6px 10px;font-size:13px}
       td.day-col{background:var(--surface2) !important;font-size:14px;border-radius:0}
       td.col-truls{border-radius:0}
+      tr.day-gap{display:none}
       td::before{content:attr(data-person);font-size:11px;font-weight:600;color:var(--text2);min-width:60px;flex-shrink:0;padding-top:1px}
       td.day-col::before{content:none}
       .item{font-size:13px}

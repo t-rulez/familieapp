@@ -279,12 +279,19 @@ function renderTable(data) {
   }
   html += '</tr></thead><tbody>';
 
-  for (const day of data.days) {
+  const dayList = data.days;
+  dayList.forEach((day, dayIdx) => {
     const d = new Date(day.date);
     const dateLabel = d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
     const rows = buildDayRows(day);
     rows.forEach((row, idx) => {
-      const classes = [day.is_today ? 'today' : '', idx === 0 ? 'day-start' : '', (idx === 0 && (day.day || '').toLowerCase() === 'lørdag') ? 'weekend-start' : ''].filter(Boolean).join(' ');
+      const isLast = idx === rows.length - 1;
+      const classes = [
+        day.is_today ? 'today' : '',
+        idx === 0 ? 'day-start' : '',
+        isLast ? 'day-end' : '',
+        (idx === 0 && (day.day || '').toLowerCase() === 'lørdag') ? 'weekend-start' : ''
+      ].filter(Boolean).join(' ');
       html += `<tr class="${classes}">`;
       if (idx === 0) {
         html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span></td>`;
@@ -311,7 +318,14 @@ function renderTable(data) {
       }
       html += '</tr>';
     });
-  }
+    // Luft MELLOM dager (ikke mellom underrader av samme dag) - en egen, tom
+    // rad med litt høyde, slik at hver dag framstår som ÉN avrundet blokk selv
+    // når den består av flere underrader (se CSS: kun første/siste underrad i
+    // en dag får avrundede hjørner, ikke hver enkelt rad).
+    if (dayIdx < dayList.length - 1) {
+      html += `<tr class="day-gap" aria-hidden="true"><td colspan="${PEOPLE.length + 1}"></td></tr>`;
+    }
+  });
   html += '</tbody></table>';
 
   document.getElementById('table-wrap').innerHTML = html;
@@ -465,7 +479,10 @@ function distributeExtraHeight() {
   const tbody = table.querySelector('tbody');
   if (!thead || !tbody) return;
 
-  const rows = Array.from(tbody.querySelectorAll('tr'));
+  // "day-gap"-radene (luften MELLOM dager, se renderTable) skal ha en fast,
+  // liten høyde satt i CSS - de skal aldri regnes med i eller selv få noe av den
+  // ekstra, utstrakte høyden som fordeles på de virkelige innholdsradene under.
+  const rows = Array.from(tbody.querySelectorAll('tr:not(.day-gap)'));
 
   // Under 620px går tabellen om til en stablet, mobilvennlig kort-liste (se
   // media-query i uke.html) - <thead> skjules og <tr>/<td> blir flex-blokker i
