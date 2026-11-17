@@ -168,19 +168,24 @@ function buildDayRows(day) {
     return ta - tb;
   });
 
-  const peopleByBucket = {};
+  // VIKTIG: én rad PER TIDSBØTTE (uansett om den deles av 2+ personer eller bare
+  // har kjent tid for én person) - ikke bare bøtter som faktisk deles, pluss én
+  // felles "rest"-rad for alt annet. Den gamle modellen samlet ALLE bøtter med kun
+  // 1 person i én enkelt delt "rest"-rad, og ga den raden én sorteringsnøkkel basert
+  // på det tidligste tidspunktet BLANT ALLE PERSONER i raden - det førte til at en
+  // persons SENE, unike tidspunkt (f.eks. Kristin kl 20:00) kunne "låne" en tidlig
+  // plassering i tabellen bare fordi en ANNEN person (f.eks. Truls kl 14:00) også
+  // hadde noe unikt i samme rest-rad. Med én rad per bøtte oppstår aldri denne
+  // sammenblandingen - hver rads sorteringsnøkkel er alltid bøttens eget tidspunkt.
+  const bucketsSeen = new Set();
   for (const e of entries) {
     const b = bucketOf(e.timeKey);
-    if (b === null) continue;
-    (peopleByBucket[b] ||= new Set()).add(e.person);
+    if (b !== null) bucketsSeen.add(b);
   }
-  const sharedBuckets = Object.keys(peopleByBucket)
-    .map(Number)
-    .filter(b => peopleByBucket[b].size >= 2)
-    .sort((a, b) => a - b);
+  const sortedBuckets = Array.from(bucketsSeen).sort((a, b) => a - b);
 
   const rows = [];
-  for (const bucket of sharedBuckets) {
+  for (const bucket of sortedBuckets) {
     const cells = Object.fromEntries(PEOPLE.map(p => [p, []]));
     for (const e of entries) {
       if (bucketOf(e.timeKey) === bucket) cells[e.person].push(e.text);
@@ -188,34 +193,18 @@ function buildDayRows(day) {
     rows.push({ cells });
   }
 
-  const restCells = Object.fromEntries(PEOPLE.map(p => [p, []]));
-  let hasRest = false;
+  // Stikkord helt UTEN kjent tidspunkt har ingenting å sorteres kronologisk etter -
+  // disse samles i én felles rad til slutt, etter alle tidfestede rader.
+  const noTimeCells = Object.fromEntries(PEOPLE.map(p => [p, []]));
+  let hasNoTime = false;
   for (const e of entries) {
-    const b = bucketOf(e.timeKey);
-    if (b !== null && sharedBuckets.includes(b)) continue;
-    restCells[e.person].push(e.text);
-    hasRest = true;
+    if (bucketOf(e.timeKey) !== null) continue;
+    noTimeCells[e.person].push(e.text);
+    hasNoTime = true;
   }
-  if (hasRest || rows.length === 0) {
-    rows.push({ cells: restCells });
+  if (hasNoTime || rows.length === 0) {
+    rows.push({ cells: noTimeCells });
   }
-
-  // Rekkefølgen på radene over var tidligere "delte bøtter (stigende), så rest-raden
-  // til slutt" - uavhengig av om rest-raden faktisk inneholdt et TIDLIGERE tidspunkt enn
-  // de delte bøttene (f.eks. 16:50 unikt for én person havner i rest-raden, mens 19:30
-  // deles av to personer og havner i en egen, tidligere-plassert bøtte-rad - da vises
-  // 19:30 FØR 16:50, selv om de ligger i samme celle/dag). Sorter derfor alle radene
-  // (delte bøtter OG rest) sammen på det tidligste kjente klokkeslettet i hver rad, slik
-  // at rekkefølgen alltid blir kronologisk riktig på tvers av rad-typene også.
-  rows.forEach(row => {
-    const mins = Object.values(row.cells)
-      .flat()
-      .map(t => timeToMinutes(extractTimeKey(t)))
-      .filter(m => m !== null);
-    row._sortKey = mins.length ? Math.min(...mins) : Infinity;
-  });
-  rows.sort((a, b) => a._sortKey - b._sortKey);
-  rows.forEach(row => { delete row._sortKey; });
 
   return rows;
 }
