@@ -303,7 +303,7 @@ function renderTable(data) {
           : '';
         const pushBottom = shouldPushBottom(items) ? ' push-bottom' : '';
         const contentHtml = (!items || items.length === 0)
-          ? '<span class="empty-cell">–</span>'
+          ? ''
           : items.map(i => `<div class="item">${escapeHtml(i)}</div>`).join('');
         html += `<td class="col-${p.toLowerCase()}" data-person="${p}">` +
           `<div class="td-inner">${skoleHtml}<div class="content${pushBottom}">${contentHtml}</div></div>` +
@@ -353,11 +353,7 @@ function renderCards(data) {
       const items = sortedAnnet(day, p);
       html += `<div class="card-person"><div class="phead"><span class="pdot p-${pl}-bg"></span><span class="pname p-${pl}-fg">${p.toUpperCase()}</span></div>`;
       for (const s of skoleItems) html += `<div class="card-skole">${escapeHtml(s)}</div>`;
-      if (items.length === 0) {
-        html += '<span class="card-empty">–</span>';
-      } else {
-        for (const i of items) html += `<div class="card-chip p-${pl}-tint">${escapeHtml(i)}</div>`;
-      }
+      for (const i of items) html += `<div class="card-chip p-${pl}-tint">${escapeHtml(i)}</div>`;
       html += '</div>';
     }
     html += '</div></div>';
@@ -415,14 +411,26 @@ function renderAgenda(data) {
     if (isWeekend) html += '<span class="helg-badge">HELG</span>';
     html += '</div>';
 
-    const allSkole = [];
-    for (const p of PEOPLE) {
-      for (const s of skoleOf(day, p)) allSkole.push(s);
+    // Lekser vises i EGNE kolonner per person (ikke slått sammen til én liste) -
+    // ellers er det umulig å se om en lekse gjelder Gustav eller Rasmus når begge
+    // har lekser samme dag.
+    const skolePeople = PEOPLE.filter(p => skoleOf(day, p).length > 0);
+    let skoleCount = 0;
+    if (skolePeople.length) {
+      html += '<div class="agenda-skole-grid">';
+      for (const p of skolePeople) {
+        const pl = p.toLowerCase();
+        const items = skoleOf(day, p);
+        skoleCount += items.length;
+        html += `<div class="agenda-skole-col"><div class="agenda-skole-pname p-${pl}-fg">${p.toUpperCase()}</div>`;
+        for (const s of items) html += `<div class="agenda-skole-item">${escapeHtml(s)}</div>`;
+        html += '</div>';
+      }
+      html += '</div>';
     }
-    for (const s of allSkole) html += `<div class="agenda-skole">${escapeHtml(s)}</div>`;
 
     const entries = buildAgendaEntries(day);
-    if (entries.length === 0 && allSkole.length === 0) {
+    if (entries.length === 0 && skoleCount === 0) {
       html += '<div class="agenda-empty">Ingen avtaler</div>';
     } else {
       for (const e of entries) {
@@ -458,6 +466,22 @@ function distributeExtraHeight() {
   if (!thead || !tbody) return;
 
   const rows = Array.from(tbody.querySelectorAll('tr'));
+
+  // Under 620px går tabellen om til en stablet, mobilvennlig kort-liste (se
+  // media-query i uke.html) - <thead> skjules og <tr>/<td> blir flex-blokker i
+  // stedet for tabell-rader/-celler. Eksplisitte høyder satt her er beregnet for
+  // DESKTOP-oppsettet og passer ikke dette layoutet i det hele tatt; satt likevel,
+  // ga de et for lite/feil mål som i praksis gjorde alt innhold usynlig på smale
+  // skjermer (selve teksten fantes i DOM-en, men ble aldri synlig). Hopper derfor
+  // helt over høyde-fordelingen her og lar mobil-CSS-en style seg selv fritt.
+  if (window.matchMedia('(max-width: 620px)').matches) {
+    rows.forEach(tr => {
+      tr.style.height = '';
+      Array.from(tr.children).forEach(td => { td.style.height = ''; });
+    });
+    return;
+  }
+
   rows.forEach(tr => {
     tr.style.height = '';
     Array.from(tr.children).forEach(td => { td.style.height = ''; });
