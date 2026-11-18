@@ -111,6 +111,7 @@ document.getElementById('btn-login').addEventListener('click', async () => {
     saveAuth(data.token, data.user);
     errEl.textContent = '';
     await loadWeek();
+    initHeating();
   } catch (e) {
     errEl.textContent = e.message || 'Innlogging feilet';
   } finally {
@@ -532,6 +533,89 @@ function scheduleAutoRefresh() {
   }, msUntilNextEvenHour());
 }
 scheduleAutoRefresh();
+
+// ─── Varmestyring (home-control, via backend-proxy) ──────────────────────────
+// Henter/setter varmenivå (1-5) gjennom /heating/* på familieapp-backend, som
+// igjen videresender til home-control-tjenesten. Ingen sanntid/push der, så vi
+// poller GET /heating/level jevnlig (hvert 45. sekund). PUT sendes KUN når
+// brukeren slipper slideren ('change', ikke 'input'), aldri løpende under drag -
+// Adax tåler bare én skriving per ca. 30 sekund.
+const HEAT_COLORS = { 1: '#6FA8DC', 2: '#4FBF8B', 3: '#E8C547', 4: '#E8974B', 5: '#E85D4B' };
+let heatPollTimer = null;
+let heatAvailable = true; // settes til false hvis backend sier varmestyring ikke er konfigurert
+
+function heatSetVisual(level) {
+  const panel = document.getElementById('heating-panel');
+  const slider = document.getElementById('heat-slider');
+  const num = document.getElementById('heat-num');
+  slider.value = level;
+  num.textContent = level;
+  panel.style.setProperty('--heat-color', HEAT_COLORS[level] || HEAT_COLORS[3]);
+}
+
+async function heatRefreshLevel() {
+  try {
+    const data = await apiFetch('/heating/level');
+    if (typeof data.level === 'number') heatSetVisual(data.level);
+    document.getElementById('heating-panel').hidden = false;
+    heatAvailable = true;
+  } catch (e) {
+    // Varmestyring ikke konfigurert, eller home-control utilgjengelig - skjul
+    // panelet heller enn å vise en halvferdig/feilende kontroll.
+    heatAvailable = false;
+    document.getElementById('heating-panel').hidden = true;
+  }
+}
+
+async function heatRefreshTimerBadge() {
+  if (!heatAvailable) return;
+  try {
+    const data = await apiFetch('/heating/timers');
+    const statusEl = document.getElementById('heat-status');
+    if (data && data.enabled) statusEl.textContent = 'Timer på';
+    else statusEl.textContent = '';
+  } catch (e) {
+    // Valgfritt - stillferdig ignorert hvis det feiler.
+  }
+}
+
+function scheduleHeatPoll() {
+  if (heatPollTimer) clearInterval(heatPollTimer);
+  heatPollTimer = setInterval(() => {
+    if (!getToken()) return;
+    heatRefreshLevel();
+    heatRefreshTimerBadge();
+  }, 45000);
+}
+
+const heatSlider = document.getElementById('heat-slider');
+heatSlider.addEventListener('input', () => {
+  // Kun visuell oppdatering mens man drar - ingen nettverkskall her.
+  const level = parseInt(heatSlider.value, 10);
+  document.getElementById('heat-num').textContent = level;
+  document.getElementById('heating-panel').style.setProperty('--heat-color', HEAT_COLORS[level] || HEAT_COLORS[3]);
+});
+heatSlider.addEventListener('change', async () => {
+  const level = parseInt(heatSlider.value, 10);
+  const statusEl = document.getElementById('heat-status');
+  statusEl.textContent = 'Sender...';
+  try {
+    await apiFetch('/heating/level', { method: 'PUT', body: JSON.stringify({ level }) });
+    // "Sendt", ikke "Ferdig" - Mill/MELCloud bekrefter raskt, men Adax kan bruke
+    // opptil 10 minutter på å faktisk endre seg fysisk hos ovnen.
+    statusEl.textContent = 'Sendt';
+    setTimeout(() => { if (statusEl.textContent === 'Sendt') heatRefreshTimerBadge(); }, 4000);
+  } catch (e) {
+    statusEl.textContent = 'Feil - prøv igjen';
+  }
+});
+
+function initHeating() {
+  heatRefreshLevel();
+  heatRefreshTimerBadge();
+  scheduleHeatPoll();
+}
+if (getToken()) initHeating();
 
 // ─── Start ────────────────────────────────────────────────────────────────
 
