@@ -66,23 +66,28 @@
     /* Fast høyde (ikke flex:1) - slideren skal sitte samlet øverst, ikke sentreres
        midt i hele kolonnen med tomrom rundt. Resten av kolonnen går til romlisten. */
     .heat-track{flex:0 0 120px;height:120px;display:flex;align-items:center;justify-content:center;width:100%}
+    /* NB: "writing-mode: vertical-lr" for å lage en vertikal range-input er IKKE
+       pålitelig på tvers av Safari/iPadOS (slideren kan kollapse til kun en sirkel/
+       prikk der). Bruker i stedet den velprøvde transform:rotate(-90deg)-metoden,
+       med forhåndsbredden (108px) satt til å matche .heat-track sin faste høyde
+       (120px, minus litt margin til thumb) - fungerer identisk i alle nettlesere. */
     #heat-slider{
       -webkit-appearance:none;appearance:none;
-      writing-mode:vertical-lr;direction:rtl;
-      width:30px;height:100%;margin:0;background:transparent;cursor:pointer;
+      width:108px;height:34px;margin:0;background:transparent;
+      transform:rotate(-90deg);cursor:pointer;flex-shrink:0;
     }
     #heat-slider::-webkit-slider-runnable-track{
-      width:6px;border-radius:999px;
-      background:linear-gradient(0deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B);
+      height:6px;border-radius:999px;
+      background:linear-gradient(90deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B);
     }
     #heat-slider::-webkit-slider-thumb{
       -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
       background:#fff;border:3px solid var(--heat-color);box-shadow:0 1px 4px rgba(0,0,0,0.25);
-      margin-left:-9px;transition:border-color 0.15s;
+      margin-top:-9px;transition:border-color 0.15s;
     }
     #heat-slider::-moz-range-track{
-      width:6px;border-radius:999px;
-      background:linear-gradient(0deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B);
+      height:6px;border-radius:999px;
+      background:linear-gradient(90deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B);
     }
     #heat-slider::-moz-range-thumb{
       width:24px;height:24px;border-radius:50%;border:3px solid var(--heat-color);
@@ -205,7 +210,7 @@
       #content-row{flex-direction:column}
       #heating-panel{width:100%;flex-direction:row;padding:10px 16px;gap:14px}
       .heat-track{flex:1;width:auto;height:auto}
-      #heat-slider{writing-mode:horizontal-tb;direction:ltr;width:100%;height:34px}
+      #heat-slider{transform:none;width:100%;height:34px}
       #heat-slider::-webkit-slider-runnable-track{width:auto;height:6px;background:linear-gradient(90deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B)}
       #heat-slider::-webkit-slider-thumb{margin-left:0;margin-top:-9px}
       .heat-status{min-height:0}
