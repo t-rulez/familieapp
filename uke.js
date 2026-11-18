@@ -599,7 +599,7 @@ async function heatRefreshDevices() {
       if (isOffline) {
         t = 0; // Vis 0 (ikke siste kjente temp) når frakoblet - signaliserer tydeligere at verdien ikke er til å stole på.
       } else if (typeof d.current_temp === 'number') {
-        t = Number.isInteger(d.current_temp) ? d.current_temp : Math.round(d.current_temp * 10) / 10;
+        t = Math.round(d.current_temp);
       }
       const label = d.room || d.name || '';
       const isHeating = !!(d.extra && d.extra.is_heating);
