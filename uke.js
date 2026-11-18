@@ -567,6 +567,36 @@ async function heatRefreshLevel() {
   }
 }
 
+// Henter romtemperaturer fra home-control (romnavn + nåværende temp + et lite
+// varmeikon som viser om ovnen varmer akkurat nå - ingen mål/status utover det).
+// Svaret er {"devices": [...], "errors": {...}} - vi bruker kun devices-listen.
+// Romnavn: "room" er visningsnavnet, men Mill-ovner kan ha tom "room" (ikke
+// koblet til et rom) - da faller vi tilbake til "name" (ovnens eget navn) i
+// stedet for å vise en tom etikett. Varmer-status: extra.is_heating (målt for
+// Mill, estimert ut fra forbruk - og dermed litt forsinket/upresis - for Adax
+// og MELCloud).
+async function heatRefreshDevices() {
+  if (!heatAvailable) return;
+  try {
+    const data = await apiFetch('/heating/devices');
+    const list = Array.isArray(data.devices) ? data.devices : [];
+    const html = list.map(d => {
+      let t = '–';
+      if (typeof d.current_temp === 'number') {
+        t = Number.isInteger(d.current_temp) ? d.current_temp : Math.round(d.current_temp * 10) / 10;
+      }
+      const label = d.room || d.name || '';
+      const isHeating = !!(d.extra && d.extra.is_heating);
+      return `<div class="heat-device"><div class="heat-device-name">${escapeHtml(label)}</div>` +
+        `<div class="heat-device-row"><span class="heat-device-temp">${t}°</span>` +
+        `<span class="heat-flame${isHeating ? ' on' : ''}">🔥</span></div></div>`;
+    }).join('');
+    document.getElementById('heat-devices').innerHTML = html;
+  } catch (e) {
+    // Valgfritt - stillferdig ignorert hvis det feiler.
+  }
+}
+
 async function heatRefreshTimerBadge() {
   if (!heatAvailable) return;
   try {
@@ -585,6 +615,7 @@ function scheduleHeatPoll() {
     if (!getToken()) return;
     heatRefreshLevel();
     heatRefreshTimerBadge();
+    heatRefreshDevices();
   }, 45000);
 }
 
@@ -613,6 +644,7 @@ heatSlider.addEventListener('change', async () => {
 function initHeating() {
   heatRefreshLevel();
   heatRefreshTimerBadge();
+  heatRefreshDevices();
   scheduleHeatPoll();
 }
 if (getToken()) initHeating();
