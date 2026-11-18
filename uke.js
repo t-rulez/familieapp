@@ -567,6 +567,17 @@ async function heatRefreshLevel() {
   }
 }
 
+// Lite SVG wifi-ikon med diagonal strek (rødt) - vises i stedet for flamme-ikonet
+// når en ovn er frakoblet (online:false). Bygget som eget SVG i stedet for en
+// tekst-emoji, siden det ikke finnes noen standard "wifi med strek over"-emoji i
+// Unicode - dette garanterer identisk, skarpt utseende på alle enheter.
+const HEAT_OFFLINE_ICON = '<svg class="heat-offline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M5 12.5a11 11 0 0 1 14 0"/>' +
+  '<path d="M8.5 16a6 6 0 0 1 7 0"/>' +
+  '<circle cx="12" cy="19" r="1.1" fill="currentColor" stroke="none"/>' +
+  '<line x1="3" y1="3" x2="21" y2="21"/>' +
+  '</svg>';
+
 // Henter romtemperaturer fra home-control (romnavn + nåværende temp + et lite
 // varmeikon som viser om ovnen varmer akkurat nå - ingen mål/status utover det).
 // Svaret er {"devices": [...], "errors": {...}} - vi bruker kun devices-listen.
@@ -574,22 +585,29 @@ async function heatRefreshLevel() {
 // koblet til et rom) - da faller vi tilbake til "name" (ovnens eget navn) i
 // stedet for å vise en tom etikett. Varmer-status: extra.is_heating (målt for
 // Mill, estimert ut fra forbruk - og dermed litt forsinket/upresis - for Adax
-// og MELCloud).
+// og MELCloud). Frakoblet (online:false): gradtallet vises grått og flamme-
+// ikonet erstattes med det røde wifi-med-strek-ikonet, uansett is_heating siden
+// status uansett er ukjent når ovnen ikke svarer.
 async function heatRefreshDevices() {
   if (!heatAvailable) return;
   try {
     const data = await apiFetch('/heating/devices');
     const list = Array.isArray(data.devices) ? data.devices : [];
     const html = list.map(d => {
+      const isOffline = d.online === false;
       let t = '–';
-      if (typeof d.current_temp === 'number') {
+      if (isOffline) {
+        t = 0; // Vis 0 (ikke siste kjente temp) når frakoblet - signaliserer tydeligere at verdien ikke er til å stole på.
+      } else if (typeof d.current_temp === 'number') {
         t = Number.isInteger(d.current_temp) ? d.current_temp : Math.round(d.current_temp * 10) / 10;
       }
       const label = d.room || d.name || '';
       const isHeating = !!(d.extra && d.extra.is_heating);
+      const tempClass = isOffline ? ' offline' : '';
+      const statusIcon = isOffline ? HEAT_OFFLINE_ICON : `<span class="heat-flame${isHeating ? ' on' : ''}">🔥</span>`;
       return `<div class="heat-device"><div class="heat-device-name">${escapeHtml(label)}</div>` +
-        `<div class="heat-device-row"><span class="heat-device-temp">${t}°</span>` +
-        `<span class="heat-flame${isHeating ? ' on' : ''}">🔥</span></div></div>`;
+        `<div class="heat-device-row"><span class="heat-device-temp${tempClass}">${t}°</span>` +
+        `${statusIcon}</div></div>`;
     }).join('');
     document.getElementById('heat-devices').innerHTML = html;
   } catch (e) {
