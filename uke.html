@@ -21,7 +21,7 @@
       --text:#1A1A18;--text2:#6B6B65;--text3:#A8A8A2;
       --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
       --today-bg:#FFF6DE;--today-border:#E3B341;
-      --weekend-line:#C9A227;--weekend-bg:rgba(201,162,39,0.12);--day-radius:10px;
+      --weekend-line:#C9A227;--weekend-overlay:rgba(0,0,0,0.07);--day-radius:10px;
       --font:'DM Sans',sans-serif;
       --p-rasmus:#185FA5;  --p-rasmus-tint:#E8F1FA;  --p-rasmus-tint-dark:#102840;
       --p-gustav:#2D6A4F;  --p-gustav-tint:#E9F4EE;  --p-gustav-tint-dark:#102A1C;
@@ -33,7 +33,7 @@
       --text:#F0EFE8;--text2:#9B9B94;--text3:#5A5A55;
       --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
       --today-bg:#2A2410;--today-border:#8A6D1C;
-      --weekend-bg:rgba(201,162,39,0.09);
+      --weekend-overlay:rgba(255,255,255,0.08);
       --p-rasmus-tint:var(--p-rasmus-tint-dark);--p-gustav-tint:var(--p-gustav-tint-dark);
       --p-kristin-tint:var(--p-kristin-tint-dark);--p-truls-tint:var(--p-truls-tint-dark);
     }}
@@ -156,10 +156,15 @@
     td.col-gustav{background:var(--p-gustav-tint)}
     td.col-kristin{background:var(--p-kristin-tint)}
     td.col-truls{background:var(--p-truls-tint)}
-    /* Lørdag og søndag får en egen fargetone (hele dagens blokk), i stedet for
-       en strek. "I dag" skal fortsatt vinne visuelt hvis dagens dato er en
-       helgedag, så today-regelen kommer etter og overstyrer. */
-    tr.weekend td.col-rasmus,tr.weekend td.col-gustav,tr.weekend td.col-kristin,tr.weekend td.col-truls{background:var(--weekend-bg)}
+    /* Lørdag og søndag beholder hver persons egen farge, men et tynt lag mørkere
+       (lyse temaer) eller lysere (mørke temaer) legges over - altså samme
+       fargefamilie som resten av uken, bare en anelse mer markert. "I dag" skal
+       fortsatt vinne visuelt hvis dagens dato er en helgedag, så today-regelen
+       kommer etter og overstyrer. */
+    tr.weekend td.col-rasmus{background:linear-gradient(var(--weekend-overlay),var(--weekend-overlay)),var(--p-rasmus-tint)}
+    tr.weekend td.col-gustav{background:linear-gradient(var(--weekend-overlay),var(--weekend-overlay)),var(--p-gustav-tint)}
+    tr.weekend td.col-kristin{background:linear-gradient(var(--weekend-overlay),var(--weekend-overlay)),var(--p-kristin-tint)}
+    tr.weekend td.col-truls{background:linear-gradient(var(--weekend-overlay),var(--weekend-overlay)),var(--p-truls-tint)}
     tr.today td.col-rasmus,tr.today td.col-gustav,tr.today td.col-kristin,tr.today td.col-truls{background:var(--today-bg)}
 
     /* Hver DAG skal se ut som ÉN avrundet blokk, selv når den (pga mange ulike
@@ -238,7 +243,7 @@
       --text:#F2F3F6;--text2:#8D93A1;--text3:#5A6270;
       --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.16);
       --today-bg:rgba(230,178,66,0.12);--today-border:#E6B242;
-      --weekend-line:#E6B242;--weekend-bg:rgba(230,178,66,0.07);--day-radius:14px;
+      --weekend-line:#E6B242;--weekend-overlay:rgba(255,255,255,0.10);--day-radius:14px;
       --p-gustav:#6EE7B7;--p-gustav-tint:rgba(110,231,183,0.14);
       --p-rasmus:#7CC2FF;--p-rasmus-tint:rgba(124,194,255,0.14);
       --p-kristin:#FFAB8A;--p-kristin-tint:rgba(255,171,138,0.14);
@@ -252,7 +257,7 @@
       --text:#3B2A1E;--text2:#8A7458;--text3:#C2AD8D;
       --border:rgba(139,90,43,0.12);--border2:rgba(139,90,43,0.2);
       --today-bg:#F3E3C4;--today-border:#C9922E;
-      --weekend-line:#D9A03C;--weekend-bg:rgba(217,160,60,0.14);--day-radius:12px;
+      --weekend-line:#D9A03C;--weekend-overlay:rgba(0,0,0,0.06);--day-radius:12px;
       --p-gustav:#5C7A3C;--p-gustav-tint:#E9F0DC;
       --p-rasmus:#C2671C;--p-rasmus-tint:#FBE7CB;
       --p-kristin:#842F34;--p-kristin-tint:#F6DEDD;
@@ -266,7 +271,7 @@
       --text:#1E2B36;--text2:#6E8494;--text3:#A9BCC8;
       --border:rgba(62,124,177,0.12);--border2:rgba(62,124,177,0.2);
       --today-bg:#DCEAF8;--today-border:#3E7CB1;
-      --weekend-line:#3E7CB1;--weekend-bg:rgba(62,124,177,0.12);--day-radius:12px;
+      --weekend-line:#3E7CB1;--weekend-overlay:rgba(0,0,0,0.07);--day-radius:12px;
       --p-gustav:#2F6F62;--p-gustav-tint:#DCEEE8;
       --p-rasmus:#3E7CB1;--p-rasmus-tint:#DCEAF8;
       --p-kristin:#A32D3F;--p-kristin-tint:#F7DEE2;
@@ -280,7 +285,7 @@
       --text:#28361F;--text2:#6E8560;--text3:#AEC29E;
       --border:rgba(74,124,43,0.12);--border2:rgba(74,124,43,0.2);
       --today-bg:#FCEEF5;--today-border:#E58FB3;
-      --weekend-line:#E58FB3;--weekend-bg:rgba(229,143,179,0.14);--day-radius:14px;
+      --weekend-line:#E58FB3;--weekend-overlay:rgba(0,0,0,0.06);--day-radius:14px;
       --p-gustav:#3E8E4F;--p-gustav-tint:#DFF2E2;
       --p-rasmus:#3E8FC9;--p-rasmus-tint:#DCEEFB;
       --p-kristin:#D97756;--p-kristin-tint:#FBE4DA;
@@ -295,7 +300,7 @@
       --text:#ECE9F7;--text2:#9D97C4;--text3:#655E8C;
       --border:rgba(255,255,255,0.10);--border2:rgba(255,255,255,0.18);
       --today-bg:rgba(255,154,77,0.14);--today-border:#FF9A4D;
-      --weekend-line:#FF9A4D;--weekend-bg:rgba(255,154,77,0.10);--day-radius:16px;
+      --weekend-line:#FF9A4D;--weekend-overlay:rgba(255,255,255,0.10);--day-radius:16px;
       --p-gustav:#4ADE94;--p-gustav-tint:rgba(74,222,148,0.12);
       --p-rasmus:#79B8FF;--p-rasmus-tint:rgba(121,184,255,0.12);
       --p-kristin:#FF8FC0;--p-kristin-tint:rgba(255,143,192,0.12);
