@@ -133,8 +133,13 @@
     th:first-child{padding-left:6px;padding-right:3px}
     td.day-col{padding-left:6px;padding-right:3px;font-weight:600;font-size:16px;background:var(--surface) !important;white-space:nowrap}
     td.day-col .date{display:block;font-size:12px;color:var(--text3);font-weight:400;margin-left:0}
-    tr.today td.day-col{border-left:3px solid var(--today-border)}
-    tr.weekend-start td{border-top:2.5px solid var(--weekend-line)}
+    /* "I dag"-ramme: samme prinsipp som helge-streken under (en tynn, hel linje
+       på tvers av hele raden) - men horisontalt rundt HELE dagens blokk: en
+       strek over dagens første underrad og en strek under dagens siste
+       underrad, i stedet for den tidligere venstre aksent-streken. */
+    tr.today.day-start td{border-top:1.5px solid var(--today-border)}
+    tr.today.day-end td{border-bottom:1.5px solid var(--today-border)}
+    tr.weekend-start td{border-top:1.5px solid var(--weekend-line)}
     tr.weekend-start td.col-truls{position:relative}
     tr.weekend-start td.col-truls::after{
       content:"HELG";position:absolute;top:-9px;right:2px;font-size:9px;font-weight:700;
