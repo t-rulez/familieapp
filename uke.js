@@ -278,6 +278,7 @@ function renderTable(data) {
         day.is_today ? 'today' : '',
         idx === 0 ? 'day-start' : '',
         isLast ? 'day-end' : '',
+        ['lørdag', 'søndag'].includes((day.day || '').toLowerCase()) ? 'weekend' : '',
         (idx === 0 && (day.day || '').toLowerCase() === 'lørdag') ? 'weekend-start' : ''
       ].filter(Boolean).join(' ');
       html += `<tr class="${classes}">`;
@@ -511,26 +512,38 @@ document.getElementById('btn-next-week').addEventListener('click', () => {
 });
 
 // ─── Automatisk oppdatering ─────────────────────────────────────────────────
-// Oppdaterer ukesoversikten automatisk hver 2. time, forankret til kl 12:00 -
-// altså ved hver PARTALLSTIME (00, 02, 04 ... 12, 14 ... 22). iPad-en er ment å
-// stå fremme hele tiden, så dette holder visningen fersk uten at noen må trykke
-// "Oppdater" manuelt. Gjelder kun mens siden faktisk er åpen i nettleseren/PWA-en
+// Oppdaterer ukesoversikten (med tvungent AI-kall, refresh=true) på faste
+// klokkeslett hver dag: 07, 16, 18, 20, 22 - med 12:00 i TILLEGG på lørdag og
+// søndag. iPad-en er ment å stå fremme hele tiden, så dette holder visningen
+// fersk uten at noen må trykke "Oppdater" manuelt, samtidig som AI-bruken er
+// begrenset til noen få faste tidspunkt per dag i stedet for å poll-oppdatere
+// kontinuerlig. Gjelder kun mens siden faktisk er åpen i nettleseren/PWA-en
 // (ingen bakgrunns-oppdatering når appen er lukket eller iPad-en i dvale).
-function msUntilNextEvenHour() {
+const AUTO_REFRESH_HOURS_WEEKDAY = [7, 16, 18, 20, 22];
+const AUTO_REFRESH_HOURS_WEEKEND = [7, 12, 16, 18, 20, 22]; // lørdag(6)/søndag(0): 12:00 i tillegg
+
+function nextAutoRefreshTime() {
   const now = new Date();
-  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0, 0);
-  if (next.getHours() % 2 !== 0) next.setHours(next.getHours() + 1);
-  if (next <= now) next.setHours(next.getHours() + 2);
-  return next.getTime() - now.getTime();
+  for (let dayOffset = 0; dayOffset <= 7; dayOffset++) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset);
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const hours = isWeekend ? AUTO_REFRESH_HOURS_WEEKEND : AUTO_REFRESH_HOURS_WEEKDAY;
+    for (const h of hours) {
+      const candidate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, 0, 0, 0);
+      if (candidate > now) return candidate;
+    }
+  }
+  return new Date(now.getTime() + 2 * 60 * 60 * 1000); // skal i praksis aldri nås
 }
 
 let autoRefreshTimer = null;
 function scheduleAutoRefresh() {
   if (autoRefreshTimer) clearTimeout(autoRefreshTimer);
+  const ms = nextAutoRefreshTime().getTime() - Date.now();
   autoRefreshTimer = setTimeout(() => {
     if (getToken()) loadWeek(true);
     scheduleAutoRefresh();
-  }, msUntilNextEvenHour());
+  }, ms);
 }
 scheduleAutoRefresh();
 
