@@ -55,6 +55,10 @@ Mest aktive del av appen. Viktige mekanismer:
   (min-width:700px)` (liggende iPad), og `@media (max-width:620px)` (stående telefon: samme tabell,
   bare strammere, med varmepanelet som vannrett stripe under).
 - **Fargetemaer:** `body.theme-<navn>`, som bare overstyrer CSS-variabler. Velgeren står i headeren.
+- **Font:** Ukeplanen bruker **Plus Jakarta Sans** (`--font`). Hovedappen (`index.html`) bruker
+  bevisst fortsatt DM Sans. Ikke endre den uten at eieren ber om det.
+- **Typografi:** Klokkeslettet først i en aktivitet markeres med `displayItemText()` som
+  `<span class="t">`, i fet skrift med like brede siffer. Skole-linjene skal **ikke** ha kursiv.
 - **iOS-hjemskjerm-app:** Siden har egne Apple-meta-tagger
   (`black-translucent` + `viewport-fit=cover`) og tegnes derfor under statuslinjen. Dette krever:
   - `env(safe-area-inset-top)` som luft på toppen (mobil-CSS).
@@ -124,3 +128,17 @@ enheten, og eieren sender gjerne skjermbilder.
 - **Hemmeligheter** (tokens, API-nøkler) skal aldri gjennom frontend eller chat. Blir et token
   delt i chat, skal det byttes.
 - Spør før du endrer på ting eieren ikke har bedt om.
+
+## Økter og CLAUDE.md (gjelder alle økter)
+
+- **Hold `CLAUDE.md` oppdatert.** Når en oppgave er ferdig, og før du foreslår PR, skal du
+  vurdere om noe fra økten bør inn i `CLAUDE.md`. Det gjelder nye beslutninger, ting som er prøvd
+  og forkastet, fallgruver, preferanser og endret oppførsel. Foreslå konkret hva som bør legges
+  til eller endres, og ta det med i samme PR hvis eieren sier ja. Si også fra hvis ingenting bør
+  endres. `CLAUDE.md` oppdateres ikke av seg selv, og det som bare står i chatten, forsvinner når
+  økten er ferdig.
+- **Én økt per oppgave eller tema.** Tittelen skal ha formatet `Brief – <tema>`, og økten skal
+  ha etiketten `brief`. Velg begge repoene (`familieapp` og `familieapp-backend`) når økten
+  starter.
+- **Parallelle økter:** hver økt har sin egen branch. Unngå at to økter endrer samme fil samtidig,
+  for eksempel `uke.html`, fordi det gir merge-konflikter.
