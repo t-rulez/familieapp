@@ -44,11 +44,11 @@ Mest aktive del av appen. Viktige mekanismer:
 - **Tidsjustering:** «annet»-elementer med omtrent samme klokkeslett (halvtimes-bøtter) legges i
   samme underrad på tvers av personer. En dag kan derfor bestå av flere `<tr>`-underrader, som
   vises som én avrundet blokk (`day-start`/`day-end`).
-- **Tilleggslinjer:** Et «annet»-stikkord uten klokkeslett som kommer rett etter et tidfestet
-  stikkord hos samme person, arver det stikkordets tid i `buildDayRows()`, slik at det havner i
-  samme rad rett under (f.eks. «🚗 Kjører m/N» under «🤸 17:00 Adrenalin»). Backend-prompten
-  sørger for rekkefølgen: tilleggslinjer rett etter aktiviteten, og selvstendige stikkord uten
-  tid først i lista.
+- **Tilleggslinjer:** Backend merker tilleggslinjer (praktisk info om en aktivitet) med `+` først,
+  f.eks. `+🚗 Kjører m/N`. `buildDayRows()` legger dem i samme rad som aktiviteten foran
+  (også når aktiviteten ikke har klokkeslett), og `itemHtml()` fjerner merket og viser dem med
+  klassen `.item.extra`, i samme dempede skrift som lekselinjene. Merket vises aldri. Som reserve
+  for eldre svar uten merke arver en linje uten tid plasseringen når forrige linje har tid.
 - **Én skjerm, ingen scrolling:** `layoutTable()` = `distributeExtraHeight()` (strekker radene
   når det er ledig plass) + `fitTableToScreen()` (krymper med `transform: scale` og kompenserer
   bredden). Skalaen finnes med **binærsøk**, fordi tabellen blir lavere når den gjøres bredere og

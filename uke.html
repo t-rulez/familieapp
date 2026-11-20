@@ -158,6 +158,8 @@
     /* Klokkeslett først i en aktivitet: fet og med like brede siffer, så tidene
        står pent under hverandre (settes av displayItemText() i uke.js). */
     .item .t{font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+    /* Tilleggslinjer ('+' fra backend): samme dempede skrift som skole-/lekselinjene */
+    .item.extra{font-size:calc(13px * var(--fs));font-weight:500;letter-spacing:0.005em;color:var(--text2);line-height:1.25}
 
     td.col-rasmus{background:var(--p-rasmus-tint)}
     td.col-gustav{background:var(--p-gustav-tint)}
@@ -217,6 +219,7 @@
       td.day-col .weather-icon{font-size:calc(20px * var(--fs))}
       .item,.empty-cell{font-size:calc(15px * var(--fs));line-height:1.2}
       .skole-item{font-size:calc(12px * var(--fs))}
+      .item.extra{font-size:calc(12px * var(--fs))}
     }
 
     /* Mobil (stående telefon): SAMME tabell-layout som iPad, bare strammere -
@@ -258,6 +261,7 @@
       .item+.item{margin-top:1px}
       .skole-items{margin-bottom:2px}
       .skole-item{font-size:calc(10px * var(--fs));line-height:1.12;white-space:normal;overflow-wrap:anywhere}
+      .item.extra{font-size:calc(10px * var(--fs));line-height:1.12}
       tr.weekend-start td.col-truls::after{font-size:7.5px;padding:2px 6px;top:-7px}
       tr.day-gap td{height:3px}
 
