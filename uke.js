@@ -64,6 +64,26 @@ function setTheme(v) {
 document.getElementById('theme-switch').addEventListener('change', (e) => setTheme(e.target.value));
 setTheme(getTheme());
 
+// Tekststørrelse for ukeplanen (A−/A+). Skalerer alle tekst-størrelser i planen
+// via CSS-variabelen --fs. Lagres per enhet i localStorage.
+const FONT_KEY = 'uke_font_scale';
+const FONT_MIN = 0.8, FONT_MAX = 1.6, FONT_STEP = 0.1;
+function getFontScale() {
+  const v = parseFloat(localStorage.getItem(FONT_KEY));
+  return Number.isFinite(v) ? Math.min(FONT_MAX, Math.max(FONT_MIN, v)) : 1;
+}
+function setFontScale(v) {
+  v = Math.round(Math.min(FONT_MAX, Math.max(FONT_MIN, v)) * 10) / 10;
+  try { localStorage.setItem(FONT_KEY, String(v)); } catch (e) {}
+  document.documentElement.style.setProperty('--fs', v);
+  document.getElementById('btn-font-down').disabled = v <= FONT_MIN;
+  document.getElementById('btn-font-up').disabled = v >= FONT_MAX;
+  if (document.querySelector('#table-wrap table')) layoutTable();
+}
+document.getElementById('btn-font-down').addEventListener('click', () => setFontScale(getFontScale() - FONT_STEP));
+document.getElementById('btn-font-up').addEventListener('click', () => setFontScale(getFontScale() + FONT_STEP));
+setFontScale(getFontScale());
+
 function getToken() { return localStorage.getItem('auth_token'); }
 function saveAuth(token, user) {
   localStorage.setItem('auth_token', token);
