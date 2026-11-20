@@ -191,10 +191,22 @@ function skoleOf(day, p) {
 // Merk: kun "annet" (fritid/avtaler) går gjennom denne logikken - "skole" vises for
 // seg selv øverst i cellen, uavhengig av rad-oppdelingen her.
 function buildDayRows(day) {
+  // timeKey brukes til å plassere stikkordet i riktig tidsrad. Et stikkord UTEN
+  // klokkeslett som kommer rett etter et tidfestet stikkord hos samme person, er en
+  // tilleggslinje til den aktiviteten (f.eks. '🚗 Kjører m/N' eller '🛂 Husk pass'
+  // under '🤸 17:00 Adrenalin'). Det arver derfor aktivitetens tid, slik at det havner
+  // i samme rad, rett under, i stedet for i rest-raden nederst. Bare plasseringen
+  // påvirkes - teksten vises uendret, uten klokkeslett.
   const entries = [];
   for (const p of PEOPLE) {
     const items = annetOf(day, p);
-    for (const text of items) entries.push({ person: p, text, timeKey: extractTimeKey(text) });
+    let prevKey = null;
+    for (const text of items) {
+      const own = extractTimeKey(text);
+      const timeKey = own !== null ? own : prevKey;
+      entries.push({ person: p, text, timeKey });
+      prevKey = timeKey;
+    }
   }
   if (entries.length === 0) {
     return [{ cells: Object.fromEntries(PEOPLE.map(p => [p, []])) }];
