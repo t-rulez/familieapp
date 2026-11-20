@@ -124,3 +124,17 @@ enheten, og eieren sender gjerne skjermbilder.
 - **Hemmeligheter** (tokens, API-nøkler) skal aldri gjennom frontend eller chat. Blir et token
   delt i chat, skal det byttes.
 - Spør før du endrer på ting eieren ikke har bedt om.
+
+## Økter og CLAUDE.md (gjelder alle økter)
+
+- **Hold `CLAUDE.md` oppdatert.** Når en oppgave er ferdig, og før du foreslår PR, skal du
+  vurdere om noe fra økten bør inn i `CLAUDE.md`. Det gjelder nye beslutninger, ting som er prøvd
+  og forkastet, fallgruver, preferanser og endret oppførsel. Foreslå konkret hva som bør legges
+  til eller endres, og ta det med i samme PR hvis eieren sier ja. Si også fra hvis ingenting bør
+  endres. `CLAUDE.md` oppdateres ikke av seg selv, og det som bare står i chatten, forsvinner når
+  økten er ferdig.
+- **Én økt per oppgave eller tema.** Tittelen skal ha formatet `Brief – <tema>`, og økten skal
+  ha etiketten `brief`. Velg begge repoene (`familieapp` og `familieapp-backend`) når økten
+  starter.
+- **Parallelle økter:** hver økt har sin egen branch. Unngå at to økter endrer samme fil samtidig,
+  for eksempel `uke.html`, fordi det gir merge-konflikter.
