@@ -215,23 +215,41 @@
       .skole-item{font-size:calc(12px * var(--fs))}
     }
 
+    /* Mobil (stående telefon): SAMME tabell-layout som iPad, bare strammere -
+       smalere dagkolonne, avatar over navnet, mindre skrift og tekst som brytes
+       over flere linjer i stedet for å kuttes med "...". Varmepanelet legges som
+       en vannrett stripe under tabellen så tabellen får hele bredden.
+       fitTableToScreen() i uke.js krymper tabellen til skjermhøyden ned til en
+       nedre grense; blir det trangere enn det, scroller tabellen i stedet. */
     @media (max-width:620px){
-      table,thead,tbody,tr{display:block}
-      thead{display:none}
-      tr{margin-bottom:10px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
-      tr.today{border-color:var(--today-border)}
-      td{display:flex;gap:10px;border-bottom:1px solid var(--border);align-items:flex-start;padding:6px 10px;font-size:calc(15px * var(--fs))}
-      td.day-col{background:var(--surface2) !important;font-size:calc(16px * var(--fs));border-radius:0}
-      td.col-truls{border-radius:0}
-      tr.day-gap{display:none}
-      td::before{content:attr(data-person);font-size:calc(11px * var(--fs));font-weight:600;color:var(--text2);min-width:60px;flex-shrink:0;padding-top:1px}
-      td.day-col::before{content:none}
-      .item{font-size:calc(15px * var(--fs))}
-      tr.weekend-start td.col-truls::after{display:none !important}
-      #table-wrap{overflow-y:auto !important}
-      table{transform:none !important;width:100% !important}
-      #content-row{flex-direction:column}
-      #heating-panel{width:100%;flex-direction:row;padding:10px 16px;gap:14px}
+      #screen-app{padding:10px 8px calc(8px + env(safe-area-inset-bottom))}
+      header{margin-bottom:8px;gap:6px 8px}
+      .week-title-block{gap:6px}
+      .week-title-block h1{font-size:calc(17px * var(--fs))}
+      .week-title-block .sub{font-size:calc(12.5px * var(--fs))}
+      .week-nav button.nav-arrow{width:32px;height:32px;font-size:18px}
+      .header-controls{gap:6px;flex-wrap:wrap}
+      .btn-refresh{padding:5px 10px;font-size:13px}
+      .theme-switch{font-size:12px;padding:5px 6px}
+      .font-size-ctrl button{padding:5px 9px}
+
+      th,td{padding:3px 4px}
+      th{padding-top:4px;padding-bottom:4px}
+      th:first-child,td.day-col{width:44px}
+      th:first-child{padding-left:4px;padding-right:2px;font-size:11px}
+      .person-head{flex-direction:column;align-items:flex-start;gap:2px}
+      .person-head svg{width:22px;height:22px}
+      .person-head .name{font-size:calc(10.5px * var(--fs));letter-spacing:0.02em}
+      td.day-col{padding-left:5px;padding-right:2px;font-size:calc(13px * var(--fs))}
+      td.day-col .date,td.day-col .weather{font-size:calc(9.5px * var(--fs))}
+      .item{font-size:calc(12.5px * var(--fs));line-height:1.2;white-space:normal;overflow-wrap:anywhere}
+      .item+.item{margin-top:2px}
+      .skole-item{font-size:calc(10.5px * var(--fs));line-height:1.2;white-space:normal;overflow-wrap:anywhere}
+      tr.weekend-start td.col-truls::after{font-size:7.5px;padding:2px 6px;top:-7px}
+      tr.day-gap td{height:5px}
+
+      #content-row{flex-direction:column;gap:8px}
+      #heating-panel{width:100%;flex-direction:row;padding:8px 14px;gap:12px}
       .heat-track{flex:1;width:auto;height:auto}
       #heat-slider{transform:none;width:100%;height:34px}
       #heat-slider::-webkit-slider-runnable-track{width:auto;height:6px;background:linear-gradient(90deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B)}
