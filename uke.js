@@ -202,7 +202,11 @@ function buildDayRows(day) {
     const items = annetOf(day, p);
     let prevKey = null;
     for (const text of items) {
-      const own = extractTimeKey(text);
+      // Linjer som starter med '+' er merket av backend som tilleggslinjer: de
+      // arver alltid forrige linjes plassering (også når aktiviteten selv ikke har
+      // klokkeslett). Uten merket arver en linje uten tid plasseringen bare hvis
+      // forrige linje har tid (eldre svar fra backend, før merket fantes).
+      const own = isExtraLine(text) ? null : extractTimeKey(text);
       const timeKey = own !== null ? own : prevKey;
       entries.push({ person: p, text, timeKey });
       prevKey = timeKey;
@@ -339,7 +343,7 @@ function renderTable(data) {
         const pushBottom = shouldPushBottom(items) ? ' push-bottom' : '';
         const contentHtml = (!items || items.length === 0)
           ? ''
-          : items.map(i => `<div class="item">${displayItemText(i)}</div>`).join('');
+          : items.map(itemHtml).join('');
         html += `<td class="col-${p.toLowerCase()}" data-person="${p}">` +
           `<div class="td-inner">${skoleHtml}<div class="content${pushBottom}">${contentHtml}</div></div>` +
           '</td>';
@@ -538,6 +542,17 @@ function displayText(s) {
 // <span class="t"> slik at det kan vises i fet skrift med like brede siffer.
 function displayItemText(s) {
   return displayText(s).replace(/(\d{1,2}:\d{2})/, '<span class="t">$1</span>');
+}
+
+// Tilleggslinjer (praktisk info om en aktivitet, f.eks. '+🚗 Kjører m/N' eller
+// '+🛂 Husk pass') merkes av backend med '+' først. Merket vises aldri. Linjen får
+// samme dempede skrift som skole-/lekselinjene.
+function isExtraLine(s) { return /^\s*\+/.test(s || ''); }
+function stripExtraMark(s) { return (s || '').replace(/^\s*\+\s*/, ''); }
+function itemHtml(s) {
+  return isExtraLine(s)
+    ? `<div class="item extra">${displayText(stripExtraMark(s))}</div>`
+    : `<div class="item">${displayItemText(s)}</div>`;
 }
 
 function escapeHtml(s) {
