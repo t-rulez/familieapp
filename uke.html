@@ -53,7 +53,7 @@
     .auth-error{color:#A32D2D;font-size:13px;margin-top:10px;min-height:18px}
 
     /* ── App ── */
-    #screen-app{display:none;flex-direction:column;height:100dvh;overflow:hidden;padding:16px 20px;max-width:1400px;margin:0 auto;width:100%}
+    #screen-app{display:none;flex-direction:column;height:var(--app-h,100dvh);overflow:hidden;padding:16px 20px;max-width:1400px;margin:0 auto;width:100%}
     #content-row{flex:1;min-height:0;display:flex;gap:14px}
     #table-wrap{flex:1;min-height:0;min-width:0;overflow:hidden}
 
@@ -223,7 +223,7 @@
     @media (max-width:620px){
       /* Hjemskjerm-app (black-translucent + viewport-fit=cover) tegnes under
          statuslinjen - safe-area-inset-top gir luft så headeren ikke skjules. */
-      #screen-app{padding:calc(6px + env(safe-area-inset-top)) 6px calc(4px + env(safe-area-inset-bottom))}
+      #screen-app{padding:calc(6px + env(safe-area-inset-top)) 6px max(4px, calc(env(safe-area-inset-bottom) - 14px))}
       header{margin-bottom:6px;gap:5px 8px}
       .week-title-block{gap:6px}
       .week-title-block h1{font-size:calc(17px * var(--fs))}
