@@ -228,10 +228,17 @@
       .week-title-block h1{font-size:calc(17px * var(--fs))}
       .week-title-block .sub{font-size:calc(12.5px * var(--fs))}
       .week-nav button.nav-arrow{width:32px;height:32px;font-size:18px}
-      .header-controls{gap:6px;flex-wrap:wrap}
+      /* Knapperaden: A−/A+, Oppdater og layout-velgeren skal ALLTID stå på én
+         linje. Raden tar hele bredden, knappene beholder sin størrelse og
+         layout-velgeren krymper ved behov. Værkrediteringen (MET Norway krever
+         den) legges i liten skrift rett under raden, så den ikke tar plass. */
+      header{margin-bottom:14px}
+      .header-controls{gap:6px;flex-wrap:nowrap;width:100%;position:relative}
+      .header-controls>*{flex:0 0 auto}
       .btn-refresh{padding:5px 10px;font-size:13px}
-      .theme-switch{font-size:12px;padding:5px 6px}
+      .theme-switch{font-size:12px;padding:5px 6px;flex:1 1 auto;min-width:0;max-width:170px;text-overflow:ellipsis}
       .font-size-ctrl button{padding:5px 9px}
+      .weather-credit{position:absolute;top:100%;right:0;margin-top:1px;font-size:8.5px}
 
       th,td{padding:3px 4px}
       th{padding-top:4px;padding-bottom:4px}
