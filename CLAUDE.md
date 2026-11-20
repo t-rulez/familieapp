@@ -55,6 +55,10 @@ Mest aktive del av appen. Viktige mekanismer:
   (min-width:700px)` (liggende iPad), og `@media (max-width:620px)` (stående telefon: samme tabell,
   bare strammere, med varmepanelet som vannrett stripe under).
 - **Fargetemaer:** `body.theme-<navn>`, som bare overstyrer CSS-variabler. Velgeren står i headeren.
+- **Font:** Ukeplanen bruker **Plus Jakarta Sans** (`--font`). Hovedappen (`index.html`) bruker
+  bevisst fortsatt DM Sans. Ikke endre den uten at eieren ber om det.
+- **Typografi:** Klokkeslettet først i en aktivitet markeres med `displayItemText()` som
+  `<span class="t">`, i fet skrift med like brede siffer. Skole-linjene skal **ikke** ha kursiv.
 - **iOS-hjemskjerm-app:** Siden har egne Apple-meta-tagger
   (`black-translucent` + `viewport-fit=cover`) og tegnes derfor under statuslinjen. Dette krever:
   - `env(safe-area-inset-top)` som luft på toppen (mobil-CSS).
