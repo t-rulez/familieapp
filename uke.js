@@ -367,21 +367,6 @@ function distributeExtraHeight() {
   // ekstra, utstrakte høyden som fordeles på de virkelige innholdsradene under.
   const rows = Array.from(tbody.querySelectorAll('tr:not(.day-gap)'));
 
-  // Under 620px går tabellen om til en stablet, mobilvennlig kort-liste (se
-  // media-query i uke.html) - <thead> skjules og <tr>/<td> blir flex-blokker i
-  // stedet for tabell-rader/-celler. Eksplisitte høyder satt her er beregnet for
-  // DESKTOP-oppsettet og passer ikke dette layoutet i det hele tatt; satt likevel,
-  // ga de et for lite/feil mål som i praksis gjorde alt innhold usynlig på smale
-  // skjermer (selve teksten fantes i DOM-en, men ble aldri synlig). Hopper derfor
-  // helt over høyde-fordelingen her og lar mobil-CSS-en style seg selv fritt.
-  if (window.matchMedia('(max-width: 620px)').matches) {
-    rows.forEach(tr => {
-      tr.style.height = '';
-      Array.from(tr.children).forEach(td => { td.style.height = ''; });
-    });
-    return;
-  }
-
   rows.forEach(tr => {
     tr.style.height = '';
     Array.from(tr.children).forEach(td => { td.style.height = ''; });
@@ -427,8 +412,10 @@ function distributeExtraHeight() {
 // distributeExtraHeight(): den strekker tabellen når det er ledig plass, denne
 // krymper den (med CSS transform:scale) når det IKKE er det. Bredden kompenseres
 // samtidig (width:100/scale%) slik at tabellen fortsatt fyller hele bredden visuelt
-// etter at den er skalert ned - kun høyden "spares inn". Hopper over på mobil
-// (<=620px), der tabellen uansett vises som en stablet, scrollbar kortliste.
+// etter at den er skalert ned - kun høyden "spares inn". På mobil (<=620px) krympes
+// det bare ned til MOBILE_MIN_SCALE så teksten ikke blir uleselig liten - trenger
+// uken mer plass enn det, scroller tabellen vertikalt i stedet.
+const MOBILE_MIN_SCALE = 0.7;
 function fitTableToScreen() {
   const wrap = document.getElementById('table-wrap');
   const table = wrap.querySelector('table');
@@ -438,16 +425,43 @@ function fitTableToScreen() {
   table.style.transform = '';
   table.style.transformOrigin = '';
   table.style.width = '';
+  table.style.marginBottom = '';
+  wrap.style.overflowY = '';
 
-  if (window.matchMedia('(max-width: 620px)').matches) return;
-
+  const isMobile = window.matchMedia('(max-width: 620px)').matches;
   const available = wrap.clientHeight;
   const natural = table.getBoundingClientRect().height;
   if (available > 0 && natural > available + 0.5) {
-    const scale = available / natural;
+    // Når tabellen gjøres bredere (width:100/scale%) brytes tekst over færre
+    // linjer (mobil) og den blir lavere. Vi binærsøker derfor etter STØRSTE skala
+    // der (høyde ved den bredden) × skala fortsatt får plass, i stedet for å
+    // krympe mer enn nødvendig. Uten tekstbryting (iPad/PC) gir dette samme svar
+    // som før: available / natural.
     table.style.transformOrigin = 'top left';
+    const fits = sc => {
+      table.style.width = `${100 / sc}%`;
+      return table.offsetHeight * sc <= available + 0.5;
+    };
+    // Nedre grense: på mobil MOBILE_MIN_SCALE (ellers blir teksten for liten -
+    // da scroller vi heller), ellers available/natural som alltid får plass.
+    let lo = isMobile ? MOBILE_MIN_SCALE : available / natural;
+    let hi = 1;
+    if (!fits(lo)) {
+      wrap.style.overflowY = 'auto'; // passer ikke engang på nedre grense
+    } else {
+      for (let i = 0; i < 8; i++) {
+        const mid = (lo + hi) / 2;
+        if (fits(mid)) lo = mid; else hi = mid;
+      }
+    }
+    const scale = lo;
     table.style.width = `${100 / scale}%`;
     table.style.transform = `scale(${scale})`;
+    // transform påvirker ikke layout-høyden, så uten dette ville en scrollbar
+    // tabell (mobil) fått tomrom under seg tilsvarende det som ble "spart inn".
+    if (wrap.style.overflowY === 'auto') {
+      table.style.marginBottom = `${-table.offsetHeight * (1 - scale)}px`;
+    }
   }
 }
 
