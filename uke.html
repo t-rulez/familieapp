@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="/icon-192.png"/>
   <title>Ukeoversikt</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -22,7 +22,7 @@
       --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
       --today-bg:#FFF6DE;--today-border:#E3B341;
       --weekend-line:#C9A227;--weekend-overlay:rgba(0,0,0,0.07);--day-radius:10px;
-      --font:'DM Sans',sans-serif;
+      --font:'Plus Jakarta Sans',sans-serif;
       --fs:1; /* tekststørrelse i ukeplanen, settes av A−/A+ (uke.js) */
       --p-rasmus:#185FA5;  --p-rasmus-tint:#E8F1FA;  --p-rasmus-tint-dark:#102840;
       --p-gustav:#2D6A4F;  --p-gustav-tint:#E9F4EE;  --p-gustav-tint-dark:#102A1C;
@@ -64,7 +64,7 @@
       background:var(--surface);border:1px solid var(--border2);border-radius:var(--day-radius,14px);
       padding:12px 0 10px;gap:8px;box-shadow:0 1px 2px rgba(0,0,0,0.04),0 3px 10px rgba(0,0,0,0.05);
     }
-    .heat-num{font-size:calc(22px * var(--fs));font-weight:800;color:var(--heat-color);line-height:1;transition:color 0.15s;flex-shrink:0}
+    .heat-num{font-size:calc(22px * var(--fs));font-weight:800;font-variant-numeric:tabular-nums;color:var(--heat-color);line-height:1;transition:color 0.15s;flex-shrink:0}
     /* Fast høyde (ikke flex:1) - slideren skal sitte samlet øverst, ikke sentreres
        midt i hele kolonnen med tomrom rundt. Resten av kolonnen går til romlisten. */
     .heat-track{flex:0 0 120px;height:120px;display:flex;align-items:center;justify-content:center;width:100%}
@@ -115,7 +115,7 @@
     .header-controls{display:flex;align-items:center;gap:8px}
     .week-nav button.nav-arrow:disabled{opacity:0.3;cursor:default}
     .week-title-block{display:flex;align-items:baseline;gap:8px}
-    .week-title-block h1{font-size:calc(20px * var(--fs));font-weight:600;letter-spacing:-0.3px;white-space:nowrap}
+    .week-title-block h1{font-size:calc(20px * var(--fs));font-weight:800;letter-spacing:-0.03em;white-space:nowrap}
     .week-title-block .sub{font-size:calc(14.5px * var(--fs));color:var(--text2);white-space:nowrap}
     .btn-refresh{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;cursor:pointer}
     .btn-refresh:active{opacity:0.7}
@@ -126,15 +126,15 @@
     th{background:var(--bg);padding-top:8px;padding-bottom:6px}
     .person-head{display:flex;align-items:center;gap:6px}
     .person-head svg{width:34.5px;height:34.5px;flex-shrink:0}
-    .person-head .name{font-size:calc(17px * var(--fs));font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
+    .person-head .name{font-size:calc(17px * var(--fs));font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
     th.col-rasmus .name{color:var(--p-rasmus)}
     th.col-gustav .name{color:var(--p-gustav)}
     th.col-kristin .name{color:var(--p-kristin)}
     th.col-truls .name{color:var(--p-truls)}
     th:first-child,td.day-col{width:calc(85px * var(--fs))}
     th:first-child{padding-left:6px;padding-right:3px}
-    td.day-col{padding-left:6px;padding-right:3px;font-weight:600;font-size:calc(20px * var(--fs));background:var(--surface) !important;white-space:nowrap}
-    td.day-col .date{display:block;font-size:calc(14px * var(--fs));color:var(--text3);font-weight:400;margin-left:0}
+    td.day-col{padding-left:6px;padding-right:3px;font-weight:700;letter-spacing:-0.02em;font-size:calc(20px * var(--fs));background:var(--surface) !important;white-space:nowrap}
+    td.day-col .date{display:block;font-size:calc(14px * var(--fs));color:var(--text3);font-weight:500;letter-spacing:0.01em;margin-left:0}
     /* Vær fra MET Norway (Yr) - egen linje under datoen. Emoji + maks-temp. */
     td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:calc(14px * var(--fs));color:var(--text2);font-weight:500;margin-top:2px;white-space:nowrap}
     td.day-col .weather-icon{font-size:calc(22px * var(--fs));line-height:1}
@@ -150,11 +150,14 @@
     }
     .td-inner{display:flex;flex-direction:column;height:100%;min-width:0}
     .skole-items{flex:0 0 auto;margin-bottom:3px;min-width:0}
-    .skole-item{font-size:calc(13px * var(--fs));font-style:italic;color:var(--text2);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .skole-item{font-size:calc(13px * var(--fs));font-weight:500;letter-spacing:0.005em;color:var(--text2);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .content{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;min-height:0;min-width:0}
     .content.push-bottom{justify-content:flex-end}
     .item{font-size:calc(16px * var(--fs));line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
     .item+.item{margin-top:0}
+    /* Klokkeslett først i en aktivitet: fet og med like brede siffer, så tidene
+       står pent under hverandre (settes av displayItemText() i uke.js). */
+    .item .t{font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
 
     td.col-rasmus{background:var(--p-rasmus-tint)}
     td.col-gustav{background:var(--p-gustav-tint)}
@@ -246,7 +249,7 @@
       th:first-child{padding-left:4px;padding-right:2px;font-size:11px}
       .person-head{flex-wrap:wrap;align-items:center;gap:1px 3px}
       .person-head svg{width:18px;height:18px}
-      .person-head .name{font-size:calc(10.5px * var(--fs));letter-spacing:0.02em}
+      .person-head .name{font-size:calc(10.5px * var(--fs));letter-spacing:0.04em}
       td.day-col{padding-left:4px;padding-right:2px;font-size:calc(15px * var(--fs))}
       td.day-col .date,td.day-col .weather{font-size:calc(11px * var(--fs))}
       td.day-col .weather{gap:2px}

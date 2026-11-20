@@ -327,7 +327,7 @@ function renderTable(data) {
         const pushBottom = shouldPushBottom(items) ? ' push-bottom' : '';
         const contentHtml = (!items || items.length === 0)
           ? ''
-          : items.map(i => `<div class="item">${displayText(i)}</div>`).join('');
+          : items.map(i => `<div class="item">${displayItemText(i)}</div>`).join('');
         html += `<td class="col-${p.toLowerCase()}" data-person="${p}">` +
           `<div class="td-inner">${skoleHtml}<div class="content${pushBottom}">${contentHtml}</div></div>` +
           '</td>';
@@ -520,6 +520,12 @@ function abbreviateNames(text) {
 
 function displayText(s) {
   return escapeHtml(abbreviateNames(s));
+}
+
+// Som displayText, men med det første klokkeslettet (f.eks. "17:50") i et eget
+// <span class="t"> slik at det kan vises i fet skrift med like brede siffer.
+function displayItemText(s) {
+  return displayText(s).replace(/(\d{1,2}:\d{2})/, '<span class="t">$1</span>');
 }
 
 function escapeHtml(s) {
