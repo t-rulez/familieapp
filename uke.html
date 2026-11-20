@@ -113,7 +113,6 @@
     .week-nav{display:flex;align-items:center;gap:8px}
     .week-nav button.nav-arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
     .header-controls{display:flex;align-items:center;gap:8px}
-    .weather-credit{font-size:10px;color:var(--text3);white-space:nowrap}
     .week-nav button.nav-arrow:disabled{opacity:0.3;cursor:default}
     .week-title-block{display:flex;align-items:baseline;gap:8px}
     .week-title-block h1{font-size:calc(20px * var(--fs));font-weight:600;letter-spacing:-0.3px;white-space:nowrap}
@@ -230,15 +229,12 @@
       .week-nav button.nav-arrow{width:32px;height:32px;font-size:18px}
       /* Knapperaden: A−/A+, Oppdater og layout-velgeren skal ALLTID stå på én
          linje. Raden tar hele bredden, knappene beholder sin størrelse og
-         layout-velgeren krymper ved behov. Værkrediteringen (MET Norway krever
-         den) legges i liten skrift rett under raden, så den ikke tar plass. */
-      header{margin-bottom:14px}
-      .header-controls{gap:6px;flex-wrap:nowrap;width:100%;position:relative}
+         layout-velgeren krymper ved behov. */
+      .header-controls{gap:6px;flex-wrap:nowrap;width:100%}
       .header-controls>*{flex:0 0 auto}
       .btn-refresh{padding:5px 10px;font-size:13px}
       .theme-switch{font-size:12px;padding:5px 6px;flex:1 1 auto;min-width:0;max-width:170px;text-overflow:ellipsis}
       .font-size-ctrl button{padding:5px 9px}
-      .weather-credit{position:absolute;top:100%;right:0;margin-top:1px;font-size:8.5px}
 
       th,td{padding:3px 4px}
       th{padding-top:4px;padding-bottom:4px}
@@ -373,9 +369,6 @@
         <button class="nav-arrow" id="btn-next-week" aria-label="Neste uke">&#8250;</button>
       </div>
       <div class="header-controls">
-        <!-- MET Norway krever kreditering (CC BY 4.0) for værdataene. Vises kun
-             når vær faktisk er hentet - settes av loadWeather() i uke.js. -->
-        <span class="weather-credit" id="weather-credit" hidden>Vær: MET Norway</span>
         <div class="font-size-ctrl" role="group" aria-label="Tekststørrelse">
           <button id="btn-font-down" aria-label="Mindre tekst">A&minus;</button>
           <button id="btn-font-up" aria-label="Større tekst">A+</button>

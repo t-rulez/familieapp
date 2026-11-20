@@ -531,12 +531,6 @@ async function loadWeather() {
     const map = {};
     for (const d of (data.days || [])) map[d.date] = d;
     weatherByDate = map;
-    // Krediteringen vises først når vi faktisk har værdata å kreditere.
-    const credit = document.getElementById('weather-credit');
-    if (credit && Object.values(map).some(d => d.emoji)) {
-      credit.textContent = data.credit || 'Vær: MET Norway';
-      credit.hidden = false;
-    }
     // Tabellen kan allerede være tegnet (været kommer gjerne etterpå) - tegn
     // den da på nytt så ikonene kommer med.
     if (lastWeekData) renderTable(lastWeekData);
