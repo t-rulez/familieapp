@@ -60,8 +60,9 @@ Mest aktive del av appen. Viktige mekanismer:
   - `env(safe-area-inset-top)` som luft på toppen (mobil-CSS).
   - `setAppHeight()`: iOS regner `100dvh` som skjermen *minus* statuslinjen i standalone-modus.
     Derfor settes `--app-h` til `screen.height` når `navigator.standalone` er satt.
-- **Værkreditering** (MET Norway) ble fjernet etter ønske fra eieren 20.11.2026. MET-vilkårene
-  krever kreditering etter CC BY 4.0, så dette er et kjent avvik. Se «Gjenstår».
+- **Ingen værkreditering.** Krediteringen (MET Norway) ble fjernet 20.11.2026. Eieren vil ikke
+  ha den og har akseptert risikoen ved avviket fra CC BY 4.0-vilkårene. Ikke legg den tilbake og
+  ikke foreslå det.
 - **Auto-oppdatering er bevisst bare på klientsiden** (`AUTO_REFRESH_HOURS_*`): kl. 07, 16, 18,
   20 og 22, og i tillegg kl. 12 i helgene. Eieren har uttrykkelig takket nei til en cron-jobb på
   serveren. Det er kjent og akseptert at oppdateringen bare skjer mens siden er åpen, at timerne
@@ -76,7 +77,10 @@ Mest aktive del av appen. Viktige mekanismer:
     «Ferdig», fordi Adax kan bruke 1–10 minutter på å faktisk endre seg.
   - Frakoblet-ikonet er en egen inline-SVG, ikke emoji. Det finnes ingen emoji for «wifi med strek
     over», og kombinerende tegn er upålitelige på iPad.
-  - Varme-tokenet går aldri gjennom frontend. Alt går via backend-proxyen `/heating/*`.
+  - Varmestyringen er **HomeControl**, eierens egen separate løsning (repo `t-rulez/home-control`,
+    ikke del av Brief). Ukeplanen styrer den bare via backend-proxyen `/heating/*`. Varme-tokenet går
+    aldri gjennom frontend. Endringer i selve ovnslogikken hører hjemme i HomeControl. Repoet kan
+    legges til i økten ved behov.
 
 ## Enheter som brukes
 
@@ -120,9 +124,3 @@ enheten, og eieren sender gjerne skjermbilder.
 - **Hemmeligheter** (tokens, API-nøkler) skal aldri gjennom frontend eller chat. Blir et token
   delt i chat, skal det byttes.
 - Spør før du endrer på ting eieren ikke har bedt om.
-
-## Gjenstår (frontend)
-
-- Værkreditering: MET krever CC BY 4.0-kreditering, men den ble fjernet etter ønske fra eieren.
-  Vurder å legge den diskret tilbake, for eksempel i innstillinger eller som liten tekst et sted
-  som ikke tar plass i ukeplanen.
