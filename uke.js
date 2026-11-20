@@ -283,7 +283,14 @@ function renderTable(data) {
       ].filter(Boolean).join(' ');
       html += `<tr class="${classes}">`;
       if (idx === 0) {
-        html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span></td>`;
+        // Vær hentes separat (/weather/week) og legges inn her hvis det finnes
+        // for datoen. Dager uten lagret vær får ingen linje i det hele tatt,
+        // slik at kolonnen ikke blir høyere enn nødvendig.
+        const w = weatherByDate[day.date];
+        const weatherHtml = (w && w.emoji)
+          ? `<span class="weather">${w.emoji}${w.temp_max !== null && w.temp_max !== undefined ? ' ' + w.temp_max + '°' : ''}</span>`
+          : '';
+        html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span>${weatherHtml}</td>`;
       } else {
         html += `<td class="day-col sub"></td>`;
       }
@@ -478,6 +485,32 @@ function renderStatus(msg, isError) {
     `<div id="status" class="${isError ? 'error' : ''}">${msg}</div>`;
 }
 
+// Vær per dato (ISO-dato -> {emoji, temp_max}). Fylles av loadWeather().
+let weatherByDate = {};
+let lastWeekData = null;
+
+async function loadWeather() {
+  // Egen henting, helt utenom AI-en: ren data fra MET Norway, ingen tokens.
+  // Feiler den, skal resten av ukeoversikten fortsatt vises som normalt.
+  try {
+    const data = await apiFetch(`/weather/week?week_offset=${weekOffset}`);
+    const map = {};
+    for (const d of (data.days || [])) map[d.date] = d;
+    weatherByDate = map;
+    // Krediteringen vises først når vi faktisk har værdata å kreditere.
+    const credit = document.getElementById('weather-credit');
+    if (credit && Object.values(map).some(d => d.emoji)) {
+      credit.textContent = data.credit || 'Vær: MET Norway';
+      credit.hidden = false;
+    }
+    // Tabellen kan allerede være tegnet (været kommer gjerne etterpå) - tegn
+    // den da på nytt så ikonene kommer med.
+    if (lastWeekData) renderTable(lastWeekData);
+  } catch (e) {
+    /* Vær er en bonus, ikke kritisk - ignoreres i stillhet */
+  }
+}
+
 async function loadWeek(forceRefresh = false) {
   showApp();
   renderStatus('Henter ukeoversikt...');
@@ -488,8 +521,10 @@ async function loadWeek(forceRefresh = false) {
     const params = new URLSearchParams({ week_offset: String(weekOffset) });
     if (forceRefresh) params.set('refresh', 'true');
     const data = await apiFetch(`/ai/week-overview?${params.toString()}`);
+    lastWeekData = data;
     updateWeekHeader(data);
     renderTable(data);
+    loadWeather();
   } catch (e) {
     renderStatus(e.message || 'Klarte ikke å hente ukeoversikt', true);
   } finally {
