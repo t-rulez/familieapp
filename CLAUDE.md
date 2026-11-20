@@ -60,7 +60,23 @@ Mest aktive del av appen. Viktige mekanismer:
   - `env(safe-area-inset-top)` som luft på toppen (mobil-CSS).
   - `setAppHeight()`: iOS regner `100dvh` som skjermen *minus* statuslinjen i standalone-modus.
     Derfor settes `--app-h` til `screen.height` når `navigator.standalone` er satt.
-- **Værkreditering** (MET Norway) ble bevisst fjernet etter ønske fra eieren.
+- **Værkreditering** (MET Norway) ble fjernet etter ønske fra eieren 20.11.2026. MET-vilkårene
+  krever kreditering etter CC BY 4.0, så dette er et kjent avvik. Se «Gjenstår».
+- **Auto-oppdatering er bevisst bare på klientsiden** (`AUTO_REFRESH_HOURS_*`): kl. 07, 16, 18,
+  20 og 22, og i tillegg kl. 12 i helgene. Eieren har uttrykkelig takket nei til en cron-jobb på
+  serveren. Det er kjent og akseptert at oppdateringen bare skjer mens siden er åpen, at timerne
+  pauses når iPaden sover, og at de retter seg selv når den våkner. Hver oppdatering koster tokens
+  (`refresh=true`). Vanlig bytte mellom uker er gratis (cache i backend).
+- **Varmepanelet:**
+  - Den vertikale slideren **må** bruke `transform: rotate(-90deg)`, med eksplisitt bredde før
+    rotasjonen som matcher containerens faste høyde. `writing-mode: vertical-lr` ser riktig ut i
+    Chromium, men kollapset til en sirkel på ekte iPad.
+  - Adax tåler bare én skriving per 30 sekunder. Derfor sendes `PUT` bare på sliderens `change`
+    (når den slippes), aldri på `input` (mens den dras). Statusteksten sier «Sendt», ikke
+    «Ferdig», fordi Adax kan bruke 1–10 minutter på å faktisk endre seg.
+  - Frakoblet-ikonet er en egen inline-SVG, ikke emoji. Det finnes ingen emoji for «wifi med strek
+    over», og kombinerende tegn er upålitelige på iPad.
+  - Varme-tokenet går aldri gjennom frontend. Alt går via backend-proxyen `/heating/*`.
 
 ## Enheter som brukes
 
@@ -88,11 +104,25 @@ enheten, og eieren sender gjerne skjermbilder.
 
 - **Språk:** norsk i svar, commit-meldinger, PR-er og kodekommentarer (kodebasen er kommentert
   på norsk).
+- **Bekreft logikken før du koder** alt som ikke er trivielt. Eieren vil se resonnementet og
+  planen først, ikke bare en ferdig endring.
 - **Eieren er ikke utvikler.** Forklar kort og konkret hva som er endret, og hva eieren bør sjekke
-  på telefonen eller iPaden.
+  på telefonen eller iPaden. Si alltid tydelig om en endring gjelder frontend (Vercel) eller
+  backend (Railway).
+- **Verifiser før levering.** Les tilbake det du har endret og test logikken isolert. Før Claude
+  Code var hver feilgjetning en treg, manuell runde. Med Claude Code er runden: commit →
+  PR/merge → automatisk deploy → «Oppdater» på iPaden.
 - **Flyt:** utvikle på oppgitt branch → commit → push → spør om PR og merge. Når eieren sier
   «ja»: lag PR mot `main` og **squash-merge**. Vercel deployer deretter automatisk.
 - Etter en squash-merge startes branchen på nytt fra `origin/main`. Force-push er ikke tillatt.
   Merge derfor inn den gamle remote-branchen og behold egen versjon (`git checkout --ours`) før
   push.
+- **Hemmeligheter** (tokens, API-nøkler) skal aldri gjennom frontend eller chat. Blir et token
+  delt i chat, skal det byttes.
 - Spør før du endrer på ting eieren ikke har bedt om.
+
+## Gjenstår (frontend)
+
+- Værkreditering: MET krever CC BY 4.0-kreditering, men den ble fjernet etter ønske fra eieren.
+  Vurder å legge den diskret tilbake, for eksempel i innstillinger eller som liten tekst et sted
+  som ikke tar plass i ukeplanen.
