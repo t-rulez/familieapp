@@ -221,7 +221,9 @@
        fitTableToScreen() i uke.js krymper tabellen til skjermhøyden ned til en
        nedre grense; blir det trangere enn det, scroller tabellen i stedet. */
     @media (max-width:620px){
-      #screen-app{padding:8px 8px calc(6px + env(safe-area-inset-bottom))}
+      /* Hjemskjerm-app (black-translucent + viewport-fit=cover) tegnes under
+         statuslinjen - safe-area-inset-top gir luft så headeren ikke skjules. */
+      #screen-app{padding:calc(6px + env(safe-area-inset-top)) 6px calc(4px + env(safe-area-inset-bottom))}
       header{margin-bottom:6px;gap:5px 8px}
       .week-title-block{gap:6px}
       .week-title-block h1{font-size:calc(17px * var(--fs))}
@@ -236,20 +238,21 @@
       .theme-switch{font-size:12px;padding:4px 6px;flex:1 1 auto;min-width:0;max-width:170px;text-overflow:ellipsis}
       .font-size-ctrl button{padding:4px 9px}
 
-      th,td{padding:3px 4px}
+      th,td{padding:2px 3px}
       th{padding-top:2px;padding-bottom:3px}
       th:first-child,td.day-col{width:44px}
       th:first-child{padding-left:4px;padding-right:2px;font-size:11px}
-      .person-head{flex-direction:column;align-items:flex-start;gap:1px}
+      .person-head{flex-wrap:wrap;align-items:center;gap:1px 3px}
       .person-head svg{width:18px;height:18px}
       .person-head .name{font-size:calc(10.5px * var(--fs));letter-spacing:0.02em}
-      td.day-col{padding-left:5px;padding-right:2px;font-size:calc(13px * var(--fs))}
+      td.day-col{padding-left:4px;padding-right:2px;font-size:calc(13px * var(--fs))}
       td.day-col .date,td.day-col .weather{font-size:calc(9.5px * var(--fs))}
-      .item{font-size:calc(12.5px * var(--fs));line-height:1.2;white-space:normal;overflow-wrap:anywhere}
-      .item+.item{margin-top:2px}
-      .skole-item{font-size:calc(10.5px * var(--fs));line-height:1.2;white-space:normal;overflow-wrap:anywhere}
+      .item{font-size:calc(12.5px * var(--fs));line-height:1.15;white-space:normal;overflow-wrap:anywhere}
+      .item+.item{margin-top:1px}
+      .skole-items{margin-bottom:2px}
+      .skole-item{font-size:calc(10px * var(--fs));line-height:1.12;white-space:normal;overflow-wrap:anywhere}
       tr.weekend-start td.col-truls::after{font-size:7.5px;padding:2px 6px;top:-7px}
-      tr.day-gap td{height:4px}
+      tr.day-gap td{height:3px}
 
       #content-row{flex-direction:column;gap:6px}
       #heating-panel{width:100%;flex-direction:row;padding:2px 14px;gap:12px}
