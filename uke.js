@@ -308,7 +308,7 @@ function renderTable(data) {
         // slik at kolonnen ikke blir høyere enn nødvendig.
         const w = weatherByDate[day.date];
         const weatherHtml = (w && w.emoji)
-          ? `<span class="weather">${w.emoji}${w.temp_max !== null && w.temp_max !== undefined ? ' ' + w.temp_max + '°' : ''}</span>`
+          ? `<span class="weather"><span class="weather-icon">${w.emoji}</span>${w.temp_max !== null && w.temp_max !== undefined ? `<span>${w.temp_max}°</span>` : ''}</span>`
           : '';
         html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span>${weatherHtml}</td>`;
       } else {
