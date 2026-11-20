@@ -415,7 +415,7 @@ function distributeExtraHeight() {
 // etter at den er skalert ned - kun høyden "spares inn". På mobil (<=620px) krympes
 // det bare ned til MOBILE_MIN_SCALE så teksten ikke blir uleselig liten - trenger
 // uken mer plass enn det, scroller tabellen vertikalt i stedet.
-const MOBILE_MIN_SCALE = 0.7;
+const MOBILE_MIN_SCALE = 0.6;
 function fitTableToScreen() {
   const wrap = document.getElementById('table-wrap');
   const table = wrap.querySelector('table');
