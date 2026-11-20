@@ -467,7 +467,21 @@ function fitTableToScreen() {
 
 // Kjører begge mekanismene i riktig rekkefølge: først strekk (hvis ledig plass),
 // deretter krymp-til-skjerm (hvis fortsatt for mye innhold etter det).
+// iOS-hjemskjerm-app (navigator.standalone) med black-translucent statuslinje:
+// siden dekker HELE skjermen, men iOS regner 100dvh som skjermen minus
+// statuslinjen - da ble det et tomt felt nederst. Vi setter derfor høyden
+// eksplisitt til skjermhøyden (iOS oppgir alltid screen-mål i stående retning,
+// så vi bytter selv ved liggende). I vanlig nettleser brukes 100dvh som før.
+function setAppHeight() {
+  if (!navigator.standalone) return;
+  const landscape = window.matchMedia('(orientation: landscape)').matches;
+  const h = landscape ? Math.min(screen.width, screen.height) : Math.max(screen.width, screen.height);
+  document.documentElement.style.setProperty('--app-h', `${h}px`);
+}
+setAppHeight();
+
 function layoutTable() {
+  setAppHeight();
   distributeExtraHeight();
   fitTableToScreen();
 }
