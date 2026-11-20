@@ -23,6 +23,7 @@
       --today-bg:#FFF6DE;--today-border:#E3B341;
       --weekend-line:#C9A227;--weekend-overlay:rgba(0,0,0,0.07);--day-radius:10px;
       --font:'DM Sans',sans-serif;
+      --fs:1; /* tekststørrelse i ukeplanen, settes av A−/A+ (uke.js) */
       --p-rasmus:#185FA5;  --p-rasmus-tint:#E8F1FA;  --p-rasmus-tint-dark:#102840;
       --p-gustav:#2D6A4F;  --p-gustav-tint:#E9F4EE;  --p-gustav-tint-dark:#102A1C;
       --p-kristin:#A3492D; --p-kristin-tint:#FBEEE8; --p-kristin-tint-dark:#3A1D12;
@@ -115,8 +116,8 @@
     .weather-credit{font-size:10px;color:var(--text3);white-space:nowrap}
     .week-nav button.nav-arrow:disabled{opacity:0.3;cursor:default}
     .week-title-block{display:flex;align-items:baseline;gap:8px}
-    .week-title-block h1{font-size:20px;font-weight:600;letter-spacing:-0.3px;white-space:nowrap}
-    .week-title-block .sub{font-size:14.5px;color:var(--text2);white-space:nowrap}
+    .week-title-block h1{font-size:calc(20px * var(--fs));font-weight:600;letter-spacing:-0.3px;white-space:nowrap}
+    .week-title-block .sub{font-size:calc(14.5px * var(--fs));color:var(--text2);white-space:nowrap}
     .btn-refresh{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;cursor:pointer}
     .btn-refresh:active{opacity:0.7}
     .btn-refresh:disabled{opacity:0.5;cursor:default}
@@ -126,17 +127,17 @@
     th{background:var(--bg);padding-top:8px;padding-bottom:6px}
     .person-head{display:flex;align-items:center;gap:6px}
     .person-head svg{width:34.5px;height:34.5px;flex-shrink:0}
-    .person-head .name{font-size:17px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
+    .person-head .name{font-size:calc(17px * var(--fs));font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
     th.col-rasmus .name{color:var(--p-rasmus)}
     th.col-gustav .name{color:var(--p-gustav)}
     th.col-kristin .name{color:var(--p-kristin)}
     th.col-truls .name{color:var(--p-truls)}
     th:first-child,td.day-col{width:75px}
     th:first-child{padding-left:6px;padding-right:3px}
-    td.day-col{padding-left:6px;padding-right:3px;font-weight:600;font-size:16px;background:var(--surface) !important;white-space:nowrap}
-    td.day-col .date{display:block;font-size:12px;color:var(--text3);font-weight:400;margin-left:0}
+    td.day-col{padding-left:6px;padding-right:3px;font-weight:600;font-size:calc(16px * var(--fs));background:var(--surface) !important;white-space:nowrap}
+    td.day-col .date{display:block;font-size:calc(12px * var(--fs));color:var(--text3);font-weight:400;margin-left:0}
     /* Vær fra MET Norway (Yr) - egen linje under datoen. Emoji + maks-temp. */
-    td.day-col .weather{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-top:2px;white-space:nowrap}
+    td.day-col .weather{display:block;font-size:calc(12px * var(--fs));color:var(--text2);font-weight:500;margin-top:2px;white-space:nowrap}
     /* "I dag"-ramme: en tynn, hel linje horisontalt rundt HELE dagens blokk -
        strek over dagens første underrad og strek under dagens siste underrad. */
     tr.today.day-start td{border-top:1.5px solid var(--today-border)}
@@ -149,10 +150,10 @@
     }
     .td-inner{display:flex;flex-direction:column;height:100%;min-width:0}
     .skole-items{flex:0 0 auto;margin-bottom:3px;min-width:0}
-    .skole-item{font-size:13px;font-style:italic;color:var(--text2);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .skole-item{font-size:calc(13px * var(--fs));font-style:italic;color:var(--text2);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .content{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;min-height:0;min-width:0}
     .content.push-bottom{justify-content:flex-end}
-    .item{font-size:16px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+    .item{font-size:calc(16px * var(--fs));line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
     .item+.item{margin-top:0}
 
     td.col-rasmus{background:var(--p-rasmus-tint)}
@@ -187,6 +188,10 @@
     #status.error{color:#A32D2D}
 
     /* ── Fargetema-velger ── */
+    .font-size-ctrl{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:var(--surface)}
+    .font-size-ctrl button{border:none;background:transparent;color:var(--text);font-family:var(--font);font-size:13px;font-weight:600;padding:6px 10px;cursor:pointer;line-height:1}
+    .font-size-ctrl button+button{border-left:1px solid var(--border2)}
+    .font-size-ctrl button:disabled{opacity:0.35;cursor:default}
     .theme-switch{border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:12.5px;padding:6px 10px;border-radius:8px;cursor:pointer}
 
     /* Liggende iPad har mindre høyde å gå på enn stående, så vi strammer inn
@@ -195,19 +200,19 @@
       #screen-app{padding:12px 20px}
       header{margin-bottom:8px}
       .week-nav button.nav-arrow{width:32px;height:32px;font-size:18px}
-      .week-title-block h1{font-size:18px}
-      .week-title-block .sub{font-size:13.5px}
+      .week-title-block h1{font-size:calc(18px * var(--fs))}
+      .week-title-block .sub{font-size:calc(13.5px * var(--fs))}
       .btn-refresh{padding:5px 11px;font-size:13px}
       th,td{padding:3px 9px}
       th{padding-top:6px;padding-bottom:5px}
       .person-head svg{width:30px;height:30px}
-      .person-head .name{font-size:15px}
+      .person-head .name{font-size:calc(15px * var(--fs))}
       th:first-child,td.day-col{width:66px}
-      td.day-col{font-size:14.5px}
-      td.day-col .date{font-size:11px}
-      td.day-col .weather{font-size:11px}
-      .item,.empty-cell{font-size:15px;line-height:1.2}
-      .skole-item{font-size:12px}
+      td.day-col{font-size:calc(14.5px * var(--fs))}
+      td.day-col .date{font-size:calc(11px * var(--fs))}
+      td.day-col .weather{font-size:calc(11px * var(--fs))}
+      .item,.empty-cell{font-size:calc(15px * var(--fs));line-height:1.2}
+      .skole-item{font-size:calc(12px * var(--fs))}
     }
 
     @media (max-width:620px){
@@ -215,13 +220,13 @@
       thead{display:none}
       tr{margin-bottom:10px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
       tr.today{border-color:var(--today-border)}
-      td{display:flex;gap:10px;border-bottom:1px solid var(--border);align-items:flex-start;padding:6px 10px;font-size:15px}
-      td.day-col{background:var(--surface2) !important;font-size:16px;border-radius:0}
+      td{display:flex;gap:10px;border-bottom:1px solid var(--border);align-items:flex-start;padding:6px 10px;font-size:calc(15px * var(--fs))}
+      td.day-col{background:var(--surface2) !important;font-size:calc(16px * var(--fs));border-radius:0}
       td.col-truls{border-radius:0}
       tr.day-gap{display:none}
-      td::before{content:attr(data-person);font-size:11px;font-weight:600;color:var(--text2);min-width:60px;flex-shrink:0;padding-top:1px}
+      td::before{content:attr(data-person);font-size:calc(11px * var(--fs));font-weight:600;color:var(--text2);min-width:60px;flex-shrink:0;padding-top:1px}
       td.day-col::before{content:none}
-      .item{font-size:15px}
+      .item{font-size:calc(15px * var(--fs))}
       tr.weekend-start td.col-truls::after{display:none !important}
       #table-wrap{overflow-y:auto !important}
       table{transform:none !important;width:100% !important}
@@ -346,6 +351,10 @@
         <!-- MET Norway krever kreditering (CC BY 4.0) for værdataene. Vises kun
              når vær faktisk er hentet - settes av loadWeather() i uke.js. -->
         <span class="weather-credit" id="weather-credit" hidden>Vær: MET Norway</span>
+        <div class="font-size-ctrl" role="group" aria-label="Tekststørrelse">
+          <button id="btn-font-down" aria-label="Mindre tekst">A&minus;</button>
+          <button id="btn-font-up" aria-label="Større tekst">A+</button>
+        </div>
         <button class="btn-refresh" id="btn-refresh">Oppdater</button>
         <select class="theme-switch" id="theme-switch" aria-label="Fargetema">
           <option value="spring">Spring Bloom</option>
