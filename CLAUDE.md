@@ -57,7 +57,10 @@ Mest aktive del av appen. Viktige mekanismer:
 - **Tekststørrelse (A−/A+):** Bare **innholdet i de fire personkolonnene** (`.item`, `.item.extra`,
   `.skole-item`) bruker `calc(Npx * var(--fs))`. `--fs` settes av A−/A+ (0,8–1,6). Dagkolonnen
   (dag, dato, vær), varmepanelet, kolonnehodet og overskriften har **bevisst fast størrelse**
-  (eierens ønske 21.11.2026). Ikke legg `--fs` på dem igjen. Kall `layoutTable()` etter endringer
+  (eierens ønske 21.11.2026). Ikke legg `--fs` på dem igjen. Fordi `fitTableToScreen()` krymper **hele**
+  tabellen, kompenseres de faste delene inne i tabellen (dagkolonnen, «Dag», navn og avatarer,
+  «HELG») med `--inv` = 1/skala, satt i samme binærsøk. Da ser de like store ut uansett krymping.
+  Nye faste elementer inne i tabellen må også bruke `calc(Npx * var(--inv,1))`. Kall `layoutTable()` etter endringer
   som påvirker høyden.
 - **Visninger (CSS):** standard (iPad stående/PC), `@media (orientation:landscape) and
   (min-width:700px)` (liggende iPad), og `@media (max-width:620px)` (stående telefon: samme tabell,
