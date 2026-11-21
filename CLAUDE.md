@@ -44,6 +44,10 @@ Mest aktive del av appen. Viktige mekanismer:
 - **Tidsjustering:** «annet»-elementer med omtrent samme klokkeslett (halvtimes-bøtter) legges i
   samme underrad på tvers av personer. En dag kan derfor bestå av flere `<tr>`-underrader, som
   vises som én avrundet blokk (`day-start`/`day-end`).
+  Dagkolonnen står i dagens første rad med `rowspan` over alle dagens underrader (fra
+  21.11.2026). Før sto den bare i første underrad og tvang den til å være minst like høy som
+  dag + dato + vær. Uker med mange ulike klokkeslett fikk da store tomrom og ble krympet kraftig
+  (66 % mot 90 % på liggende iPad), slik at tekststørrelsen hoppet når man bladde mellom ukene.
 - **Tilleggslinjer:** Backend merker tilleggslinjer (praktisk info om en aktivitet) med `+` først,
   f.eks. `+🚗 Kjører m/N`. `buildDayRows()` legger dem i samme rad som aktiviteten foran
   (også når aktiviteten ikke har klokkeslett), og `itemHtml()` fjerner merket og viser dem med

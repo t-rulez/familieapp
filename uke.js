@@ -326,9 +326,12 @@ function renderTable(data) {
         const weatherHtml = (w && w.emoji)
           ? `<span class="weather"><span class="weather-icon">${w.emoji}</span>${w.temp_max !== null && w.temp_max !== undefined ? `<span>${w.temp_max}°</span>` : ''}</span>`
           : '';
-        html += `<td class="day-col">${shortDay(day.day)}<span class="date">${dateLabel}</span>${weatherHtml}</td>`;
-      } else {
-        html += `<td class="day-col sub"></td>`;
+        // Dagkolonnen strekker seg over ALLE dagens underrader (rowspan). Før sto den
+        // bare i første underrad, og tvang da den raden til å bli minst like høy som
+        // dag + dato + vær. Med mange ulike klokkeslett (mange tynne underrader) ga det
+        // store tomrom, og tabellen måtte krympes kraftig. Nå deler dagkolonnen høyde
+        // med alle dagens rader.
+        html += `<td class="day-col" rowspan="${rows.length}">${shortDay(day.day)}<span class="date">${dateLabel}</span>${weatherHtml}</td>`;
       }
       for (const p of PEOPLE) {
         const items = row.cells[p];
@@ -417,7 +420,8 @@ function distributeExtraHeight() {
       // Prosent-høyde (.cell-inner{height:100%}) løses kun hvis høyden står direkte
       // på <td> selv - en høyde satt kun på <tr> regnes ikke som "eksplisitt" av
       // nettleseren for dette formålet, selv om cellen faktisk tegnes like høy.
-      Array.from(tr.children).forEach(td => { td.style.height = h; });
+      // Dagkolonnen (rowspan) spenner over flere rader og skal ikke låses til én av dem.
+      Array.from(tr.children).forEach(td => { if (td.rowSpan === 1) td.style.height = h; });
     });
   });
 }

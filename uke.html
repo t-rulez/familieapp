@@ -153,6 +153,7 @@
        strek over dagens første underrad og strek under dagens siste underrad. */
     tr.today.day-start td{border-top:1.5px solid var(--today-border)}
     tr.today.day-end td{border-bottom:1.5px solid var(--today-border)}
+    tr.today.day-start td.day-col{border-bottom:1.5px solid var(--today-border)}
     tr.weekend-start td.col-truls{position:relative}
     tr.weekend-start td.col-truls::after{
       content:"HELG";position:absolute;top:-9px;right:2px;font-size:calc(9px * var(--inv,1));font-weight:700;
@@ -194,8 +195,9 @@
        kun på toppen av dagens FØRSTE underrad og bunnen av dagens SISTE underrad
        (ofte samme rad, hvis dagen bare har én) - mellomliggende underrader
        forblir firkantede, slik at dagblokken henger visuelt sammen som én enhet. */
-    tr.day-start td.day-col{border-top-left-radius:var(--day-radius)}
-    tr.day-end td.day-col{border-bottom-left-radius:var(--day-radius)}
+    /* Dagkolonnen står bare i dagens første rad, men spenner over hele dagen (rowspan),
+       så den får både øvre og nedre avrundet hjørne. */
+    tr.day-start td.day-col{border-top-left-radius:var(--day-radius);border-bottom-left-radius:var(--day-radius)}
     tr.day-start td.col-truls{border-top-right-radius:var(--day-radius)}
     tr.day-end td.col-truls{border-bottom-right-radius:var(--day-radius)}
     tr.day-gap td{height:7px;padding:0;border:none;background:transparent}
