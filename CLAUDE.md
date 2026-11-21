@@ -54,8 +54,11 @@ Mest aktive del av appen. Viktige mekanismer:
   bredden). Skalaen finnes med **binærsøk**, fordi tabellen blir lavere når den gjøres bredere og
   teksten brytes mindre. På mobil krympes den aldri under `MOBILE_MIN_SCALE` (0,6). Trengs mer
   plass, scroller tabellen.
-- **Tekststørrelse:** All tekst bruker `calc(Npx * var(--fs))`. `--fs` settes av A−/A+
-  (0,8–1,6). Kall `layoutTable()` etter endringer som påvirker høyden.
+- **Tekststørrelse (A−/A+):** Bare **innholdet i de fire personkolonnene** (`.item`, `.item.extra`,
+  `.skole-item`) bruker `calc(Npx * var(--fs))`. `--fs` settes av A−/A+ (0,8–1,6). Dagkolonnen
+  (dag, dato, vær), varmepanelet, kolonnehodet og overskriften har **bevisst fast størrelse**
+  (eierens ønske 21.11.2026). Ikke legg `--fs` på dem igjen. Kall `layoutTable()` etter endringer
+  som påvirker høyden.
 - **Visninger (CSS):** standard (iPad stående/PC), `@media (orientation:landscape) and
   (min-width:700px)` (liggende iPad), og `@media (max-width:620px)` (stående telefon: samme tabell,
   bare strammere, med varmepanelet som vannrett stripe under).
@@ -87,7 +90,7 @@ Mest aktive del av appen. Viktige mekanismer:
   - Frakoblet-ikonet er en egen inline-SVG, ikke emoji. Det finnes ingen emoji for «wifi med strek
     over», og kombinerende tegn er upålitelige på iPad.
   - Grader og ikoner i varmepanelet har **samme størrelse, vekt og farge** som været i dagkolonnen
-    (15 px grader og 18 px ikoner på iPad stående, 14/17 px liggende, alt × `--fs`). Eieren vil at
+    (15 px grader og 18 px ikoner på iPad stående, 14/17 px liggende, fast størrelse). Eieren vil at
     de to sidene skal være like. Endres den ene, må den andre følge med.
   - Varmestyringen er **HomeControl**, eierens egen separate løsning (repo `t-rulez/home-control`,
     ikke del av Brief). Ukeplanen styrer den bare via backend-proxyen `/heating/*`. Varme-tokenet går
