@@ -23,7 +23,9 @@
       --today-bg:#FFF6DE;--today-border:#E3B341;
       --weekend-line:#C9A227;--weekend-overlay:rgba(0,0,0,0.07);--day-radius:10px;
       --font:'Plus Jakarta Sans',sans-serif;
-      --fs:1; /* tekststørrelse i ukeplanen, settes av A−/A+ (uke.js) */
+      --fs:1; /* tekststørrelse for INNHOLDET i de fire personkolonnene (aktiviteter,
+               lekser, tilleggslinjer), settes av A−/A+ (uke.js). Dagkolonnen, varmepanelet,
+               kolonnehodet og overskriften har bevisst fast størrelse. */
       --p-rasmus:#185FA5;  --p-rasmus-tint:#E8F1FA;  --p-rasmus-tint-dark:#102840;
       --p-gustav:#2D6A4F;  --p-gustav-tint:#E9F4EE;  --p-gustav-tint-dark:#102A1C;
       --p-kristin:#A3492D; --p-kristin-tint:#FBEEE8; --p-kristin-tint-dark:#3A1D12;
@@ -60,11 +62,11 @@
     /* ── Varmepanel: vertikal slider for home-control (1-5) + romtemperaturer, til høyre for tabellen ── */
     #heating-panel{
       --heat-color:#E8C547;
-      width:calc(92px * var(--fs));flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+      width:92px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
       background:var(--surface);border:1px solid var(--border2);border-radius:var(--day-radius,14px);
       padding:12px 0 10px;gap:8px;box-shadow:0 1px 2px rgba(0,0,0,0.04),0 3px 10px rgba(0,0,0,0.05);
     }
-    .heat-num{font-size:calc(22px * var(--fs));font-weight:800;font-variant-numeric:tabular-nums;color:var(--heat-color);line-height:1;transition:color 0.15s;flex-shrink:0}
+    .heat-num{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--heat-color);line-height:1;transition:color 0.15s;flex-shrink:0}
     /* Fast høyde (ikke flex:1) - slideren skal sitte samlet øverst, ikke sentreres
        midt i hele kolonnen med tomrom rundt. Resten av kolonnen går til romlisten. */
     .heat-track{flex:0 0 120px;height:120px;display:flex;align-items:center;justify-content:center;width:100%}
@@ -96,27 +98,30 @@
       background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);transition:border-color 0.15s;
     }
     #heat-slider:-moz-range-progress{background:var(--heat-color)}
-    .heat-status{font-size:calc(9.5px * var(--fs));color:var(--text3);text-align:center;letter-spacing:0.02em;min-height:calc(12px * var(--fs));white-space:nowrap;flex-shrink:0}
+    .heat-status{font-size:9.5px;color:var(--text3);text-align:center;letter-spacing:0.02em;min-height:12px;white-space:nowrap;flex-shrink:0}
 
     /* Romtemperaturer - fyller resten av kolonnen, scroller internt hvis mange rom
        (holder seg innenfor én-skjerm-regelen i stedet for å presse tabellen). */
     .heat-devices{flex:1;min-height:0;width:100%;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:2px 6px 0}
     .heat-device{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;flex-shrink:0}
-    .heat-device-name{font-size:calc(8.5px * var(--fs));font-weight:600;color:var(--text2);line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .heat-device-name{font-size:8.5px;font-weight:600;color:var(--text2);line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .heat-device-row{display:flex;align-items:center;justify-content:center;gap:3px}
-    .heat-device-temp{font-size:calc(13px * var(--fs));font-weight:700;color:var(--text)}
+    /* Grader og ikoner i varmepanelet har samme størrelse, vekt og farge som
+       været i dagkolonnen (td.day-col .weather / .weather-icon). Endres det ene,
+       må det andre følge med. */
+    .heat-device-temp{font-size:15px;font-weight:600;color:var(--text2)}
     .heat-device-temp.offline{color:var(--text3);font-weight:600}
-    .heat-flame{font-size:calc(10px * var(--fs));line-height:1;filter:grayscale(1);opacity:0.4}
+    .heat-flame{font-size:18px;line-height:1;filter:grayscale(1);opacity:0.4}
     .heat-flame.on{filter:none;opacity:1}
-    .heat-offline-icon{width:calc(11px * var(--fs));height:calc(11px * var(--fs));flex-shrink:0;color:#E0463A}
+    .heat-offline-icon{width:18px;height:18px;flex-shrink:0;color:#E0463A}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px}
     .week-nav{display:flex;align-items:center;gap:8px}
     .week-nav button.nav-arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
     .header-controls{display:flex;align-items:center;gap:8px}
     .week-nav button.nav-arrow:disabled{opacity:0.3;cursor:default}
     .week-title-block{display:flex;align-items:baseline;gap:8px}
-    .week-title-block h1{font-size:calc(20px * var(--fs));font-weight:800;letter-spacing:-0.03em;white-space:nowrap}
-    .week-title-block .sub{font-size:calc(14.5px * var(--fs));color:var(--text2);white-space:nowrap}
+    .week-title-block h1{font-size:20px;font-weight:800;letter-spacing:-0.03em;white-space:nowrap}
+    .week-title-block .sub{font-size:14.5px;color:var(--text2);white-space:nowrap}
     .btn-refresh{padding:6px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:var(--font);font-size:14px;cursor:pointer}
     .btn-refresh:active{opacity:0.7}
     .btn-refresh:disabled{opacity:0.5;cursor:default}
@@ -126,18 +131,18 @@
     th{background:var(--bg);padding-top:8px;padding-bottom:6px}
     .person-head{display:flex;align-items:center;gap:6px}
     .person-head svg{width:34.5px;height:34.5px;flex-shrink:0}
-    .person-head .name{font-size:calc(17px * var(--fs));font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
+    .person-head .name{font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
     th.col-rasmus .name{color:var(--p-rasmus)}
     th.col-gustav .name{color:var(--p-gustav)}
     th.col-kristin .name{color:var(--p-kristin)}
     th.col-truls .name{color:var(--p-truls)}
-    th:first-child,td.day-col{width:calc(85px * var(--fs))}
+    th:first-child,td.day-col{width:85px}
     th:first-child{padding-left:6px;padding-right:3px}
-    td.day-col{padding-left:6px;padding-right:3px;font-weight:700;letter-spacing:-0.02em;font-size:calc(20px * var(--fs));background:var(--surface) !important;white-space:nowrap}
-    td.day-col .date{display:block;font-size:calc(14px * var(--fs));color:var(--text3);font-weight:500;letter-spacing:0.01em;margin-left:0}
+    td.day-col{padding-left:6px;padding-right:3px;font-weight:700;letter-spacing:-0.02em;font-size:20px;background:var(--surface) !important;white-space:nowrap}
+    td.day-col .date{display:block;font-size:14px;color:var(--text3);font-weight:500;letter-spacing:0.01em;margin-left:0}
     /* Vær fra MET Norway (Yr) - egen linje under datoen. Emoji + maks-temp. */
-    td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:calc(14px * var(--fs));color:var(--text2);font-weight:500;margin-top:2px;white-space:nowrap}
-    td.day-col .weather-icon{font-size:calc(22px * var(--fs));line-height:1}
+    td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:15px;color:var(--text2);font-weight:600;margin-top:2px;white-space:nowrap}
+    td.day-col .weather-icon{font-size:18px;line-height:1}
     /* "I dag"-ramme: en tynn, hel linje horisontalt rundt HELE dagens blokk -
        strek over dagens første underrad og strek under dagens siste underrad. */
     tr.today.day-start td{border-top:1.5px solid var(--today-border)}
@@ -205,18 +210,19 @@
       #screen-app{padding:12px 20px}
       header{margin-bottom:8px}
       .week-nav button.nav-arrow{width:32px;height:32px;font-size:18px}
-      .week-title-block h1{font-size:calc(18px * var(--fs))}
-      .week-title-block .sub{font-size:calc(13.5px * var(--fs))}
+      .week-title-block h1{font-size:18px}
+      .week-title-block .sub{font-size:13.5px}
       .btn-refresh{padding:5px 11px;font-size:13px}
       th,td{padding:3px 9px}
       th{padding-top:6px;padding-bottom:5px}
       .person-head svg{width:30px;height:30px}
-      .person-head .name{font-size:calc(15px * var(--fs))}
-      th:first-child,td.day-col{width:calc(78px * var(--fs))}
-      td.day-col{font-size:calc(18px * var(--fs))}
-      td.day-col .date{font-size:calc(13px * var(--fs))}
-      td.day-col .weather{font-size:calc(13px * var(--fs))}
-      td.day-col .weather-icon{font-size:calc(20px * var(--fs))}
+      .person-head .name{font-size:15px}
+      th:first-child,td.day-col{width:78px}
+      td.day-col{font-size:18px}
+      td.day-col .date{font-size:13px}
+      td.day-col .weather,.heat-device-temp{font-size:14px}
+      td.day-col .weather-icon,.heat-flame{font-size:17px}
+      .heat-offline-icon{width:17px;height:17px}
       .item,.empty-cell{font-size:calc(15px * var(--fs));line-height:1.2}
       .skole-item{font-size:calc(12px * var(--fs))}
       .item.extra{font-size:calc(12px * var(--fs))}
@@ -234,8 +240,8 @@
       #screen-app{padding:calc(6px + env(safe-area-inset-top)) 6px max(4px, calc(env(safe-area-inset-bottom) - 14px))}
       header{margin-bottom:6px;gap:5px 8px}
       .week-title-block{gap:6px}
-      .week-title-block h1{font-size:calc(17px * var(--fs))}
-      .week-title-block .sub{font-size:calc(12.5px * var(--fs))}
+      .week-title-block h1{font-size:17px}
+      .week-title-block .sub{font-size:12.5px}
       .week-nav button.nav-arrow{width:28px;height:28px;font-size:17px}
       /* Knapperaden: A−/A+, Oppdater og layout-velgeren skal ALLTID stå på én
          linje. Raden tar hele bredden, knappene beholder sin størrelse og
@@ -248,15 +254,15 @@
 
       th,td{padding:2px 3px}
       th{padding-top:2px;padding-bottom:3px}
-      th:first-child,td.day-col{width:calc(50px * var(--fs))}
+      th:first-child,td.day-col{width:50px}
       th:first-child{padding-left:4px;padding-right:2px;font-size:11px}
       .person-head{flex-wrap:wrap;align-items:center;gap:1px 3px}
       .person-head svg{width:18px;height:18px}
-      .person-head .name{font-size:calc(10.5px * var(--fs));letter-spacing:0.04em}
-      td.day-col{padding-left:4px;padding-right:2px;font-size:calc(15px * var(--fs))}
-      td.day-col .date,td.day-col .weather{font-size:calc(11px * var(--fs))}
-      td.day-col .weather{gap:2px}
-      td.day-col .weather-icon{font-size:calc(15px * var(--fs))}
+      .person-head .name{font-size:10.5px;letter-spacing:0.04em}
+      td.day-col{padding-left:4px;padding-right:2px;font-size:15px}
+      td.day-col .date{font-size:11px}
+      td.day-col .weather{font-size:12px;gap:2px}
+      td.day-col .weather-icon{font-size:14px}
       .item{font-size:calc(12.5px * var(--fs));line-height:1.15;white-space:normal;overflow-wrap:anywhere}
       .item+.item{margin-top:1px}
       .skole-items{margin-bottom:2px}
@@ -267,7 +273,7 @@
 
       #content-row{flex-direction:column;gap:6px}
       #heating-panel{width:100%;flex-direction:row;padding:2px 14px;gap:12px}
-      .heat-num{font-size:calc(18px * var(--fs))}
+      .heat-num{font-size:18px}
       .heat-track{flex:1;width:auto;height:auto}
       #heat-slider{transform:none;width:100%;height:30px}
       #heat-slider::-webkit-slider-runnable-track{width:auto;height:6px;background:linear-gradient(90deg,#6FA8DC,#4FBF8B,#E8C547,#E8974B,#E85D4B)}
