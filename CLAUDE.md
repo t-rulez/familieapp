@@ -86,6 +86,9 @@ Mest aktive del av appen. Viktige mekanismer:
     «Ferdig», fordi Adax kan bruke 1–10 minutter på å faktisk endre seg.
   - Frakoblet-ikonet er en egen inline-SVG, ikke emoji. Det finnes ingen emoji for «wifi med strek
     over», og kombinerende tegn er upålitelige på iPad.
+  - Grader og ikoner i varmepanelet har **samme størrelse, vekt og farge** som været i dagkolonnen
+    (15 px grader og 18 px ikoner på iPad stående, 14/17 px liggende, alt × `--fs`). Eieren vil at
+    de to sidene skal være like. Endres den ene, må den andre følge med.
   - Varmestyringen er **HomeControl**, eierens egen separate løsning (repo `t-rulez/home-control`,
     ikke del av Brief). Ukeplanen styrer den bare via backend-proxyen `/heating/*`. Varme-tokenet går
     aldri gjennom frontend. Endringer i selve ovnslogikken hører hjemme i HomeControl. Repoet kan

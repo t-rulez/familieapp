@@ -104,11 +104,14 @@
     .heat-device{display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;flex-shrink:0}
     .heat-device-name{font-size:calc(8.5px * var(--fs));font-weight:600;color:var(--text2);line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .heat-device-row{display:flex;align-items:center;justify-content:center;gap:3px}
-    .heat-device-temp{font-size:calc(13px * var(--fs));font-weight:700;color:var(--text)}
+    /* Grader og ikoner i varmepanelet har samme størrelse, vekt og farge som
+       været i dagkolonnen (td.day-col .weather / .weather-icon). Endres det ene,
+       må det andre følge med. */
+    .heat-device-temp{font-size:calc(15px * var(--fs));font-weight:600;color:var(--text2)}
     .heat-device-temp.offline{color:var(--text3);font-weight:600}
-    .heat-flame{font-size:calc(10px * var(--fs));line-height:1;filter:grayscale(1);opacity:0.4}
+    .heat-flame{font-size:calc(18px * var(--fs));line-height:1;filter:grayscale(1);opacity:0.4}
     .heat-flame.on{filter:none;opacity:1}
-    .heat-offline-icon{width:calc(11px * var(--fs));height:calc(11px * var(--fs));flex-shrink:0;color:#E0463A}
+    .heat-offline-icon{width:calc(18px * var(--fs));height:calc(18px * var(--fs));flex-shrink:0;color:#E0463A}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px}
     .week-nav{display:flex;align-items:center;gap:8px}
     .week-nav button.nav-arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
@@ -136,8 +139,8 @@
     td.day-col{padding-left:6px;padding-right:3px;font-weight:700;letter-spacing:-0.02em;font-size:calc(20px * var(--fs));background:var(--surface) !important;white-space:nowrap}
     td.day-col .date{display:block;font-size:calc(14px * var(--fs));color:var(--text3);font-weight:500;letter-spacing:0.01em;margin-left:0}
     /* Vær fra MET Norway (Yr) - egen linje under datoen. Emoji + maks-temp. */
-    td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:calc(14px * var(--fs));color:var(--text2);font-weight:500;margin-top:2px;white-space:nowrap}
-    td.day-col .weather-icon{font-size:calc(22px * var(--fs));line-height:1}
+    td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:calc(15px * var(--fs));color:var(--text2);font-weight:600;margin-top:2px;white-space:nowrap}
+    td.day-col .weather-icon{font-size:calc(18px * var(--fs));line-height:1}
     /* "I dag"-ramme: en tynn, hel linje horisontalt rundt HELE dagens blokk -
        strek over dagens første underrad og strek under dagens siste underrad. */
     tr.today.day-start td{border-top:1.5px solid var(--today-border)}
@@ -215,8 +218,9 @@
       th:first-child,td.day-col{width:calc(78px * var(--fs))}
       td.day-col{font-size:calc(18px * var(--fs))}
       td.day-col .date{font-size:calc(13px * var(--fs))}
-      td.day-col .weather{font-size:calc(13px * var(--fs))}
-      td.day-col .weather-icon{font-size:calc(20px * var(--fs))}
+      td.day-col .weather,.heat-device-temp{font-size:calc(14px * var(--fs))}
+      td.day-col .weather-icon,.heat-flame{font-size:calc(17px * var(--fs))}
+      .heat-offline-icon{width:calc(17px * var(--fs));height:calc(17px * var(--fs))}
       .item,.empty-cell{font-size:calc(15px * var(--fs));line-height:1.2}
       .skole-item{font-size:calc(12px * var(--fs))}
       .item.extra{font-size:calc(12px * var(--fs))}
@@ -254,9 +258,9 @@
       .person-head svg{width:18px;height:18px}
       .person-head .name{font-size:calc(10.5px * var(--fs));letter-spacing:0.04em}
       td.day-col{padding-left:4px;padding-right:2px;font-size:calc(15px * var(--fs))}
-      td.day-col .date,td.day-col .weather{font-size:calc(11px * var(--fs))}
-      td.day-col .weather{gap:2px}
-      td.day-col .weather-icon{font-size:calc(15px * var(--fs))}
+      td.day-col .date{font-size:calc(11px * var(--fs))}
+      td.day-col .weather{font-size:calc(12px * var(--fs));gap:2px}
+      td.day-col .weather-icon{font-size:calc(14px * var(--fs))}
       .item{font-size:calc(12.5px * var(--fs));line-height:1.15;white-space:normal;overflow-wrap:anywhere}
       .item+.item{margin-top:1px}
       .skole-items{margin-bottom:2px}
