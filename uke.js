@@ -465,6 +465,12 @@ function fitTableToScreen() {
     // da scroller vi heller), ellers available/natural som alltid får plass.
     let lo = isMobile ? MOBILE_MIN_SCALE : available / natural;
     let hi = 1;
+    // available/natural er målt UTEN --inv-kompensasjonen. Med kompensasjonen blir
+    // radene litt høyere, så grensen holder ikke alltid. På iPad/PC skal tabellen
+    // ALLTID få plass, så senk grensen gradvis til den gjør det.
+    if (!isMobile) {
+      while (!fits(lo) && lo > 0.3) lo *= 0.92;
+    }
     if (!fits(lo)) {
       wrap.style.overflowY = 'auto'; // passer ikke engang på nedre grense
     } else {
