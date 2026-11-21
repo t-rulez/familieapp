@@ -377,6 +377,7 @@ function distributeExtraHeight() {
   const thead = table.querySelector('thead');
   const tbody = table.querySelector('tbody');
   if (!thead || !tbody) return;
+  table.style.setProperty('--inv', '1'); // mål alltid uten kompensasjon fra forrige krymping
 
   // "day-gap"-radene (luften MELLOM dager, se renderTable) skal ha en fast,
   // liten høyde satt i CSS - de skal aldri regnes med i eller selv få noe av den
@@ -441,6 +442,7 @@ function fitTableToScreen() {
   table.style.transform = '';
   table.style.transformOrigin = '';
   table.style.width = '';
+  table.style.setProperty('--inv', '1'); // se kommentaren ved table{} i uke.html
   table.style.marginBottom = '';
   wrap.style.overflowY = '';
 
@@ -456,6 +458,7 @@ function fitTableToScreen() {
     table.style.transformOrigin = 'top left';
     const fits = sc => {
       table.style.width = `${100 / sc}%`;
+      table.style.setProperty('--inv', String(1 / sc));
       return table.offsetHeight * sc <= available + 0.5;
     };
     // Nedre grense: på mobil MOBILE_MIN_SCALE (ellers blir teksten for liten -
@@ -472,6 +475,7 @@ function fitTableToScreen() {
     }
     const scale = lo;
     table.style.width = `${100 / scale}%`;
+    table.style.setProperty('--inv', String(1 / scale));
     table.style.transform = `scale(${scale})`;
     // transform påvirker ikke layout-høyden, så uten dette ville en scrollbar
     // tabell (mobil) fått tomrom under seg tilsvarende det som ble "spart inn".

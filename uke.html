@@ -126,30 +126,34 @@
     .btn-refresh:active{opacity:0.7}
     .btn-refresh:disabled{opacity:0.5;cursor:default}
 
-    table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+    /* --inv = 1 / skalaen fitTableToScreen() krymper tabellen med. De faste delene inne i
+       tabellen (dagkolonnen, «Dag», navn og avatarer i kolonnehodet, «HELG») ganges med --inv,
+       slik at de ser like store ut uansett hvor mye tabellen krympes. Bare innholdet i de fire
+       personkolonnene skal se ut til å endre størrelse ved A−/A+. */
+    table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;--inv:1}
     th,td{padding:4px 10px;text-align:left;vertical-align:top}
     th{background:var(--bg);padding-top:8px;padding-bottom:6px}
     .person-head{display:flex;align-items:center;gap:6px}
-    .person-head svg{width:34.5px;height:34.5px;flex-shrink:0}
-    .person-head .name{font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
+    .person-head svg{width:calc(34.5px * var(--inv,1));height:calc(34.5px * var(--inv,1));flex-shrink:0}
+    .person-head .name{font-size:calc(17px * var(--inv,1));font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
     th.col-rasmus .name{color:var(--p-rasmus)}
     th.col-gustav .name{color:var(--p-gustav)}
     th.col-kristin .name{color:var(--p-kristin)}
     th.col-truls .name{color:var(--p-truls)}
-    th:first-child,td.day-col{width:85px}
-    th:first-child{padding-left:6px;padding-right:3px}
-    td.day-col{padding-left:6px;padding-right:3px;font-weight:700;letter-spacing:-0.02em;font-size:20px;background:var(--surface) !important;white-space:nowrap}
-    td.day-col .date{display:block;font-size:14px;color:var(--text3);font-weight:500;letter-spacing:0.01em;margin-left:0}
+    th:first-child,td.day-col{width:calc(85px * var(--inv,1))}
+    th:first-child{padding-left:6px;padding-right:3px;font-size:calc(16px * var(--inv,1))}
+    td.day-col{padding-left:6px;padding-right:3px;font-weight:700;letter-spacing:-0.02em;font-size:calc(20px * var(--inv,1));background:var(--surface) !important;white-space:nowrap}
+    td.day-col .date{display:block;font-size:calc(14px * var(--inv,1));color:var(--text3);font-weight:500;letter-spacing:0.01em;margin-left:0}
     /* Vær fra MET Norway (Yr) - egen linje under datoen. Emoji + maks-temp. */
-    td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:15px;color:var(--text2);font-weight:600;margin-top:2px;white-space:nowrap}
-    td.day-col .weather-icon{font-size:18px;line-height:1}
+    td.day-col .weather{display:flex;align-items:center;gap:3px;font-size:calc(15px * var(--inv,1));color:var(--text2);font-weight:600;margin-top:2px;white-space:nowrap}
+    td.day-col .weather-icon{font-size:calc(18px * var(--inv,1));line-height:1}
     /* "I dag"-ramme: en tynn, hel linje horisontalt rundt HELE dagens blokk -
        strek over dagens første underrad og strek under dagens siste underrad. */
     tr.today.day-start td{border-top:1.5px solid var(--today-border)}
     tr.today.day-end td{border-bottom:1.5px solid var(--today-border)}
     tr.weekend-start td.col-truls{position:relative}
     tr.weekend-start td.col-truls::after{
-      content:"HELG";position:absolute;top:-9px;right:2px;font-size:9px;font-weight:700;
+      content:"HELG";position:absolute;top:-9px;right:2px;font-size:calc(9px * var(--inv,1));font-weight:700;
       letter-spacing:0.07em;padding:3px 9px;border-radius:999px;display:block;white-space:nowrap;
       color:#8a6d1c;background:#F3E4B0;box-shadow:0 2px 6px rgba(201,146,39,0.3);
     }
@@ -215,13 +219,13 @@
       .btn-refresh{padding:5px 11px;font-size:13px}
       th,td{padding:3px 9px}
       th{padding-top:6px;padding-bottom:5px}
-      .person-head svg{width:30px;height:30px}
-      .person-head .name{font-size:15px}
-      th:first-child,td.day-col{width:78px}
-      td.day-col{font-size:18px}
-      td.day-col .date{font-size:13px}
-      td.day-col .weather,.heat-device-temp{font-size:14px}
-      td.day-col .weather-icon,.heat-flame{font-size:17px}
+      .person-head svg{width:calc(30px * var(--inv,1));height:calc(30px * var(--inv,1))}
+      .person-head .name{font-size:calc(15px * var(--inv,1))}
+      th:first-child,td.day-col{width:calc(78px * var(--inv,1))}
+      td.day-col{font-size:calc(18px * var(--inv,1))}
+      td.day-col .date{font-size:calc(13px * var(--inv,1))}
+      td.day-col .weather,.heat-device-temp{font-size:calc(14px * var(--inv,1))}
+      td.day-col .weather-icon,.heat-flame{font-size:calc(17px * var(--inv,1))}
       .heat-offline-icon{width:17px;height:17px}
       .item,.empty-cell{font-size:calc(15px * var(--fs));line-height:1.2}
       .skole-item{font-size:calc(12px * var(--fs))}
@@ -254,15 +258,15 @@
 
       th,td{padding:2px 3px}
       th{padding-top:2px;padding-bottom:3px}
-      th:first-child,td.day-col{width:50px}
-      th:first-child{padding-left:4px;padding-right:2px;font-size:11px}
+      th:first-child,td.day-col{width:calc(50px * var(--inv,1))}
+      th:first-child{padding-left:4px;padding-right:2px;font-size:calc(11px * var(--inv,1))}
       .person-head{flex-wrap:wrap;align-items:center;gap:1px 3px}
-      .person-head svg{width:18px;height:18px}
-      .person-head .name{font-size:10.5px;letter-spacing:0.04em}
-      td.day-col{padding-left:4px;padding-right:2px;font-size:15px}
-      td.day-col .date{font-size:11px}
-      td.day-col .weather{font-size:12px;gap:2px}
-      td.day-col .weather-icon{font-size:14px}
+      .person-head svg{width:calc(18px * var(--inv,1));height:calc(18px * var(--inv,1))}
+      .person-head .name{font-size:calc(10.5px * var(--inv,1));letter-spacing:0.04em}
+      td.day-col{padding-left:4px;padding-right:2px;font-size:calc(15px * var(--inv,1))}
+      td.day-col .date{font-size:calc(11px * var(--inv,1))}
+      td.day-col .weather{font-size:calc(12px * var(--inv,1));gap:2px}
+      td.day-col .weather-icon{font-size:calc(14px * var(--inv,1))}
       .item{font-size:calc(12.5px * var(--fs));line-height:1.15;white-space:normal;overflow-wrap:anywhere}
       .item+.item{margin-top:1px}
       .skole-items{margin-bottom:2px}
