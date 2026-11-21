@@ -114,10 +114,12 @@
     .heat-flame{font-size:18px;line-height:1;filter:grayscale(1);opacity:0.4}
     .heat-flame.on{filter:none;opacity:1}
     .heat-offline-icon{width:18px;height:18px;flex-shrink:0;color:#E0463A}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px}
-    .week-nav{display:flex;align-items:center;gap:8px}
-    .week-nav button.nav-arrow{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
-    .header-controls{display:flex;align-items:center;gap:8px}
+    /* Ukepilene står rett etter dato/uke-teksten, knappene (A−/A+, Oppdater, tema)
+       skyves helt til høyre med margin-left:auto. */
+    header{display:flex;align-items:center;justify-content:flex-start;margin-bottom:11px;flex-wrap:wrap;gap:8px}
+    .week-nav{display:flex;align-items:center;gap:8px;margin-left:6px}
+    .week-nav button.nav-arrow{width:44px;height:44px;border-radius:50%;border:2px solid var(--text2);background:var(--surface);color:var(--text);font-size:26px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font);box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+    .header-controls{display:flex;align-items:center;gap:8px;margin-left:auto}
     .week-nav button.nav-arrow:disabled{opacity:0.3;cursor:default}
     .week-title-block{display:flex;align-items:baseline;gap:8px}
     .week-title-block h1{font-size:20px;font-weight:800;letter-spacing:-0.03em;white-space:nowrap}
@@ -213,7 +215,7 @@
     @media (orientation:landscape) and (min-width:700px){
       #screen-app{padding:12px 20px}
       header{margin-bottom:8px}
-      .week-nav button.nav-arrow{width:32px;height:32px;font-size:18px}
+      .week-nav button.nav-arrow{width:40px;height:40px;font-size:24px}
       .week-title-block h1{font-size:18px}
       .week-title-block .sub{font-size:13.5px}
       .btn-refresh{padding:5px 11px;font-size:13px}
@@ -246,7 +248,8 @@
       .week-title-block{gap:6px}
       .week-title-block h1{font-size:17px}
       .week-title-block .sub{font-size:12.5px}
-      .week-nav button.nav-arrow{width:28px;height:28px;font-size:17px}
+      .week-nav button.nav-arrow{width:28px;height:28px;font-size:17px;border-width:1.5px}
+      .week-nav{margin-left:auto}
       /* Knapperaden: A−/A+, Oppdater og layout-velgeren skal ALLTID stå på én
          linje. Raden tar hele bredden, knappene beholder sin størrelse og
          layout-velgeren krymper ved behov. */
